@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+- Fixed: if the module's `module.prop` was cut short (for example by a crash while it was being updated), the mount module skipped XApps, so Google stopped being a system app, Hey Google stopped working and Google kept asking for the microphone. `module.prop` is now always rebuilt from a clean copy.
+- Version code raised to 141, so LSPosed shows XApps as an update to XGoogle, XSecurity and XNotify.
+
 ## 1.0
 
 First release: XGoogle 1.4.0, XSecurity 1.8 and XNotify 4.0 in one app and one root module.
