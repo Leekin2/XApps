@@ -76,6 +76,9 @@ if [ "$KSU" = true ] && [ ! -e /data/adb/metamodule ]; then
     ui_print "  install Hybrid Mount and reboot again"
 fi
 
+# status.sh rebuilds module.prop from this copy.
+grep -v '^description=' "$MODPATH/module.prop" > "$MODPATH/module.prop.base"
+
 set_perm_recursive "$MODPATH" 0 0 0755 0644
 for script in boot-completed.sh service.sh setup.sh uninstall.sh prepare-audio.sh status.sh systemize-aa.sh grant-google.sh; do
     set_perm "$MODPATH/$script" 0 0 0755

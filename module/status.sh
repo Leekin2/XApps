@@ -45,8 +45,17 @@ description="[$google | $enrollment | $dsp]"
 if [ ! -f /product/etc/permissions/xgoogle-hyperos.xml ]; then
     description="[ℹ️Module files not loaded: restart the phone fully (a soft reboot is not enough); if it stays, install a mount module (Hybrid Mount) | ${description#[}"
 fi
-sed '/^description=/d' "$MODDIR/module.prop" > "$MODDIR/module.prop.tmp" || exit 1
-printf 'description=%s\n' "$description" >> "$MODDIR/module.prop.tmp"
-chmod 0644 "$MODDIR/module.prop.tmp"
-mv "$MODDIR/module.prop.tmp" "$MODDIR/module.prop"
+# module.prop is rebuilt from the clean copy taken at install: a write cut short by a crash once
+# left it without its id line, and the mount module then skipped XApps altogether.
+base="$MODDIR/module.prop.base"
+if ! grep -q '^id=' "$base" 2>/dev/null; then
+    grep -q '^id=' "$MODDIR/module.prop" 2>/dev/null || exit 1
+    grep -av '^description=' "$MODDIR/module.prop" > "$base" || exit 1
+fi
+# The boot script and the app can run this at the same time; each writes its own file.
+tmp="$MODDIR/module.prop.$$"
+{ cat "$base" && printf 'description=%s\n' "$description"; } > "$tmp" || { rm -f "$tmp"; exit 1; }
+chmod 0644 "$tmp"
+sync "$tmp" 2>/dev/null
+mv -f "$tmp" "$MODDIR/module.prop"
 printf '%s\n' "$description"
