@@ -17,10 +17,6 @@ out=$(xapps_setup "$MODPATH/xapps.apk") || app_ok=false
 echo "$out" | while read -r line; do ui_print "  $line"; done
 [ "$app_ok" = true ] && rm -f "$MODPATH/xapps.apk"
 
-# Saved choices of the old companion ids move to the current names.
-for name in keys_backup nav_off double_click_power_key; do
-    [ -e "/data/adb/coogle_$name" ] && [ ! -e "/data/adb/xgoogle_$name" ] && mv "/data/adb/coogle_$name" "/data/adb/xgoogle_$name"
-done
 # Retire the separate companion modules; without their uninstall script the saved key choices
 # stay for this module, and the root manager removes them on the next boot.
 for old in coogle_companion xgoogle_companion; do

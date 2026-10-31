@@ -1,9 +1,5 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
-# The module was called coogle_companion before 1.3.3: move its saved choices to the new names.
-for name in keys_backup nav_off double_click_power_key; do
-    [ -e "/data/adb/coogle_$name" ] && [ ! -e "/data/adb/xgoogle_$name" ] && mv "/data/adb/coogle_$name" "/data/adb/xgoogle_$name"
-done
 # HyperOS: route the power key and nav handle to Google (the CN ROM resets the
 # nav-handle key during boot, so reapply both every time).
 if [ -n "$(getprop ro.mi.os.version.name)" ]; then

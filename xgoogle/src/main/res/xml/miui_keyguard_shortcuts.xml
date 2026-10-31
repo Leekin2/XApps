@@ -7,7 +7,7 @@
     <intent
         android:name="@string/shortcut_assistant"
         android:icon="@drawable/ic_shortcut_assistant"
-        android:tag="coogle_assistant"
+        android:tag="xgoogle_assistant"
         android:action="android.intent.action.VIEW"
         android:data="xgoogle://keyguard/assistant"
         android:targetPackage="io.github.leekin2.xapps"
@@ -15,7 +15,7 @@
     <intent
         android:name="@string/shortcut_lens"
         android:icon="@drawable/ic_shortcut_lens"
-        android:tag="coogle_lens"
+        android:tag="xgoogle_lens"
         android:action="android.intent.action.VIEW"
         android:data="xgoogle://keyguard/lens"
         android:targetPackage="io.github.leekin2.xapps"
@@ -23,7 +23,7 @@
     <intent
         android:name="@string/shortcut_wallet"
         android:icon="@drawable/ic_shortcut_wallet"
-        android:tag="coogle_wallet"
+        android:tag="xgoogle_wallet"
         android:action="android.intent.action.VIEW"
         android:data="xgoogle://keyguard/wallet"
         android:targetPackage="io.github.leekin2.xapps"
@@ -31,7 +31,7 @@
     <intent
         android:name="@string/shortcut_home"
         android:icon="@drawable/ic_shortcut_home"
-        android:tag="coogle_home"
+        android:tag="xgoogle_home"
         android:action="android.intent.action.VIEW"
         android:data="xgoogle://keyguard/home"
         android:targetPackage="io.github.leekin2.xapps"

@@ -17,7 +17,8 @@ import java.util.Set;
  * enables XApps in LSPosed and ticks its scope.list, so nobody has to do it by hand.
  * Only adds rows; scope apps the user ticked themselves stay. Settings of the separate XGoogle,
  * XSecurity and XNotify modules are copied over (their groups do not collide), never replacing a
- * setting XApps already has. LSPosed reads all of it on the next boot.
+ * setting XApps already has, and so are the apps their users ticked themselves (optional features
+ * such as Maps or Photos). LSPosed reads all of it on the next boot.
  *
  * Args: database apkPath userId installedPackagesFile [oldModulePackage...]
  */
@@ -67,6 +68,7 @@ public final class ScopeWriter {
                             + MODULE + "', '" + app + "', " + user + ")").executeInsert() != -1) added++;
                 }
             }
+            added += copyScopes(db, old, user);
             int copied = copyConfigs(db, old);
             db.setTransactionSuccessful();
             return new int[]{added, copied};
@@ -74,6 +76,27 @@ public final class ScopeWriter {
             db.endTransaction();
             db.close();
         }
+    }
+
+    /** Apps that never go into XApps' scope, even when an old module had them ticked. */
+    private static final String SKIPPED = "'com.miui.home', 'com.android.launcher', 'com.oplus.wallpapers'";
+
+    /** Copies the old modules' ticked apps (for this user) to XApps. */
+    private static int copyScopes(SQLiteDatabase db, List<String> old, int user) {
+        boolean byId = columns(db, "modules").contains("mid");
+        int copied = 0;
+        for (String module : old) {
+            if (!module.matches("[A-Za-z0-9._]+")) continue;
+            String sql = byId
+                    ? "INSERT OR IGNORE INTO scope (mid, app_pkg_name, user_id) SELECT (SELECT mid FROM modules WHERE module_pkg_name = '"
+                        + MODULE + "'), s.app_pkg_name, s.user_id FROM scope s JOIN modules m ON s.mid = m.mid WHERE m.module_pkg_name = '"
+                        + module + "' AND s.user_id = " + user + " AND s.app_pkg_name NOT IN (" + SKIPPED + ")"
+                    : "INSERT OR IGNORE INTO scope (module_pkg_name, app_pkg_name, user_id) SELECT '" + MODULE
+                        + "', app_pkg_name, user_id FROM scope WHERE module_pkg_name = '" + module + "' AND user_id = " + user
+                        + " AND app_pkg_name NOT IN (" + SKIPPED + ")";
+            copied += db.compileStatement(sql).executeUpdateDelete();
+        }
+        return copied;
     }
 
     /** Copies the old modules' remote preferences to XApps; keys XApps already has win. */
@@ -91,6 +114,11 @@ public final class ScopeWriter {
                     + group + ", " + key + ", data FROM " + table + " WHERE module_pkg_name = '" + module + "'");
             copied += copy.executeUpdateDelete();
         }
+        // XGoogle's settings group was called "coogle" before XApps; XGoogle reads "xgoogle" now.
+        db.execSQL("INSERT OR IGNORE INTO " + table + " (module_pkg_name, user_id, " + group + ", " + key + ", data) SELECT"
+                + " module_pkg_name, user_id, 'xgoogle', " + key + ", data FROM " + table
+                + " WHERE module_pkg_name = '" + MODULE + "' AND " + group + " = 'coogle'");
+        db.execSQL("DELETE FROM " + table + " WHERE module_pkg_name = '" + MODULE + "' AND " + group + " = 'coogle'");
         return copied;
     }
 

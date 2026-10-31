@@ -2,6 +2,5 @@ build/
 .gradle/
 .kotlin/
 local.properties
-*.apk
-*.zip
-!xgoogle/src/main/assets/xapps-module.zip
+/*.apk
+/*.zip

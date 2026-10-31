@@ -16,31 +16,23 @@ internal object AssistantRuntime {
     const val SYSTEM_PACKAGE = "system"
     const val ANDROID_PACKAGE = "android"
     const val SYSTEM_UI_PACKAGE = "com.android.systemui"
-    const val LAUNCHER_PACKAGE = "com.android.launcher"
     const val SETTINGS_PACKAGE = "com.android.settings"
     const val GOOGLE_APP_PACKAGE = "com.google.android.googlequicksearchbox"
-    const val GOOGLE_ASSISTANT_APP_FEATURE =
-        "com.android.systemui.google_assistant_supported"
     const val CONTEXTUAL_SEARCH_SYSTEM_FEATURE =
         "com.google.android.feature.CONTEXTUAL_SEARCH"
-    const val BREENO_SPEECH_FEATURE = "oplus.software.speech_assist_for_breeno"
     const val SECURE_ASSISTANT = "assistant"
     const val SECURE_VOICE_INTERACTION_SERVICE = "voice_interaction_service"
     const val SECURE_DISABLE_GOOGLE_ASSIST_POWER_WAKEUP =
         "disable_google_asssist_power_wakeup"
     const val SYSTEM_QUICK_TURN_ON_VOICE_ASSISTANT =
         "quick_turn_on_voice_assistant"
-    const val SECURE_ASSISTANT_TUTORIAL_STARTED = "op_assist_started"
     private const val SECURE_GESTURE_CIRCLE_TO_SEARCH_ENABLED =
         "circle_to_search_enable_navi"
-    private const val SECURE_GESTURE_CORNER_ASSISTANT_ENABLED =
-        "circle_to_search_corner_assist_enable_navi"
     const val ASSISTANT_ROLE = "android.app.role.ASSISTANT"
     const val VOICE_INTERACTION_SERVICE_ACTION =
         "android.service.voice.VoiceInteractionService"
     const val BIND_VOICE_INTERACTION_PERMISSION =
         "android.permission.BIND_VOICE_INTERACTION"
-    const val INVOCATION_TYPE_GESTURE_CORNER_ASSISTANT = 1
     const val INVOCATION_TYPE_POWER_BUTTON_LONG_PRESS = 6
     const val INVOCATION_TYPE_CIRCLE_TO_SEARCH = 8
     const val INVOCATION_TYPE_CIRCLE_TO_SEARCH_ALTERNATE = 1000
@@ -109,14 +101,6 @@ internal object AssistantRuntime {
         return Settings.Secure.getInt(
             context.contentResolver,
             SECURE_GESTURE_CIRCLE_TO_SEARCH_ENABLED,
-            1,
-        ) == 1
-    }
-    fun isGestureCornerAssistantEnabled(context: Context?): Boolean {
-        context ?: return false
-        return Settings.Secure.getInt(
-            context.contentResolver,
-            SECURE_GESTURE_CORNER_ASSISTANT_ENABLED,
             1,
         ) == 1
     }

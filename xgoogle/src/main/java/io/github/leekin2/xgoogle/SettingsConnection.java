@@ -44,11 +44,43 @@ final class SettingsConnection {
     private static synchronized void update(XposedService value) {
         service = value;
         if (value != null) {
+            moveSettingsGroup(value);
             requestLaterScopes(value);
             dropIntegrityScopes(value, null);
         }
         MainActivity target = activity.get();
         if (target != null) target.runOnUiThread(() -> target.onFrameworkChanged(value));
+    }
+
+    /** Copies the settings saved under the old group name to the current one, once, then clears the old group. */
+    private static void moveSettingsGroup(XposedService value) {
+        try {
+            SharedPreferences current = value.getRemotePreferences(FeatureConfig.GROUP);
+            SharedPreferences old = value.getRemotePreferences(FeatureConfig.OLD_GROUP);
+            java.util.Map<String, ?> saved = old.getAll();
+            if (saved.isEmpty()) return;
+            if (current.getAll().isEmpty()) {
+                SharedPreferences.Editor editor = current.edit();
+                for (java.util.Map.Entry<String, ?> entry : saved.entrySet()) {
+                    Object v = entry.getValue();
+                    if (v instanceof Boolean) editor.putBoolean(entry.getKey(), (Boolean) v);
+                    else if (v instanceof Integer) editor.putInt(entry.getKey(), (Integer) v);
+                    else if (v instanceof Long) editor.putLong(entry.getKey(), (Long) v);
+                    else if (v instanceof Float) editor.putFloat(entry.getKey(), (Float) v);
+                    else if (v instanceof String) editor.putString(entry.getKey(), (String) v);
+                    else if (v instanceof java.util.Set) {
+                        @SuppressWarnings("unchecked") java.util.Set<String> set = (java.util.Set<String>) v;
+                        editor.putStringSet(entry.getKey(), set);
+                    }
+                }
+                // Keep the old group when the copy cannot be saved; hooks still read it then.
+                if (!editor.commit()) return;
+            }
+            old.edit().clear().commit();
+            Log.i("XGoogle", "Moved " + saved.size() + " settings to the " + FeatureConfig.GROUP + " group");
+        } catch (Throwable t) {
+            Log.w("XGoogle", "Settings group move failed", t);
+        }
     }
 
     static synchronized void detach(MainActivity value) {

@@ -1,5 +1,5 @@
 #!/system/bin/sh
-# Picks how the systemized Google app is mounted, before the metamodule mounts it (from Coogle 1.3.3).
+# Picks how the systemized Google app is mounted, before the metamodule mounts it.
 # NoMount turns .replace into a whiteout and drops every file below it, so Google would vanish from
 # /system/priv-app: merge while NoMount is the active metamodule, replace otherwise.
 prepare_google_mount() {

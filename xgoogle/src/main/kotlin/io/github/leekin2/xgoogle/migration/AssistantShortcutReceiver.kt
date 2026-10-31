@@ -44,7 +44,7 @@ internal object AssistantShortcutReceiver {
             statusBar.javaClass.getMethod("collapsePanels").invoke(statusBar)
         }.onFailure { log("Control center not collapsed", it) }
         android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-            ContextualSearchHooks.triggerCircleToSearchC17()
+            ContextualSearchHooks.triggerCircleToSearch()
         }, CIRCLE_DELAY_MS)
         return 1
     }

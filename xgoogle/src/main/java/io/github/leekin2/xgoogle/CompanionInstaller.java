@@ -13,16 +13,13 @@ public final class CompanionInstaller {
     private static final String UPDATE_DIR="/data/adb/modules_update/xapps";
     /** The module packed into the APK: the XApps module without the app itself. */
     private static final String ASSET="xapps-module.zip";
-    /** The separate companion ids; an installed one is reported as out of date so XApps replaces it. */
+    /** Separate companion modules; an installed one is reported as out of date so XApps replaces it. */
     private static final String OLD_DIRS="/data/adb/modules/xgoogle_companion /data/adb/modules/coogle_companion";
-    /** Moves the old module's saved choices to the new names before they are used. */
-    private static final String MIGRATE="for n in keys_backup nav_off double_click_power_key; do "
-            +"[ -e /data/adb/coogle_$n ] && [ ! -e /data/adb/xgoogle_$n ] && mv /data/adb/coogle_$n /data/adb/xgoogle_$n; done; ";
     /**
      * A file only the module puts on the system, looked up in init's mount view: newer KernelSU
      * builds mount module files only through a mount metamodule, and without one nothing shows up.
      */
-    private static final String MOUNTED="/proc/1/root/product/etc/permissions/coogle-hyperos.xml";
+    private static final String MOUNTED="/proc/1/root/product/etc/permissions/xgoogle-hyperos.xml";
     /**
      * MISSING, DISABLED, PENDING, READY, OUTDATED when the installed one is older than the bundled
      * one, or NOT_MOUNTED when it is installed but its files are not on the system.
@@ -82,11 +79,11 @@ public final class CompanionInstaller {
      */
     public static void applyHyperOsWalletPower(boolean enabled) throws Exception {
         String saved="/data/adb/xgoogle_double_click_power_key";
-        if (enabled) run(MIGRATE+"cur=$(settings get system double_click_power_key); "
+        if (enabled) run("cur=$(settings get system double_click_power_key); "
                 +"[ \"$cur\" = launch_QAW_wallet ] || echo \"$cur\" > "+saved+" && "
                 +"settings put system double_click_power_key launch_QAW_wallet",20);
         // Keep the saved choice until it is really back in place.
-        else run(MIGRATE+"prev=$(cat "+saved+" 2>/dev/null); [ -n \"$prev\" ] && [ \"$prev\" != null ] || prev=none; "
+        else run("prev=$(cat "+saved+" 2>/dev/null); [ -n \"$prev\" ] && [ \"$prev\" != null ] || prev=none; "
                 +"settings put system double_click_power_key \"$prev\" && rm -f "+saved,20);
     }
     /**
@@ -95,9 +92,9 @@ public final class CompanionInstaller {
      */
     public static void applyHyperOsNavigationKey(boolean enabled) throws Exception {
         String backup="/data/adb/xgoogle_keys_backup", off="/data/adb/xgoogle_nav_off";
-        if (enabled) run(MIGRATE+"rm -f "+off+" && if [ -f "+backup+" ]; then "
+        if (enabled) run("rm -f "+off+" && if [ -f "+backup+" ]; then "
                 +"settings put system long_press_home_key launch_google_search; fi",20);
-        else run(MIGRATE+"touch "+off+" && if [ -f "+backup+" ] && "
+        else run("touch "+off+" && if [ -f "+backup+" ] && "
                 +"[ \"$(settings get system long_press_home_key)\" = launch_google_search ]; then "
                 +"home=$(sed -n 's/^home=//p' "+backup+"); "
                 +"if [ -z \"$home\" ] || [ \"$home\" = null ]; then settings delete system long_press_home_key; "
@@ -109,9 +106,9 @@ public final class CompanionInstaller {
      */
     public static void applyHyperOsPowerKey(boolean enabled) throws Exception {
         String backup="/data/adb/xgoogle_keys_backup", off="/data/adb/xgoogle_power_off";
-        if (enabled) run(MIGRATE+"rm -f "+off+" && if [ -f "+backup+" ]; then "
+        if (enabled) run("rm -f "+off+" && if [ -f "+backup+" ]; then "
                 +"settings put system long_press_power_key launch_google_search; fi",20);
-        else run(MIGRATE+"touch "+off+" && if [ \"$(settings get system long_press_power_key)\" = launch_google_search ]; then "
+        else run("touch "+off+" && if [ \"$(settings get system long_press_power_key)\" = launch_google_search ]; then "
                 +"power=$(sed -n 's/^power=//p' "+backup+" 2>/dev/null); "
                 +"if [ -z \"$power\" ] || [ \"$power\" = null ]; then power=launch_voice_assistant; fi; "
                 +"settings put system long_press_power_key \"$power\"; fi",20);

@@ -1,11 +1,9 @@
 system
 com.android.systemui
 com.android.settings
-com.android.launcher
 com.android.camera
 com.google.android.googlequicksearchbox
 com.google.android.apps.walletnfcrel
-com.oplus.wallpapers
 com.miui.voiceassist
 com.miui.aod
 com.miui.securitycore

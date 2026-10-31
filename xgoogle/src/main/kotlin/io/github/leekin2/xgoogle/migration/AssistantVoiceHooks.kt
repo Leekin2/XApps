@@ -57,10 +57,10 @@ internal object AssistantVoiceHooks {
                     }
                 },
             )
-            log("Hooked C17 voice-interaction service restoration")
+            log("Hooked voice-interaction service restoration")
         }.onFailure {
             installedHooks.remove(key)
-            log("Failed to hook C17 voice-interaction service restoration", it)
+            log("Failed to hook voice-interaction service restoration", it)
         }
 
         val serviceClass = XposedHelpers.findClassIfExists(
@@ -110,10 +110,10 @@ internal object AssistantVoiceHooks {
                     }
                 },
             )
-            log("Hooked the C17 Assistant Role state reconciliation")
+            log("Hooked the Assistant Role state reconciliation")
         }.onFailure {
             installedHooks.remove(roleKey)
-            log("Failed to hook the C17 Assistant Role state reconciliation", it)
+            log("Failed to hook the Assistant Role state reconciliation", it)
         }
     }
     private fun hookNativeAssistantSessionRecovery(
@@ -226,7 +226,7 @@ internal object AssistantVoiceHooks {
             }
             assistantWritten && voiceWritten
         }.onFailure {
-            log("Failed to reconcile the C17 Assistant Role state for user $userId", it)
+            log("Failed to reconcile the Assistant Role state for user $userId", it)
         }.also {
             Binder.restoreCallingIdentity(token)
         }.getOrDefault(false)
@@ -261,7 +261,7 @@ internal object AssistantVoiceHooks {
                 ?: return@forEach
             if (!capability.supportsAssist) return@forEach
 
-            // Match C17/AOSP RoleObserver exactly: a supports-assist service without a declared
+            // Match AOSP RoleObserver exactly: a supports-assist service without a declared
             // RecognitionService is cleared to avoid a boot loop on older service implementations.
             val component = if (capability.hasRecognitionService) {
                 ComponentName(serviceInfo.packageName, serviceInfo.name).flattenToShortString()
@@ -313,9 +313,9 @@ internal object AssistantVoiceHooks {
             }
             runCatching {
                 XposedHelpers.callMethod(stub, "switchImplementationIfNeeded", true)
-                log("Refreshed the live C17 Assistant Role binding for user $userId")
+                log("Refreshed the live Assistant Role binding for user $userId")
             }.onFailure {
-                log("Failed to refresh the live C17 Assistant Role binding for user $userId", it)
+                log("Failed to refresh the live Assistant Role binding for user $userId", it)
             }
         }
     }

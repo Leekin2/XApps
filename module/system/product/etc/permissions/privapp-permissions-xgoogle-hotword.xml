@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- HyperOS enforces the privileged-permission allowlist (ColorOS does not);
+<!-- HyperOS enforces the privileged-permission allowlist;
      without these entries system_server aborts at boot. -->
 <permissions>
     <privapp-permissions package="com.android.hotwordenrollment.okgoogle">

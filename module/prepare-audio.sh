@@ -5,8 +5,8 @@ for BB in /data/adb/ksu/bin/busybox /data/adb/magisk/busybox /data/adb/ap/bin/bu
     [ -x "$BB" ] && break
 done
 SOURCE=/odm/etc/resourcemanager.xml
-# The installed copy of this module, else the companion it replaced (xgoogle_companion, before 1.3.3 coogle_companion).
-for OLD in /data/adb/modules/xapps /data/adb/modules/xgoogle_companion /data/adb/modules/coogle_companion; do
+# The installed copy of this module, else the xgoogle_companion module it replaced.
+for OLD in /data/adb/modules/xapps /data/adb/modules/xgoogle_companion; do
     [ -r "$OLD/audio-original.xml" ] && break
 done
 TARGET="$MODDIR/system/odm/etc/resourcemanager.xml"

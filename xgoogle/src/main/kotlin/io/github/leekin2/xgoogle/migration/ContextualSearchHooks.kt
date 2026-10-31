@@ -117,7 +117,7 @@ internal object ContextualSearchHooks {
             identity.remove()
         }
     }
-    fun triggerCircleToSearchC17(): Boolean {
+    fun triggerCircleToSearch(): Boolean {
         val token = Binder.clearCallingIdentity()
         return runCatching {
             val api = contextualSearchApi
@@ -130,7 +130,7 @@ internal object ContextualSearchHooks {
             if (api.withConfig) api.start.invoke(service, 1, null) else api.start.invoke(service, 1)
             true
         }.onFailure {
-            log("Failed to trigger Circle to Search through the ColorOS 17 API", it)
+            log("Failed to trigger Circle to Search through the contextual search service", it)
         }.also {
             Binder.restoreCallingIdentity(token)
         }.getOrDefault(false)

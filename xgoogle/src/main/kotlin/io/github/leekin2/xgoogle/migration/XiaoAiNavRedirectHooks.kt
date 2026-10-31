@@ -8,7 +8,7 @@ import io.github.leekin2.xgoogle.FeaturePolicy
 import io.github.leekin2.xgoogle.migration.compat.ModernHookBridge as XposedBridge
 import io.github.leekin2.xgoogle.migration.compat.ModernMethodHook as XC_MethodHook
 import io.github.leekin2.xgoogle.migration.compat.ModernReflect as XposedHelpers
-import io.github.leekin2.xgoogle.migration.ContextualSearchHooks.triggerCircleToSearchC17
+import io.github.leekin2.xgoogle.migration.ContextualSearchHooks.triggerCircleToSearch
 import io.github.leekin2.xgoogle.migration.AssistantRuntime.log
 import io.github.leekin2.xgoogle.migration.AssistantRuntime.installedHooks
 
@@ -101,7 +101,7 @@ internal object XiaoAiNavRedirectHooks {
                                     return
                                 }
                                 lastRedirectAt = now
-                                if (triggerCircleToSearchC17()) {
+                                if (triggerCircleToSearch()) {
                                     param.result = START_NOT_STICKY
                                     tick(param.thisObject as? android.content.Context)
                                 }
@@ -150,7 +150,7 @@ internal object XiaoAiNavRedirectHooks {
                                 param.result = VOICE_SERVICE
                                 return
                             }
-                            if (!triggerCircleToSearchC17()) return
+                            if (!triggerCircleToSearch()) return
                             lastRedirectAt = now
                             param.result = VOICE_SERVICE
                             tick(AssistantRuntime.findSystemContext())

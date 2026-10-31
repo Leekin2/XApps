@@ -9,15 +9,15 @@ import io.github.leekin2.xgoogle.migration.AssistantRuntime.installedHooks
 /**
  * HyperOS lock screen shortcuts: XGoogle publishes its entries through the
  * "miui_keyguard_shortcuts" meta-data; this admits them past the picker's white list.
- * The tags keep their first names: HyperOS stores the user's picks by tag.
+ * HyperOS stores the user's picks by package and tag, so these names must not change.
  * The shortcut code ships in com.miui.aod and is also loaded into SystemUI, which
  * clears any saved shortcut that is not white-listed.
  */
 internal object KeyguardShortcutHooks {
     const val AOD_PACKAGE = "com.miui.aod"
-    private const val COOGLE_PACKAGE = "io.github.leekin2.xapps"
+    private const val XAPPS_PACKAGE = "io.github.leekin2.xapps"
     private const val DATA_UTILS = "com.miui.keyguard.shortcuts.utils.DataUtils"
-    private val TAGS = listOf("coogle_assistant", "coogle_lens", "coogle_wallet", "coogle_home")
+    private val TAGS = listOf("xgoogle_assistant", "xgoogle_lens", "xgoogle_wallet", "xgoogle_home")
 
     /** com.miui.aod: the shortcut classes are in the app's own loader. */
     fun install(classLoader: ClassLoader) {
@@ -73,7 +73,7 @@ internal object KeyguardShortcutHooks {
                     if (value != null && value.contains("packageName")) return
                     val resolver = param.args[0] as? android.content.ContentResolver ?: return
                     val saved = android.provider.Settings.Secure.getString(resolver, name) ?: return
-                    if (!saved.contains(COOGLE_PACKAGE)) return
+                    if (!saved.contains(XAPPS_PACKAGE)) return
                     log("Kept the XGoogle lock screen shortcut ($name) that SystemUI tried to reset")
                     param.result = true
                 }
@@ -118,7 +118,7 @@ internal object KeyguardShortcutHooks {
                     override fun afterHookedMethod(param: MethodHookParam) {
                         val items = param.result as? MutableList<Any?> ?: return
                         // DataUtils.buildUniqueTag joins package and tag with "-".
-                        TAGS.map { "$COOGLE_PACKAGE-$it" }
+                        TAGS.map { "$XAPPS_PACKAGE-$it" }
                             .filterNot(items::contains)
                             .forEach(items::add)
                     }

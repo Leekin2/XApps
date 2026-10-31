@@ -14,7 +14,7 @@ final class FeatureScopes {
     static List<String> required(String feature) {
         return switch (feature) {
             case FeaturePolicy.HEY_GOOGLE -> List.of(SYSTEM, GOOGLE);
-            case FeaturePolicy.NAVIGATION -> List.of(SYSTEM, SYSTEM_UI, "com.android.launcher", "com.miui.voiceassist", GOOGLE);
+            case FeaturePolicy.NAVIGATION -> List.of(SYSTEM, SYSTEM_UI, "com.miui.voiceassist", GOOGLE);
             // The tick comes from the system now; XiaoAi only sends it when it is the one answering.
             case FeaturePolicy.CIRCLE_VIBRATE -> List.of(SYSTEM);
             // The gesture choices only refine Circle to Search, which already asks for its scopes.

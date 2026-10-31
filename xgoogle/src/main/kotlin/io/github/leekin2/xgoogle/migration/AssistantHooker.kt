@@ -5,17 +5,13 @@ import android.content.Context
 import io.github.leekin2.xgoogle.migration.compat.ModernHookRegistry
 import io.github.leekin2.xgoogle.migration.compat.ModernMethodHook as XC_MethodHook
 import io.github.leekin2.xgoogle.migration.compat.ModernReflect as XposedHelpers
-import io.github.leekin2.xgoogle.migration.AssistantLauncherHooks.hookLauncher
 import io.github.leekin2.xgoogle.migration.AssistantSettingsHooks.hookSettings
 import io.github.leekin2.xgoogle.migration.AssistantSystemUiHooks.hookSystemUi
-import io.github.leekin2.xgoogle.migration.AssistantFeatureHooks.hookNativeAssistantFeatureRoute
-import io.github.leekin2.xgoogle.migration.AssistantPowerHooks.hookNativePowerLongPress
 import io.github.leekin2.xgoogle.migration.AssistantVoiceHooks.hookVoiceInteractionServiceRepair
 import io.github.leekin2.xgoogle.migration.ContextualSearchHooks.hookContextualSearch
 import io.github.leekin2.xgoogle.migration.AssistantRuntime.SYSTEM_PACKAGE
 import io.github.leekin2.xgoogle.migration.AssistantRuntime.ANDROID_PACKAGE
 import io.github.leekin2.xgoogle.migration.AssistantRuntime.SYSTEM_UI_PACKAGE
-import io.github.leekin2.xgoogle.migration.AssistantRuntime.LAUNCHER_PACKAGE
 import io.github.leekin2.xgoogle.migration.AssistantRuntime.SETTINGS_PACKAGE
 import io.github.leekin2.xgoogle.migration.AssistantRuntime.log
 import io.github.leekin2.xgoogle.migration.AssistantRuntime.installedHooks
@@ -26,7 +22,6 @@ object AssistantHooker {
         when (packageName) {
             SYSTEM_PACKAGE, ANDROID_PACKAGE -> hookSystem(packageName, classLoader)
             SYSTEM_UI_PACKAGE -> hookSystemUi(classLoader)
-            LAUNCHER_PACKAGE -> hookLauncher(classLoader)
             SETTINGS_PACKAGE -> hookSettings(classLoader)
         }
     }
@@ -74,8 +69,6 @@ object AssistantHooker {
         if (LspConfig.isAssistantNativeCircleEnabledXposed()) {
             hookContextualSearch(packageName, classLoader)
         }
-        hookNativeAssistantFeatureRoute(packageName, classLoader)
-        hookNativePowerLongPress(packageName, classLoader)
         hookVoiceInteractionServiceRepair(packageName, classLoader)
     }
 }

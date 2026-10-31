@@ -10,10 +10,6 @@ import io.github.libxposed.api.XposedModule
 object MigrationEntry {
     @JvmStatic fun attach(module: XposedModule) = ModernHookRuntime.attach(module)
     @JvmStatic fun hookPackage(packageName: String, loader: ClassLoader) {
-        if (packageName == "com.oplus.wallpapers") {
-            if (FeatureConfig.enabled(FeaturePolicy.QUICK_ENTRIES)) WallpaperQuickEntryHooks.install(loader)
-            return
-        }
         // Wallet hooks check the switch on every press, so turning it on needs no restart.
         if (packageName == "com.android.systemui") WalletPowerHooks.hookSystemUi(loader)
         if (packageName == "com.android.systemui") wakeModuleApp()

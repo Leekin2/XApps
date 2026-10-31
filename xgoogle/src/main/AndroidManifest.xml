@@ -15,12 +15,10 @@
         <!-- Scope apps (restart, missing-scope checks) and Google's NFC payment service. -->
         <package android:name="com.google.android.gms" />
         <package android:name="com.android.systemui" />
-        <package android:name="com.android.launcher" />
         <package android:name="com.android.camera" />
         <package android:name="com.miui.voiceassist" />
         <package android:name="com.miui.aod" />
         <package android:name="com.miui.securitycore" />
-        <package android:name="com.oplus.wallpapers" />
         <package android:name="org.lsposed.manager" />
         <!-- Optional features' scopes: requested when their switch is turned on. -->
         <package android:name="com.google.android.gsf" />
