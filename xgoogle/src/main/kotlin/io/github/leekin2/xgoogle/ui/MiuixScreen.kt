@@ -197,7 +197,7 @@ fun MiuixScreen(
                     Group(t.groupAssistant) {
                         ArrowPreference(title = t.defaultAssistant, summary = assistant,
                             startAction = { RowIcon(Icons.Rounded.RecordVoiceOver) }, onClick = onAssistant)
-                        Toggle(Icons.Rounded.Mic, t.heyGoogle, t.companion(state.companion),
+                        Toggle(Icons.Rounded.Mic, t.heyGoogle, if (state.companion == CompanionState.NOT_MOUNTED) t.companionNotMountedHint else t.companion(state.companion),
                             state.features[FeaturePolicy.HEY_GOOGLE] == true, available && !state.busy,
                         ) { onSetting(FeaturePolicy.HEY_GOOGLE, it) }
                         Toggle(Icons.Rounded.PowerSettingsNew, t.powerKey, t.powerKeySummary,
@@ -369,15 +369,18 @@ private fun FloatingTabs(t: Texts, selected: Int, onSelect: (Int) -> Unit, backd
     }
 }
 
-/** KernelSU-style status: green working, yellow missing scopes (listed), red inactive. Opens LSPosed. */
+/**
+ * KernelSU-style status: green working, yellow missing scopes (listed) or an outdated module, red inactive.
+ * Module files that are not mounted stay off this card: the hooks work without them, and only the
+ * rows that need them (Hey Google) say so. Opens LSPosed.
+ */
 @Composable
 private fun StatusCard(state: XGoogleState, t: Texts, onStatus: () -> Unit) {
     val colors = MiuixTheme.colorScheme
     val dark = colors.surface.luminance() < 0.5f
     val waiting = state.loading && !state.connected
     val outdated = state.companion == CompanionState.OUTDATED
-    val notMounted = state.companion == CompanionState.NOT_MOUNTED
-    val warn = state.missingScopes.isNotEmpty() || outdated || notMounted
+    val warn = state.missingScopes.isNotEmpty() || outdated
     val (container, content) = when {
         waiting -> colors.secondaryContainer to colors.onSecondaryContainer
         !state.connected -> (if (dark) Color(0xFF5C1A1A) else Color(0xFFFFDAD6)) to (if (dark) Color(0xFFFFDAD6) else Color(0xFF6B0F0F))
@@ -400,7 +403,6 @@ private fun StatusCard(state: XGoogleState, t: Texts, onStatus: () -> Unit) {
                     !state.connected -> t.inactive
                     state.missingScopes.isNotEmpty() -> t.statusIncomplete
                     outdated -> t.companion(CompanionState.OUTDATED)
-                    notMounted -> t.companion(CompanionState.NOT_MOUNTED)
                     else -> t.statusWorking
                 }, color = content, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                 Text(t.version(BuildConfig.VERSION_NAME) + " · API 102", color = content, fontSize = 14.sp,
@@ -411,7 +413,7 @@ private fun StatusCard(state: XGoogleState, t: Texts, onStatus: () -> Unit) {
                         Text("• " + (if (name == "system") t.systemFramework else name), color = content, fontSize = 14.sp)
                     }
                 }
-                Text(if (state.missingScopes.isNotEmpty()) t.statusTap else if (outdated) t.companionUpdateTitle else if (notMounted) t.companionNotMountedHint else t.statusTap, color = content.copy(alpha = 0.75f), fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
+                Text(if (state.missingScopes.isNotEmpty()) t.statusTap else if (outdated) t.companionUpdateTitle else t.statusTap, color = content.copy(alpha = 0.75f), fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
             }
         }
     }

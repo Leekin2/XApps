@@ -215,15 +215,18 @@ private fun FloatingTabs(t: Texts, selected: Int, onSelect: (Int) -> Unit, backd
     }
 }
 
-/** KernelSU-style status: green working, yellow missing scopes (listed), red inactive. Opens LSPosed. */
+/**
+ * KernelSU-style status: green working, yellow missing scopes (listed) or an outdated module, red inactive.
+ * Module files that are not mounted stay off this card: the hooks work without them, and only the
+ * rows that need them (Hey Google) say so. Opens LSPosed.
+ */
 @Composable
 private fun StatusCard(state: XGoogleState, t: Texts, onClick: () -> Unit) {
     val dark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
     val scheme = MaterialTheme.colorScheme
     val waiting = state.loading && !state.connected
     val outdated = state.companion == CompanionState.OUTDATED
-    val notMounted = state.companion == CompanionState.NOT_MOUNTED
-    val warn = state.missingScopes.isNotEmpty() || outdated || notMounted
+    val warn = state.missingScopes.isNotEmpty() || outdated
     val (container, content) = when {
         waiting -> scheme.secondaryContainer to scheme.onSecondaryContainer
         !state.connected -> scheme.errorContainer to scheme.onErrorContainer
@@ -246,7 +249,6 @@ private fun StatusCard(state: XGoogleState, t: Texts, onClick: () -> Unit) {
                     !state.connected -> t.inactive
                     state.missingScopes.isNotEmpty() -> t.statusIncomplete
                     outdated -> t.companion(CompanionState.OUTDATED)
-                    notMounted -> t.companion(CompanionState.NOT_MOUNTED)
                     else -> t.statusWorking
                 }, style = MaterialTheme.typography.titleLarge)
                 Text("${t.version(BuildConfig.VERSION_NAME)} · API 102", style = MaterialTheme.typography.bodyMedium,
@@ -257,7 +259,7 @@ private fun StatusCard(state: XGoogleState, t: Texts, onClick: () -> Unit) {
                         Text("• " + (if (name == "system") t.systemFramework else name), style = MaterialTheme.typography.bodyMedium)
                     }
                 }
-                Text(if (state.missingScopes.isNotEmpty()) t.statusTap else if (outdated) t.companionUpdateTitle else if (notMounted) t.companionNotMountedHint else t.statusTap, style = MaterialTheme.typography.labelMedium,
+                Text(if (state.missingScopes.isNotEmpty()) t.statusTap else if (outdated) t.companionUpdateTitle else t.statusTap, style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(top = 10.dp).alpha(0.75f))
             }
         }
@@ -278,7 +280,7 @@ private fun HomeTab(state: XGoogleState, t: Texts, onSetting: (String, Boolean) 
     }
     Group(t.groupAssistant) {
         SettingRow(0, 3, Icons.Rounded.RecordVoiceOver, t.defaultAssistant, assistant, onClick = onAssistant)
-        ToggleRow(t, 1, 3, Icons.Rounded.Mic, t.heyGoogle, t.companion(state.companion),
+        ToggleRow(t, 1, 3, Icons.Rounded.Mic, t.heyGoogle, if (state.companion == CompanionState.NOT_MOUNTED) t.companionNotMountedHint else t.companion(state.companion),
             checked = state.features[FeaturePolicy.HEY_GOOGLE] == true, enabled = available && !state.busy,
             onChange = { onSetting(FeaturePolicy.HEY_GOOGLE, it) })
         ToggleRow(t, 2, 3, Icons.Rounded.PowerSettingsNew, t.powerKey, t.powerKeySummary,

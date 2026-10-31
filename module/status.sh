@@ -43,7 +43,7 @@ description="[$google | $enrollment | $dsp]"
 # Newer KernelSU builds mount module files only through a mount metamodule; without one none of the
 # above can work, so say what is missing first.
 if [ ! -f /product/etc/permissions/xgoogle-hyperos.xml ]; then
-    description="[⚠️Module files not mounted: restart fully (not a soft reboot); if it stays, install a mount module (Hybrid Mount) | ${description#[}"
+    description="[ℹ️Module files not loaded: restart the phone fully (a soft reboot is not enough); if it stays, install a mount module (Hybrid Mount) | ${description#[}"
 fi
 sed '/^description=/d' "$MODDIR/module.prop" > "$MODDIR/module.prop.tmp" || exit 1
 printf 'description=%s\n' "$description" >> "$MODDIR/module.prop.tmp"
