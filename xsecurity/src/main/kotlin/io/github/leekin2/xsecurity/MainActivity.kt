@@ -126,14 +126,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /** Keep the fixed module targets selected; remove obsolete or unrelated scope entries. */
+    /**
+     * Keep the fixed module targets selected. In XApps the scope is shared with XGoogle and XNotify,
+     * so nothing outside this list is removed (the separate XSecurity removed unrelated entries).
+     */
     private fun requestMissingScope(service: XposedService) {
         runCatching {
             val scope = service.scope.toSet()
             val supported = setOf("system", "com.miui.securitycenter", "com.miui.powerkeeper",
                 "com.android.updater", "com.xiaomi.joyose", "com.android.thememanager", "com.miui.guardprovider", "com.android.settings", "com.android.systemui", "com.android.phone", "com.android.mms", "com.miui.home")
-            val obsolete = scope - supported
-            if (obsolete.isNotEmpty()) service.removeScope(obsolete.toList())
             val missing = supported.filter { it !in scope }
                 .filter { it == "system" || runCatching { packageManager.getPackageInfo(it, 0) }.isSuccess }
             if (missing.isEmpty()) return
