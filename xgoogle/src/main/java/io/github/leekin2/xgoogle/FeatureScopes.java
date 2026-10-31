@@ -3,9 +3,11 @@ package io.github.leekin2.xgoogle;
 import java.util.List;
 
 /**
- * The LSPosed scopes each switch works in on HyperOS. The default features' apps are recommended in
- * scope.list; the optional ones (Timeline, passkeys, Photos) are asked for when switched on, so
- * LSPosed does not tick Maps or Security for everyone.
+ * The LSPosed scopes each switch works in on HyperOS. Every app is recommended in scope.list except
+ * Google Play services and GSF: being hooked there can cost the Play Integrity verdicts, so only
+ * Timeline asks for them. The optional features' apps (Photos, Maps, Scanner) are recommended but not
+ * ticked by the XApps module; they are asked for when their switch is turned on, and their hooks do
+ * nothing while it is off.
  */
 final class FeatureScopes {
     static final String SYSTEM = "system";

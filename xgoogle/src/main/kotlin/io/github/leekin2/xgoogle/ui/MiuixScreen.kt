@@ -313,7 +313,7 @@ fun MiuixScreen(
                             Column {
                                 Toggle(Icons.Rounded.Settings, t.googleEntry, t.googleEntrySummary,
                                     state.features[FeaturePolicy.GOOGLE_ENTRY] == true, available) { onSetting(FeaturePolicy.GOOGLE_ENTRY, it) }
-                                Toggle(Icons.Rounded.Timeline, t.timeline, t.timelineSummary,
+                                Toggle(Icons.Rounded.Timeline, t.timeline, t.timelineSummary + "\n" + t.integrityScopeNote,
                                     state.features[FeaturePolicy.TIMELINE] == true, available) { onSetting(FeaturePolicy.TIMELINE, it) }
                                 Toggle(Icons.Rounded.Key, t.passkey, t.passkeySummary,
                                     state.features[FeaturePolicy.PASSKEY] == true, available) { onSetting(FeaturePolicy.PASSKEY, it) }

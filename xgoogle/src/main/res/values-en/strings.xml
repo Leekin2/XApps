@@ -49,6 +49,7 @@
     <string name="google_entry_summary">Adds the Google services entry at the bottom of Settings</string>
     <string name="timeline">Google Maps Timeline</string>
     <string name="timeline_summary">Turns on location history. Google Play services and Maps see a US carrier; this may put your account at risk</string>
+    <string name="integrity_scope_note">Turning this on asks LSPosed for the Google Play services scope, which can break Play Integrity (banking apps, Google Wallet).</string>
     <string name="passkey">Passkeys and password manager</string>
     <string name="passkey_summary">Makes Google passkeys and autofill work on the China ROM. Google Play services must be enabled. Don\'t use together with HyperPasskey</string>
     <string name="location">Google location accuracy</string>

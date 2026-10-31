@@ -24,6 +24,9 @@ import java.util.Set;
  */
 public final class ScopeWriter {
     private static final String MODULE = "io.github.leekin2.xapps";
+    /** Recommended for optional XGoogle features only; asked for when the feature is switched on. */
+    private static final Set<String> OPTIONAL = Set.of("com.google.android.apps.photos", "com.google.android.apps.maps",
+            "com.xiaomi.scanner");
 
     public static void main(String[] args) {
         try {
@@ -39,7 +42,8 @@ public final class ScopeWriter {
 
     private static int[] write(String path, String apk, int user, Set<String> installed, List<String> old) throws Exception {
         List<String> scope = new ArrayList<>();
-        for (String app : scopeList()) if (app.equals("system") || installed.contains(app)) scope.add(app);
+        for (String app : scopeList())
+            if (!OPTIONAL.contains(app) && (app.equals("system") || installed.contains(app))) scope.add(app);
         SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
         int added = 0;
         db.beginTransaction();

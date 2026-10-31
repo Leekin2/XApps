@@ -373,7 +373,7 @@ private fun HomeTab(state: XGoogleState, t: Texts, onSetting: (String, Boolean) 
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 ToggleRow(t, 1, systemCount, Icons.Rounded.Settings, t.googleEntry, t.googleEntrySummary,
                     state.features[FeaturePolicy.GOOGLE_ENTRY] == true, available, { onSetting(FeaturePolicy.GOOGLE_ENTRY, it) })
-                ToggleRow(t, 2, systemCount, Icons.Rounded.Timeline, t.timeline, t.timelineSummary,
+                ToggleRow(t, 2, systemCount, Icons.Rounded.Timeline, t.timeline, t.timelineSummary + "\n" + t.integrityScopeNote,
                     state.features[FeaturePolicy.TIMELINE] == true, available, { onSetting(FeaturePolicy.TIMELINE, it) })
                 ToggleRow(t, 3, systemCount, Icons.Rounded.Key, t.passkey, t.passkeySummary,
                     state.features[FeaturePolicy.PASSKEY] == true, available, { onSetting(FeaturePolicy.PASSKEY, it) })

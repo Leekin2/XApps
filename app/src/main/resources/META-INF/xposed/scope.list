@@ -16,3 +16,6 @@ com.miui.guardprovider
 com.android.phone
 com.android.mms
 com.milink.service
+com.google.android.apps.photos
+com.google.android.apps.maps
+com.xiaomi.scanner

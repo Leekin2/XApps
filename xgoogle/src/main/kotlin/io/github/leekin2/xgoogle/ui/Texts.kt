@@ -72,6 +72,8 @@ class Texts internal constructor(private val resources: Resources) {
     val googleEntrySummary = resources.getString(R.string.google_entry_summary)
     val timeline = resources.getString(R.string.timeline)
     val timelineSummary = resources.getString(R.string.timeline_summary)
+    /** Second summary line under switches that ask for the Play services / GSF scope. */
+    val integrityScopeNote = resources.getString(R.string.integrity_scope_note)
     val passkey = resources.getString(R.string.passkey)
     val passkeySummary = resources.getString(R.string.passkey_summary)
     val location = resources.getString(R.string.location)

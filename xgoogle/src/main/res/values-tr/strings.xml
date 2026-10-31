@@ -49,6 +49,7 @@
     <string name="google_entry_summary">Ayarlar\'ın en altına Google hizmetleri girişini ekler</string>
     <string name="timeline">Google Haritalar Zaman Çizelgesi</string>
     <string name="timeline_summary">Konum geçmişini açar. Google Play Hizmetleri ve Haritalar\'a ABD operatörü gösterilir; hesap için risk taşıyabilir</string>
+    <string name="integrity_scope_note">Açınca LSPosed, Google Play Hizmetleri kapsamını ister; bu Play Integrity\'yi (banka uygulamaları, Google Wallet) etkileyebilir.</string>
     <string name="passkey">Geçiş anahtarları ve şifre yöneticisi</string>
     <string name="passkey_summary">Google geçiş anahtarlarını ve otomatik doldurmayı Çin ROM\'unda çalıştırır. Google Play Hizmetleri etkin olmalı; HyperPasskey ile birlikte kullanmayın</string>
     <string name="location">Google Konum Doğruluğu</string>

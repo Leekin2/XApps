@@ -49,6 +49,7 @@
     <string name="google_entry_summary">在设置底部添加 Google 服务入口</string>
     <string name="timeline">Google 地图时间轴</string>
     <string name="timeline_summary">开启位置记录。Google Play 服务和地图会识别为美国运营商，可能给账号带来风险</string>
+    <string name="integrity_scope_note">开启后 LSPosed 会请求 Google Play 服务作用域，这可能会破坏 Play Integrity（银行应用、Google Wallet）。</string>
     <string name="passkey">通行密钥与密码管理器</string>
     <string name="passkey_summary">让 Google 通行密钥和自动填充在国行版上可用。需启用 Google Play 服务；请勿与 HyperPasskey 同时使用</string>
     <string name="location">Google 位置信息精确度</string>
