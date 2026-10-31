@@ -10,6 +10,16 @@ fi
 
 . "$MODPATH/common.sh"
 
+ui_print "*******************************************"
+ui_print " XApps: XGoogle + XSecurity + XNotify"
+ui_print " Needs LSPosed 2.x (API 102);"
+ui_print " on KernelSU also Zygisk Next."
+ui_print "*******************************************"
+if [ ! -f "$LSPD_DB" ]; then
+    ui_print "! LSPosed not found. Install LSPosed, reboot,"
+    ui_print "  then flash this zip again."
+fi
+
 # The app and LSPosed. The zip from the XApps app itself carries no APK.
 ui_print "- XApps app"
 app_ok=true
@@ -72,8 +82,17 @@ for script in boot-completed.sh service.sh setup.sh uninstall.sh prepare-audio.s
 done
 /system/bin/sh "$MODPATH/prepare-audio.sh"
 
+# Magic-Mount-RS does not mount /product on some versions; XGoogle's system parts live there.
+meta=$(readlink -f /data/adb/metamodule 2>/dev/null)
+case "$meta" in
+    *magic_mount*)
+        ui_print "! Magic-Mount-RS: if XGoogle says the module files"
+        ui_print "  are not loaded after the reboot, use Hybrid Mount."
+        ;;
+esac
+
 if [ "$app_ok" = true ]; then
-    ui_print "- Done. Reboot, XApps is ready."
+    ui_print "- Done. Restart the phone fully (not a soft reboot)."
 else
     ui_print "- The XApps app is installed on the next boot instead (then reboot once more)."
 fi
