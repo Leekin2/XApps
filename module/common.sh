@@ -12,8 +12,11 @@ copy_prefs() {
   dst=$dir/$3.xml
   [ -f "$src" ] && [ ! -f "$dst" ] || return 0
   uid=$(stat -c %u "/data/data/$XAPPS_PKG") || return 0
-  mkdir -p "$dir" && chown "$uid:$uid" "$dir" && chmod 771 "$dir"
-  cp -f "$src" "$dst" && chown "$uid:$uid" "$dst" && chmod 660 "$dst" && restorecon -R "$dir" 2>/dev/null
+  # The app's own label, with its per-app categories (restorecon leaves those out).
+  ctx=$(/system/bin/ls -dZ "/data/data/$XAPPS_PKG") || return 0
+  ctx=${ctx%% *}
+  mkdir -p "$dir" && chown "$uid:$uid" "$dir" && chmod 771 "$dir" && chcon "$ctx" "$dir"
+  cp -f "$src" "$dst" && chown "$uid:$uid" "$dst" && chmod 660 "$dst" && chcon "$ctx" "$dst" || return 0
   echo "settings: copied $1 $2"
 }
 
