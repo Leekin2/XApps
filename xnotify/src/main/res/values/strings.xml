@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_forward">Phone notifications on the tablet</string>
+    <string name="settings_forward_summary">Forward every app\'s notifications between Xiaomi devices (Interconnectivity) and let them pop up on the tablet.</string>
+    <string name="settings_reply">Xiaomi reply box</string>
+    <string name="settings_reply_summary">Xiaomi\'s reply box and buttons for Telegram, WhatsApp and every other notification (formerly XReply). Uninstall XReply if it is still installed.</string>
+    <string name="settings_restart">Changes apply after a reboot (or after restarting System UI and Interconnectivity).</string>
+    <string name="settings_no_service">LSPosed is not connected: enable XApps in LSPosed and open this screen again.</string>
+</resources>

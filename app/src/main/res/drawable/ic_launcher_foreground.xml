@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- Four app tiles, one of them turned into an X: several modules in one app. -->
+    <path android:fillColor="#FFFFFF" android:pathData="M34,34h16v16h-16z" />
+    <path android:fillColor="#FFFFFF" android:pathData="M58,34h16v16h-16z" />
+    <path android:fillColor="#FFFFFF" android:pathData="M34,58h16v16h-16z" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="4.5" android:strokeLineCap="round"
+        android:pathData="M60,60L72,72M72,60L60,72" />
+</vector>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="module_description">XApps for HyperOS: XGoogle, XSecurity ve XNotify tek modülde. Her bölümü uygulamadan açıp kapatın.</string>
+    <string name="connected">LSPosed\'da etkin</string>
+    <string name="connected_summary">Açık bölümler LSPosed\'da işaretli uygulamalarda çalışır.</string>
+    <string name="not_connected">Etkin değil</string>
+    <string name="not_connected_summary">XApps\'i LSPosed\'da etkinleştirip bu ekranı yeniden açın.</string>
+    <string name="group_parts">Bölümler</string>
+    <string name="google_summary">Google Asistan, Gemini, Arama için Daire Çiz, Lens, Wallet ve Google hizmetleri HyperOS\'ta</string>
+    <string name="security_summary">Güvenlik uygulaması kilitleri, Oyun Turbo ekstraları, pil sağlığı, VoLTE simgeleri ve sistem ayarları</string>
+    <string name="notify_summary">Telefon bildirimleri Xiaomi tablette ve her uygulamaya Xiaomi yanıt kutusu</string>
+    <string name="open_settings">Ayarlar</string>
+    <string name="xapps_restart_hint">Bir bölümü açıp kapatmak yeniden başlatınca geçerli olur.</string>
+    <string name="group_old">Eski modüller</string>
+    <string name="old_summary">Ayrı olarak yüklü: kaldırın, XApps zaten içeriyor.</string>
+    <string name="xapps_version">Sürüm %1$s</string>
+</resources>

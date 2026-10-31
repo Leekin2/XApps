@@ -1,0 +1,65 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Lets XGoogle (and nothing else) ask SystemUI for the Gemini session from a lock screen shortcut. -->
+    <permission android:name="io.github.leekin2.xgoogle.permission.SHOW_ASSISTANT" android:protectionLevel="signature" />
+    <uses-permission android:name="io.github.leekin2.xgoogle.permission.SHOW_ASSISTANT" />
+    <!-- Only for "Check for updates" (GitHub releases). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <queries>
+        <intent><action android:name="android.intent.action.ASSIST" /></intent>
+        <intent><action android:name="android.service.voice.VoiceInteractionService" /></intent>
+        <package android:name="com.google.android.googlequicksearchbox" />
+        <package android:name="com.android.settings" />
+        <package android:name="com.google.android.apps.chromecast.app" />
+        <package android:name="com.google.android.apps.walletnfcrel" />
+        <package android:name="com.google.android.apps.bard" />
+        <!-- Scope apps (restart, missing-scope checks) and Google's NFC payment service. -->
+        <package android:name="com.google.android.gms" />
+        <package android:name="com.android.systemui" />
+        <package android:name="com.android.launcher" />
+        <package android:name="com.android.camera" />
+        <package android:name="com.miui.voiceassist" />
+        <package android:name="com.miui.aod" />
+        <package android:name="com.miui.securitycore" />
+        <package android:name="com.oplus.wallpapers" />
+        <package android:name="org.lsposed.manager" />
+        <!-- Optional features' scopes: requested when their switch is turned on. -->
+        <package android:name="com.google.android.gsf" />
+        <package android:name="com.google.android.apps.maps" />
+        <package android:name="com.google.android.apps.photos" />
+        <package android:name="com.miui.securitycenter" />
+        <package android:name="com.xiaomi.scanner" />
+        <!-- Android Switch: restores the Google backup that China ROMs never offer at setup. -->
+        <package android:name="com.google.android.apps.restore" />
+        <intent><action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" /></intent>
+    </queries>
+    <application>
+        <!-- Opened from the XApps home screen. -->
+        <activity android:name=".MainActivity" android:exported="false" android:theme="@style/AppTheme" />
+        <!-- Lock screen shortcuts: shows over the lock screen, asks for the lock, opens Google. -->
+        <activity android:name=".KeyguardLaunchActivity" android:exported="true"
+            android:showWhenLocked="true" android:excludeFromRecents="true" android:noHistory="true"
+            android:taskAffinity="" android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <!-- HyperOS starts lock screen shortcuts by package, action and data, not by class. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="xgoogle" android:host="keyguard" />
+            </intent-filter>
+        </activity>
+        <!-- HyperOS: Google entries for the native lock screen shortcut picker. -->
+        <meta-data android:name="miui_keyguard_shortcuts" android:resource="@xml/miui_keyguard_shortcuts" />
+        <!-- Control center tile; the HyperOS CN ROM has no Lens/QR entry of its own. -->
+        <service android:name=".LensTileService" android:exported="true"
+            android:label="@string/shortcut_lens" android:icon="@drawable/ic_shortcut_lens"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter><action android:name="android.service.quicksettings.action.QS_TILE" /></intent-filter>
+            <meta-data android:name="android.service.quicksettings.ACTIVE_TILE" android:value="false" />
+        </service>
+        <service android:name=".CircleTileService" android:exported="true"
+            android:label="@string/shortcut_circle" android:icon="@drawable/ic_shortcut_circle"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter><action android:name="android.service.quicksettings.action.QS_TILE" /></intent-filter>
+            <meta-data android:name="android.service.quicksettings.ACTIVE_TILE" android:value="false" />
+        </service>
+    </application>
+</manifest>

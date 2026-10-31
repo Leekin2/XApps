@@ -1,0 +1,6 @@
+-keep class io.github.leekin2.xapps.XAppsModule { <init>(); public *; }
+-keep class io.github.leekin2.xapps.XAppsApp { *; }
+-dontwarn io.github.libxposed.**
+-keep class io.github.libxposed.service.** { *; }
+-keep class io.github.libxposed.interfaces.** { *; }
+-keep class io.github.leekin2.xapps.ScopeWriter { public static void main(java.lang.String[]); }

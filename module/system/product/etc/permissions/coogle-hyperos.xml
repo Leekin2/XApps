@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MiuiHome only routes the nav-handle long press to Circle to Search when one of
+     these features is present; the contextual search service also checks the Google one. -->
+<permissions>
+    <feature name="com.google.android.feature.CONTEXTUAL_SEARCH" />
+    <!-- Google App gates Circle to Search's live (scroll) translation on this Pixel feature. -->
+    <feature name="com.google.android.feature.CONTEXTUAL_SEARCH_LIVE_TRANSLATE" />
+</permissions>

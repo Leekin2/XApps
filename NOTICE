@@ -1,0 +1,116 @@
+XApps is distributed under AGPL-3.0 (see LICENSE): it combines three modules by Leekinn,
+XGoogle (GPL-3.0), XSecurity (AGPL-3.0) and XNotify (GPL-3.0); GPL-3.0 section 13 allows
+combining them, and the combination follows AGPL-3.0. Their own notices follow unchanged.
+
+===== XGoogle
+XGoogle is distributed under GPL-3.0; see LICENSE.
+XGoogle is a fork of Coogle 1.2 by zopulus (https://github.com/zopulus/coogle),
+modified by Leekinn for Xiaomi HyperOS 4. See CHANGELOG.md for the changes.
+AppDexTargets, LensBinding and WalletPreviewBinding/Hooks and the companion's NoMount check
+come from Coogle 1.3.2-1.3.5 (zopulus; NoMount fix by Andrea-lyz), adapted for XGoogle.
+DexKit (https://github.com/LuckyPray/DexKit) is an Apache-2.0 dependency.
+Miuix (https://github.com/compose-miuix-ui/miuix) is an Apache-2.0 dependency used for the optional HyperOS-style settings screen.
+Google Maps Timeline (TimelineHooks, Gcj02) follows the idea of SherlockChiang/ReLocationReportEnabler (MIT,
+https://github.com/SherlockChiang/ReLocationReportEnabler), written anew for XGoogle.
+WgsRegions holds Hong Kong, Macao and Taiwan boundaries from that project's generated data:
+(c) OpenStreetMap contributors, Open Database License 1.0 (https://opendatacommons.org/licenses/odbl/1-0/,
+https://www.openstreetmap.org/copyright), relations 20044132, 1867188 and 449220 via Nominatim.
+PasskeyHooks and FinalFields are ported from Howard20181/HyperPasskey (GPL-3.0,
+https://github.com/Howard20181/HyperPasskey).
+PhotosUnlimitedHooks ports the spoofed values and approach of Rev4N1/GPhotosUnlimited (GPL-3.0,
+https://github.com/Rev4N1/GPhotosUnlimited) to LSPosed hooks.
+PhotosFolderHooks follows NexAlloy's "Enable DCIM folders backup control" (GPL-3.0,
+https://github.com/NexAlloy/NexAlloy), written anew with DexKit.
+The Quick Share "View downloads" fix follows HyperCeiler's BypassForceDownloadui idea
+(https://github.com/ReChronoRain/HyperCeiler, AGPL-3.0); no HyperCeiler code is included.
+The app icon uses the Xiaomi "mi" logo, a trademark of Xiaomi; XGoogle is not affiliated with Xiaomi or Google.
+
+Notices for the original Coogle follow.
+Coogle is distributed under GPL-3.0; see LICENSE.
+Author of modifications: zopulus.
+Hook migration derives from MiToverG422/ONextBox (GPL-3.0):
+https://github.com/MiToverG422/ONextBox
+Original commit: 1ce6ad3559c9c6ba33f8d8179b1ede55198961e2.
+Material UI conventions derive from tiann/KernelSU (GPL-3.0):
+https://github.com/tiann/KernelSU
+MaterialTheme.kt, ExpressiveDialog.kt, ExpressiveSwitch.kt and SegmentedList.kt informed the implementation.
+AndroidX Compose/Activity/Core and Kotlin runtime are Apache-2.0 dependencies.
+libxposed API, interface and service are Apache-2.0 dependencies.
+Google-color-inspired C icons are custom artwork derived from the user supplied icon reference.
+The companion ZIP combines the requested DSP, enrollment and supplied Google systemizer functionality; its build scripts and payloads are in companion/.
+No private Voice Match model, account data or phone logs are included.
+
+Additional code references: https://github.com/luckyzyx/LuckyTool
+UI reference: https://github.com/LSPosed/LSPosed
+Bundled Google enrollment components remain subject to their original licenses.
+
+===== XSecurity
+XSecurity
+Copyright (C) 2025-2026 Leekin2
+
+This program is free software licensed under the GNU Affero General Public
+License v3.0 (see LICENSE).
+
+================================================================================
+Third-party code
+================================================================================
+
+HyperCeiler (https://github.com/ReChronoRain/HyperCeiler)
+    Licensed under the GNU Affero General Public License v3.0.
+    Copyright (C) 2023-2026 HyperCeiler Contributions.
+
+    Some hooks in this module are independent re-implementations of HyperCeiler
+    rules, rewritten against this module's own hook API. The logic and target
+    class/method names were taken from the following HyperCeiler sources:
+
+      - DarkModeHooks.java
+          from rules/systemframework/display/AllDarkMode.kt
+          (itself derived from SetoHook by SetoSkins)
+      - MessageHooks.java
+          adapted from rules/mms/DisableAd.java, DisableRiskTip.java,
+          ImOldDevice.java and AutoCopyVerificationCode.kt (upstream HyperStar);
+          selected risk types are handled independently, numeric codes are marked
+          sensitive and never logged or persisted
+      - HomeHooks.java
+          adapted from rules/home/DisablePrestart.java and title/HideReportText.java;
+          installer-name override is restricted to the uninstall dialog call
+      - LockscreenPinHooks.java
+          adapted from rules/systemui/lockscreen/ScramblePIN.java;
+          verified phone layout matrices and rollback for complete digit views
+      - AppStoreHooks.java
+          from rules/systemframework/others/BypassForceMiAppStore.java
+      - ClipboardHooks.java
+          from rules/systemframework/others/ClipboardWhitelist.java
+      - GuardHooks.java
+          from rules/guardprovider/DisableUploadAppListNew.java
+      - PersistentUpdateHooks.java
+          target names and install scoping from
+          rules/systemframework/corepatch/DisablePersistent.java
+          (adapted to libxposed 102 with per-thread, nested scopes)
+      - SecurityExtraHooks.java (additional app details and Play Store action)
+          from rules/securitycenter/app/AppDetails.java
+
+    Further hooks in the developer's own base (Core Patch, Flag Secure, theme,
+    updater and others) are likewise derived from HyperCeiler and its upstreams;
+    see the per-file headers.
+
+Material Design Icons (https://github.com/google/material-design-icons)
+    Copyright Google LLC. Licensed under the Apache License 2.0.
+    The app-info action vectors use Material Rounded Launch, Folder Open and Link,
+    the same icon family used by JingMatrix/LSPosed's manager.
+    SVG path data converted to Android VectorDrawable XML, with tint supplied by the host.
+    Source revision: 10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7.
+    LSPosed icon-family reference: JingMatrix/LSPosed revision
+    ddeed8ca1ffedfaba7f4341b911089906862d5c4,
+    manager/src/main/kotlin/org/matrix/vector/manager/ui/components/PackageActionMenu.kt
+    and gradle/libs.versions.toml. No LSPosed application code is copied.
+
+miuix (https://github.com/miuix-kotlin-multiplatform/miuix)
+    Used for the HyperOS-style settings UI, under its own license.
+
+===== XNotify
+XNotify (including the former XReply) is distributed under GPL-3.0 by Leekinn.
+
+===== XApps
+Miuix (https://github.com/compose-miuix-ui/miuix) and DexKit (https://github.com/LuckyPray/DexKit) are Apache-2.0 dependencies.
+XApps is not affiliated with Xiaomi or Google.

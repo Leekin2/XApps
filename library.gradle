@@ -1,0 +1,12 @@
+android {
+    compileSdk { version = release(37) }
+    buildToolsVersion '36.0.0'
+    defaultConfig {
+        minSdk 35
+        consumerProguardFiles 'consumer-rules.pro'
+        buildConfigField 'String', 'VERSION_NAME', "\"${rootProject.ext.xappsVersionName}\""
+        buildConfigField 'String', 'APPLICATION_ID', '"io.github.leekin2.xapps"'
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    buildFeatures { buildConfig true }
+}

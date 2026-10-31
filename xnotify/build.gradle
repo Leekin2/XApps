@@ -1,0 +1,7 @@
+plugins { id 'com.android.library' }
+apply from: rootProject.file('library.gradle')
+android { namespace 'io.github.leekin2.xnotify' }
+dependencies {
+    compileOnly 'io.github.libxposed:api:102.0.0'
+    implementation project(':common')
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <package android:name="com.miui.securitycenter" />
+        <package android:name="com.miui.powerkeeper" />
+        <package android:name="com.android.updater" />
+        <package android:name="com.xiaomi.joyose" />
+        <package android:name="com.android.thememanager" />
+        <package android:name="org.lsposed.manager" />
+        <package android:name="com.miui.guardprovider" />
+        <package android:name="com.android.settings" />
+        <package android:name="com.android.systemui" />
+        <package android:name="com.android.phone" />
+        <package android:name="com.android.mms" />
+        <package android:name="com.miui.home" />
+        <!-- Lets the clipboard app picker list launchable apps without a broad package permission. -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+    <application>
+        <!-- Opened from the XApps home screen. -->
+        <activity android:name=".MainActivity" android:exported="false" android:theme="@style/AppTheme" />
+    </application>
+</manifest>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <!-- The separate modules XApps replaces: found so the home screen can offer to uninstall them. -->
+        <package android:name="io.github.leekin2.xgoogle" />
+        <package android:name="io.github.leekin2.xsecurity" />
+        <package android:name="io.github.leekin2.xnotify" />
+    </queries>
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <application
+        android:name=".XAppsApp"
+        android:label="@string/app_name"
+        android:description="@string/module_description"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:theme="@style/AppTheme"
+        android:supportsRtl="true"
+        android:allowBackup="false">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+            </intent-filter>
+        </activity>
+        <!-- The home screen icon; the parts' "Hide home screen icon" disables it, LSPosed still opens the app. -->
+        <activity-alias android:name=".Launcher" android:targetActivity=".MainActivity"
+            android:exported="true" android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <!-- LSPosed hands the module its service here: settings and scope requests. -->
+        <provider android:name="io.github.libxposed.service.XposedProvider"
+            android:authorities="io.github.leekin2.xapps.XposedService" android:exported="true" />
+    </application>
+</manifest>

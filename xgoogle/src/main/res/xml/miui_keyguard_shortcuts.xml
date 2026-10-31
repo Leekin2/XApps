@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Read by HyperOS's lock screen shortcut picker (com.miui.aod) through the
+     "miui_keyguard_shortcuts" meta-data. Tags must match KeyguardShortcutHooks.TAGS.
+     HyperOS wants the opened screen over the lock screen: Assistant and Lens go through
+     KeyguardLaunchActivity, and so do Wallet and Home. -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <intent
+        android:name="@string/shortcut_assistant"
+        android:icon="@drawable/ic_shortcut_assistant"
+        android:tag="coogle_assistant"
+        android:action="android.intent.action.VIEW"
+        android:data="xgoogle://keyguard/assistant"
+        android:targetPackage="io.github.leekin2.xapps"
+        android:targetClass="io.github.leekin2.xgoogle.KeyguardLaunchActivity" />
+    <intent
+        android:name="@string/shortcut_lens"
+        android:icon="@drawable/ic_shortcut_lens"
+        android:tag="coogle_lens"
+        android:action="android.intent.action.VIEW"
+        android:data="xgoogle://keyguard/lens"
+        android:targetPackage="io.github.leekin2.xapps"
+        android:targetClass="io.github.leekin2.xgoogle.KeyguardLaunchActivity" />
+    <intent
+        android:name="@string/shortcut_wallet"
+        android:icon="@drawable/ic_shortcut_wallet"
+        android:tag="coogle_wallet"
+        android:action="android.intent.action.VIEW"
+        android:data="xgoogle://keyguard/wallet"
+        android:targetPackage="io.github.leekin2.xapps"
+        android:targetClass="io.github.leekin2.xgoogle.KeyguardLaunchActivity" />
+    <intent
+        android:name="@string/shortcut_home"
+        android:icon="@drawable/ic_shortcut_home"
+        android:tag="coogle_home"
+        android:action="android.intent.action.VIEW"
+        android:data="xgoogle://keyguard/home"
+        android:targetPackage="io.github.leekin2.xapps"
+        android:targetClass="io.github.leekin2.xgoogle.KeyguardLaunchActivity" />
+</shortcuts>

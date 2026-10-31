@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="module_description">XApps para HyperOS: XGoogle, XSecurity y XNotify en un solo módulo. Activa o desactiva cada parte en la app.</string>
+    <string name="xapps_subtitle">XApps para HyperOS</string>
+    <string name="connected">Activo en LSPosed</string>
+    <string name="connected_summary">Las partes activadas funcionan en las apps marcadas en LSPosed.</string>
+    <string name="not_connected">No activo</string>
+    <string name="not_connected_summary">Activa XApps en LSPosed y vuelve a abrir esta pantalla.</string>
+    <string name="group_parts">Partes</string>
+    <string name="google_summary">Asistente de Google, Gemini, Rodea para buscar, Lens, Wallet y servicios de Google en HyperOS</string>
+    <string name="security_summary">Desbloqueos de la app Seguridad, extras de Game Turbo, salud de la batería, iconos de VoLTE y ajustes del sistema</string>
+    <string name="notify_summary">Notificaciones del teléfono en la tablet Xiaomi y el cuadro de respuesta de Xiaomi para todas las apps</string>
+    <string name="open_settings">Ajustes</string>
+    <string name="xapps_restart_hint">Activar o desactivar una parte surte efecto tras reiniciar.</string>
+    <string name="group_old">Módulos antiguos</string>
+    <string name="old_summary">Instalado por separado: desinstálalo, XApps ya lo incluye.</string>
+    <string name="xapps_version">Versión %1$s</string>
+</resources>

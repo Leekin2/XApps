@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="module_description">适用于 HyperOS 的 XApps：XGoogle、XSecurity 和 XNotify 合为一个模块。可在应用中分别开关各部分。</string>
+    <string name="xapps_subtitle">适用于 HyperOS 的 XApps</string>
+    <string name="connected">已在 LSPosed 中启用</string>
+    <string name="connected_summary">已开启的部分会在 LSPosed 中勾选的应用里生效。</string>
+    <string name="not_connected">未启用</string>
+    <string name="not_connected_summary">请在 LSPosed 中启用 XApps，然后重新打开此页面。</string>
+    <string name="group_parts">组成部分</string>
+    <string name="google_summary">在 HyperOS 上使用 Google 助理、Gemini、圈定即搜、Lens、Wallet 和 Google 服务</string>
+    <string name="security_summary">手机管家功能解锁、游戏加速扩展、电池健康、VoLTE 图标和系统调整</string>
+    <string name="notify_summary">在小米平板上显示手机通知，并为所有应用提供小米回复框</string>
+    <string name="open_settings">设置</string>
+    <string name="xapps_restart_hint">开启或关闭某个部分需重启后生效。</string>
+    <string name="group_old">旧模块</string>
+    <string name="old_summary">已单独安装：请卸载，XApps 已包含它。</string>
+    <string name="xapps_version">版本 %1$s</string>
+</resources>

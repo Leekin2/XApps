@@ -1,0 +1,68 @@
+// Derived from MiToverG422/ONextBox, commit 1ce6ad3559c9c6ba33f8d8179b1ede55198961e2. GPL-3.0. See LICENSE and NOTICE.txt.
+package io.github.leekin2.xgoogle.migration.compat
+
+import java.lang.reflect.Executable
+
+/** Modern Hook before/after callbacks, without legacy Xposed dependencies. */
+internal abstract class ModernMethodHook {
+    open fun beforeHookedMethod(param: MethodHookParam) = Unit
+
+    open fun afterHookedMethod(param: MethodHookParam) = Unit
+
+    internal class MethodHookParam(
+        val method: Executable,
+        val thisObject: Any?,
+        val args: Array<Any?>,
+    ) {
+        private enum class Phase { BEFORE, AFTER }
+
+        private var phase = Phase.BEFORE
+        private var resultValue: Any? = null
+        private var throwableValue: Throwable? = null
+
+        internal var returnEarly: Boolean = false
+            private set
+
+        var result: Any?
+            get() = resultValue
+            set(value) {
+                resultValue = value
+                throwableValue = null
+                if (phase == Phase.BEFORE) returnEarly = true
+            }
+
+        var throwable: Throwable?
+            get() = throwableValue
+            set(value) {
+                throwableValue = value
+                if (value != null && phase == Phase.BEFORE) returnEarly = true
+            }
+
+        internal fun beginAfter(result: Any?, throwable: Throwable?) {
+            phase = Phase.AFTER
+            resultValue = result
+            throwableValue = throwable
+        }
+
+        internal fun resetAfterBeforeFailure() {
+            resultValue = null
+            throwableValue = null
+            returnEarly = false
+        }
+
+        internal fun snapshotOutcome(): Outcome = Outcome(resultValue, throwableValue)
+
+        internal fun restoreOutcome(outcome: Outcome) {
+            resultValue = outcome.result
+            throwableValue = outcome.throwable
+        }
+
+        internal fun resultOrThrow(): Any? {
+            throwableValue?.let { throw it }
+            return resultValue
+        }
+
+        internal data class Outcome(val result: Any?, val throwable: Throwable?)
+    }
+}
+
