@@ -178,6 +178,7 @@ final class ReplyHooks {
                 frost(progress, context);
             }
             if (content != null && send != null) matchSendToBox(content, send, progress);
+            padReplyBox(view);
             return result;
         });
         info("Reply box: Xiaomi style for every notification");
@@ -516,7 +517,11 @@ final class ReplyHooks {
                 try {
                     View list = content.findViewById(actionsId);
                     if (list instanceof ViewGroup) styleButtons((ViewGroup) list, rowView.getContext());
-                    if (containerId != 0) keepClearOfHandle(content.findViewById(containerId));
+                    // Action buttons only need the gap in pop-ups (the handle). The reply box gets
+                    // its own gap when it is inflated (see padReplyBox): it is created after this.
+                    boolean buttons = list instanceof ViewGroup && hasVisibleButtons((ViewGroup) list);
+                    View container = containerId != 0 ? content.findViewById(containerId) : null;
+                    if (container != null) keepClearOfHandle(container, buttons && isPopUp(rowView));
                 } catch (Throwable t) {
                     error("Styling action buttons failed", t);
                 }
@@ -532,15 +537,61 @@ final class ReplyHooks {
      * reply box (both live in actions_container). The framework resets this margin on every
      * re-apply, so add the gap to whatever it set.
      */
-    private static void keepClearOfHandle(View container) {
+    private static void keepClearOfHandle(View container, boolean popUp) {
         if (container == null || !(container.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)) return;
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) container.getLayoutParams();
         int gap = Math.round(10 * container.getResources().getDisplayMetrics().density);
         Object applied = container.getTag(TAG_GAP);
-        if (applied instanceof Integer && lp.bottomMargin == (Integer) applied) return;
-        lp.bottomMargin += gap;
-        container.setTag(TAG_GAP, lp.bottomMargin);
+        boolean has = applied instanceof Integer && lp.bottomMargin == (Integer) applied;
+        if (popUp == has) return;
+        if (popUp) {
+            lp.bottomMargin += gap;
+            container.setTag(TAG_GAP, lp.bottomMargin);
+        } else {
+            // The row was a pop-up earlier and now sits in the shade, which has no handle.
+            lp.bottomMargin = Math.max(0, lp.bottomMargin - gap);
+            container.setTag(TAG_GAP, null);
+        }
         container.setLayoutParams(lp);
+    }
+
+    /**
+     * The reply box is inflated when the user taps Reply, long after the row was styled, and sits
+     * flush against the card's bottom edge. Give it the same breathing room as the buttons.
+     */
+    private static void padReplyBox(View box) {
+        box.post(() -> {
+            if (!(box.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)) return;
+            if (box.getTag(TAG_REPLY_GAP) != null) return;
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) box.getLayoutParams();
+            lp.bottomMargin += Math.round(10 * box.getResources().getDisplayMetrics().density);
+            box.setTag(TAG_REPLY_GAP, Boolean.TRUE);
+            box.setLayoutParams(lp);
+        });
+    }
+
+    private static final int TAG_REPLY_GAP = 0x7f0f_5ee2;
+
+    private static boolean hasVisibleButtons(ViewGroup list) {
+        if (list.getVisibility() == View.GONE) return false;
+        for (int i = 0; i < list.getChildCount(); i++) {
+            View child = list.getChildAt(i);
+            if (child instanceof Button && child.getVisibility() != View.GONE) return true;
+        }
+        return false;
+    }
+
+    /** True while the row is shown as a heads-up pop-up (the only place the handle is drawn). */
+    private static boolean isPopUp(View row) {
+        for (String name : new String[] {"isHeadsUp", "isPinned"}) {
+            try {
+                Method m = row.getClass().getMethod(name);
+                if (Boolean.TRUE.equals(m.invoke(row))) return true;
+            } catch (Throwable ignored) {
+                // Not on this System UI build; try the next, else treat as not a pop-up.
+            }
+        }
+        return false;
     }
 
     /** View tag key for the bottom margin XNotify last set (an id from the framework's range). */
