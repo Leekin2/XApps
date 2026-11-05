@@ -24,7 +24,7 @@ Each part can be turned on or off on the XApps home screen. A part that is off i
 
 ## Find Device (Xiaomi Find Device fix)
 
-Find your device with its street address, usually in 5-10 seconds, from **[i.mi.com/find](https://i.mi.com/find)** or your other Xiaomi devices. Made for Europe, Turkey and every other region outside China, where stock Find Device often shows "Unknown location". The switch is at the very top of XSecurity and is on by default.
+Find your device with its street address, usually in 5-10 seconds, from **[i.mi.com/find](https://i.mi.com/find)** or your other Xiaomi devices. Works worldwide, including where stock Find Device shows "Unknown location". The switch is at the very top of XSecurity and is on by default.
 
 - **Real address on the server:** the device's report now carries its street address, so the website and your other devices show it even while the app is closed.
 - **Right location:** correct on devices without GPS too, such as tablets.
@@ -90,7 +90,7 @@ Her bölüm XApps ana ekranından açılıp kapanır. Kapalı bölüm hiç yükl
 
 ### Cihazı Bul (Xiaomi Cihazı Bul düzeltmesi)
 
-Cihazınızı **[i.mi.com/find](https://i.mi.com/find)** adresinden veya diğer Xiaomi cihazlarınızdan genelde 5-10 saniyede, açık adresiyle bulun. Avrupa, Türkiye ve Çin dışındaki tüm bölgeler için; bu bölgelerde normal Cihazı Bul çoğu zaman "Bilinmeyen konum" gösteriyor. Anahtar XSecurity'nin en üstünde ve varsayılan olarak açık.
+Cihazınızı **[i.mi.com/find](https://i.mi.com/find)** adresinden veya diğer Xiaomi cihazlarınızdan genelde 5-10 saniyede, açık adresiyle bulun. Dünyanın her yerinde çalışır, normal Cihazı Bul'un "Bilinmeyen konum" gösterdiği yerlerde de. Anahtar XSecurity'nin en üstünde ve varsayılan olarak açık.
 
 - **Sunucuda gerçek adres:** cihazın raporu artık açık adresi de taşıyor. Uygulama kapalıyken bile site ve diğer cihazlarınız adresi gösterir.
 - **Doğru konum:** tablet gibi GPS'i olmayan cihazlarda da konum doğru çıkar.
