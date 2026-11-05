@@ -552,7 +552,7 @@ final class ReplyHooks {
                 for (int k = 0; k < g.getChildCount(); k++) if (g.getChildAt(k).getVisibility() == View.VISIBLE) empty = false;
             }
             if (!empty) continue;
-            if (thumbnail && child.getVisibility() == View.VISIBLE && child.getHeight() > 0) {
+            if (thumbnail && child.getVisibility() == View.VISIBLE) {
                 child.setTag(TAG_STRIP, Boolean.TRUE);
                 child.setVisibility(View.GONE);
             } else if (!thumbnail && child.getTag(TAG_STRIP) != null) {
