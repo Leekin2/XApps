@@ -45,7 +45,7 @@ public final class Features {
     // Video and calls
     public static final String VIDEO_TOOLBOX = "video_toolbox";
     public static final String CALL_TOOLBOX = "call_toolbox";
-    public static final String FIND_DEVICE = "find_device";
+    public static final String FIND_DEVICE = "find_device_on";
     public static final String VOLUME_SAFETY_OFF = "volume_safety_off";
     public static final String NOTIFY_SHORT_VIBRATION = "notify_short_vibration";
     // Privacy and system
@@ -139,12 +139,13 @@ public final class Features {
             CP_DOWNGRADE, CP_VERIFY, CP_ARSC, CP_DIGEST, CP_EXACT, CP_PREVIOUS, CP_HIDDEN, CP_SHARED, CP_AGENT, CP_BLOCK, CP_PERSISTENT, CP_SYSTEM_UI_UID);
 
     /**
-     * A brand-new install starts with every switch off; the user turns on what they want.
+     * A brand-new install starts with every switch off except the Find Device fix, which stays on
+     * until the user turns it off; the user turns on the rest.
      * Existing installs keep their choices: {@link #legacyDefault} is frozen into their stored
      * settings once (see MainActivity), so this change never turns anything off for them.
      */
     public static boolean defaultValue(String key) {
-        return false;
+        return FIND_DEVICE.equals(key);
     }
 
     /**
@@ -166,7 +167,7 @@ public final class Features {
     /** Old installs keep their header row until the new independent switch is explicitly saved. */
     public static boolean read(SharedPreferences p, String key) {
         if (p == null) return defaultValue(key);
-        boolean fallback = APP_INFO_BUTTONS.equals(key) && p.getBoolean(APP_INFO, false);
+        boolean fallback = FIND_DEVICE.equals(key) || (APP_INFO_BUTTONS.equals(key) && p.getBoolean(APP_INFO, false));
         return p.getBoolean(key, fallback);
     }
 

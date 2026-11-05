@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Find Device fix: now really on by default. In 1.0.2 it stayed off until you turned it on in XSecurity. If you turned it off in 1.0.2, turn it off once more.
+- Find Device: the refresh button now asks the other device for its location directly, so it updates without playing the alarm.
+
 ## 1.0.2
 
 - **Find Device fix (XSecurity, on by default):** your device's street address reaches Xiaomi's server, so [i.mi.com/find](https://i.mi.com/find) and your other Xiaomi devices show it, usually in 5-10 seconds, even while the app is closed. Works worldwide. Also gives the right location on devices without GPS, keeps device icons in the right place on the map, makes the remote alarm work in every system language, and lets Route pick a map app.

@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
             // Retired features are removed from both UI and hooks, including stored choices.
             val retired = arrayOf("powerkeeper_no_kill", "autostart_keep_grants", "system_reduce_cleaning",
                 "developer_signature_test", "developer_downgrade_test", "developer_test_packages", "developer_certificate_sha256",
-                "ims_icon_support", "ims_restart_pending", "gallery_google_backup")
+                "ims_icon_support", "ims_restart_pending", "gallery_google_backup", "find_device")
             remote.edit().apply { retired.forEach { remove(it) } }.apply()
             local.edit().apply { retired.forEach { remove(it) } }.apply()
             val values = Features.ALL.associateWith { Features.read(remote, it) }
@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity() {
             val hadRun = Features.ALL.any { remote.contains(it) || local.contains(it) } || ui.all.isNotEmpty()
             val editor = remote.edit()
             for (key in Features.ALL) {
-                if (key != Features.APP_INFO_BUTTONS && !remote.contains(key)) {
+                if (key != Features.APP_INFO_BUTTONS && key != Features.FIND_DEVICE && !remote.contains(key)) {
                     editor.putBoolean(key, if (hadRun) Features.legacyDefault(key) else false)
                 }
             }

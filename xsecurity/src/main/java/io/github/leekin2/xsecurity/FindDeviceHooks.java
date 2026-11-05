@@ -56,6 +56,7 @@ final class FindDeviceHooks {
     private Field lng;
     private Resolved cache;
     private long retryAfter;
+    private volatile long lastRefreshCommand;
 
     FindDeviceHooks(Hooks hooks, ClassLoader loader) {
         this.hooks = hooks;
@@ -75,6 +76,7 @@ final class FindDeviceHooks {
         step("location source", this::locationSource);
         step("server address", this::serverAddress);
         step("map points", this::mapPoints);
+        step("refresh command", this::refreshCommand);
         try (DexTargets targets = new DexTargets(loader, apk, data)) {
             step("report result", () -> reportResult(targets));
             step("own address", () -> ownAddress(targets));
@@ -178,6 +180,53 @@ final class FindDeviceHooks {
             stamps++;
         }
         if (stamps == 0) throw new NoSuchMethodException("Reply message unavailable");
+    }
+
+    /**
+     * The refresh button only asks the server for the device's record and leaves it to the server
+     * to wake the other device, which often does not happen. The alarm sends a command and works
+     * every time, so refresh now sends the app's own location command the same way.
+     */
+    private void refreshCommand() throws Throwable {
+        Class<?> device = loader.loadClass(FDEVICE);
+        Class<?> manager = loader.loadClass(ROOT + ".v2.FindDeviceStatusManagerInternal");
+        Method get = manager.getMethod("get", Context.class);
+        Method send = null;
+        for (Method method : manager.getDeclaredMethods()) {
+            if ("sendCommandToOtherDevice".equals(method.getName()) && method.getParameterCount() == 3) send = method;
+        }
+        if (send == null) throw new NoSuchMethodException("Command sender unavailable");
+        Method sender = send;
+        sender.setAccessible(true);
+        Object locate = enumValue(sender.getParameterTypes()[2], "LOCATION");
+        Method isPadOrPhone = device.getMethod("isPadOrPhone");
+        // Only remote devices get this mission; the device itself reports on another path.
+        Constructor<?> mission = loader.loadClass(ROOT + ".coreserver.business.refresh.DeviceDetailRefreshMission")
+                .getDeclaredConstructors()[0];
+        hooks.install(mission, chain -> {
+            Object result = chain.proceed();
+            Object target = chain.getArg(0);
+            if (device.isInstance(target) && Boolean.TRUE.equals(isPadOrPhone.invoke(target))) {
+                long now = SystemClock.elapsedRealtime();
+                if (now - lastRefreshCommand > 15000) {
+                    lastRefreshCommand = now;
+                    new Thread(() -> {
+                        try {
+                            Context context = application();
+                            sender.invoke(get.invoke(null, context), context, target, locate);
+                        } catch (Throwable failure) {
+                            hooks.info("Find Device: refresh command failed: " + failure.getClass().getSimpleName());
+                        }
+                    }, "XAppsFindDeviceRefresh").start();
+                }
+            }
+            return result;
+        });
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Object enumValue(Class<?> type, String name) {
+        return Enum.valueOf((Class) type, name);
     }
 
     private boolean report(Object point, Context context, long stamp) {
