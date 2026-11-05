@@ -516,6 +516,7 @@ final class ReplyHooks {
                 try {
                     View list = content.findViewById(actionsId);
                     if (list instanceof ViewGroup) styleButtons((ViewGroup) list, rowView.getContext());
+                    trimCollapsedStrip(content);
                     if (containerId != 0) keepClearOfHandle(content.findViewById(containerId));
                 } catch (Throwable t) {
                     error("Styling action buttons failed", t);
@@ -524,6 +525,39 @@ final class ReplyHooks {
             return result;
         });
         info("Action buttons: Xiaomi style for every notification");
+    }
+
+    /**
+     * Collapsed Android-template cards carry an empty ~12dp strip under the headerless row (it is
+     * in stock HyperOS too), which leaves cards with a thumbnail visibly bottom-heavy. Find what
+     * the strip is, log it, and collapse it when it holds nothing visible.
+     */
+    private void trimCollapsedStrip(View content) {
+        int rowId = Resources.getSystem().getIdentifier("notification_headerless_view_row", "id", "android");
+        if (rowId == 0) return;
+        View headerless = content.findViewById(rowId);
+        if (headerless == null || !(headerless.getParent() instanceof View)) return;
+        View top = (View) headerless.getParent();
+        if (!(top.getParent() instanceof ViewGroup)) return;
+        ViewGroup column = (ViewGroup) top.getParent();
+        for (int i = 0; i < column.getChildCount(); i++) {
+            View child = column.getChildAt(i);
+            if (child == top) continue;
+            boolean empty = true;
+            if (child instanceof ViewGroup) {
+                ViewGroup g = (ViewGroup) child;
+                for (int k = 0; k < g.getChildCount(); k++) if (g.getChildAt(k).getVisibility() == View.VISIBLE) empty = false;
+            }
+            ViewGroup.LayoutParams lp = child.getLayoutParams();
+            String margins = lp instanceof ViewGroup.MarginLayoutParams
+                    ? ((ViewGroup.MarginLayoutParams) lp).topMargin + "/" + ((ViewGroup.MarginLayoutParams) lp).bottomMargin : "-";
+            String name;
+            try { name = child.getId() == View.NO_ID ? "no-id" : child.getResources().getResourceName(child.getId()); } catch (Throwable t) { name = "id?"; }
+            info("Collapsed strip: " + child.getClass().getSimpleName() + " " + name + " vis=" + child.getVisibility()
+                    + " h=" + child.getHeight() + " margins=" + margins + " pad=" + child.getPaddingTop() + "/" + child.getPaddingBottom()
+                    + " empty=" + empty);
+            if (empty && child.getVisibility() == View.VISIBLE && child.getHeight() > 0) child.setVisibility(View.GONE);
+        }
     }
 
     /**
