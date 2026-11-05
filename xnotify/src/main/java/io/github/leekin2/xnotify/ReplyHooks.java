@@ -517,6 +517,7 @@ final class ReplyHooks {
                 try {
                     View list = content.findViewById(actionsId);
                     if (list instanceof ViewGroup) styleButtons((ViewGroup) list, rowView.getContext());
+                    trimCollapsedStrip(content);
                     // Action buttons only need the gap in pop-ups (the handle). The reply box gets
                     // its own gap when it is inflated (see padReplyBox): it is created after this.
                     boolean buttons = list instanceof ViewGroup && hasVisibleButtons((ViewGroup) list);
@@ -530,6 +531,71 @@ final class ReplyHooks {
         });
         info("Action buttons: Xiaomi style for every notification");
     }
+
+    /**
+     * Collapsed Android-template cards carry an empty ~12dp strip under the headerless row (stock
+     * HyperOS too). Text-only cards are fine with it, but a card with a thumbnail is as tall as the
+     * thumbnail already and ends up visibly bottom-heavy, so the strip goes away for those only.
+     */
+    private static void trimCollapsedStrip(View content) {
+        applyStripTrim(content);
+        // Rows inside an expanded group are laid out later than the update that styled them, and
+        // the strip can come back, so look again whenever the row is laid out.
+        View top = findStripRow(content);
+        if (top != null && top.getTag(TAG_STRIP_WATCH) == null) {
+            top.setTag(TAG_STRIP_WATCH, Boolean.TRUE);
+            top.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> applyStripTrim(content));
+        }
+    }
+
+    private static View findStripRow(View content) {
+        int rowId = Resources.getSystem().getIdentifier("notification_headerless_view_row", "id", "android");
+        if (rowId == 0) return null;
+        View headerless = content.findViewById(rowId);
+        return headerless != null && headerless.getParent() instanceof View ? (View) headerless.getParent() : null;
+    }
+
+    private static final int TAG_STRIP_WATCH = 0x7f0f_5ee4;
+
+    private static void applyStripTrim(View content) {
+        Resources system = Resources.getSystem();
+        int rowId = system.getIdentifier("notification_headerless_view_row", "id", "android");
+        if (rowId == 0) return;
+        View headerless = content.findViewById(rowId);
+        if (headerless == null || !(headerless.getParent() instanceof View)) return;
+        View top = (View) headerless.getParent();
+        if (!(top.getParent() instanceof ViewGroup)) return;
+        boolean thumbnail = isShown(content, system.getIdentifier("conversation_image_message_container", "id", "android"))
+                || isShown(content, system.getIdentifier("right_icon", "id", "android"));
+        ViewGroup column = (ViewGroup) top.getParent();
+        for (int i = 0; i < column.getChildCount(); i++) {
+            View child = column.getChildAt(i);
+            if (child == top) continue;
+            boolean empty = true;
+            if (child instanceof ViewGroup) {
+                ViewGroup g = (ViewGroup) child;
+                for (int k = 0; k < g.getChildCount(); k++) if (g.getChildAt(k).getVisibility() == View.VISIBLE) empty = false;
+            }
+            if (!empty) continue;
+            if (thumbnail && child.getVisibility() == View.VISIBLE) {
+                child.setTag(TAG_STRIP, Boolean.TRUE);
+                child.setVisibility(View.GONE);
+            } else if (!thumbnail && child.getTag(TAG_STRIP) != null) {
+                // The row was reused for a notification without a thumbnail: give the strip back.
+                child.setTag(TAG_STRIP, null);
+                child.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private static boolean isShown(View root, int id) {
+        if (id == 0) return false;
+        View v = root.findViewById(id);
+        return v != null && v.getVisibility() == View.VISIBLE;
+    }
+
+    /** View tag key marking a strip XNotify hid (an id from the framework's range). */
+    private static final int TAG_STRIP = 0x7f0f_5ee3;
 
     /**
      * Pop-ups draw Xiaomi's floating-window handle just under the content. Xiaomi's own templates
