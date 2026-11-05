@@ -2,7 +2,7 @@
 
 ## 1.0.2
 
-- **Find Device fix (XSecurity, on by default):** your device's street address reaches Xiaomi's server, so [i.mi.com/find](https://i.mi.com/find) and your other Xiaomi devices show it, usually in 5-10 seconds, even while the app is closed. Outside China only. Also ignores a leftover Baidu location choice, removes the map offset, makes the remote alarm work in every system language, and lets Route pick a map app.
+- **Find Device fix (XSecurity, on by default):** your device's street address reaches Xiaomi's server, so [i.mi.com/find](https://i.mi.com/find) and your other Xiaomi devices show it, usually in 5-10 seconds, even while the app is closed. Outside China only. Also gives the right location on devices without GPS, keeps device icons in the right place on the map, makes the remote alarm work in every system language, and lets Route pick a map app.
 - Camera: the Google Lens button is now found by scanning the app, so it survives camera updates.
 - XApps can hide its home screen icon.
 - XSecurity: optional switches to remove the high volume warning and to shorten the default notification vibration (both off by default).

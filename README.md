@@ -27,8 +27,8 @@ Each part can be turned on or off on the XApps home screen. A part that is off i
 Find your device with its street address, usually in 5-10 seconds, from **[i.mi.com/find](https://i.mi.com/find)** or your other Xiaomi devices. Made for Europe, Turkey and every other region outside China, where stock Find Device often shows "Unknown location". The switch is at the very top of XSecurity and is on by default.
 
 - **Real address on the server:** the device's report now carries its street address, so the website and your other devices show it even while the app is closed.
-- **Right location:** a leftover Baidu location choice is ignored. Without GPS it could report a point thousands of kilometres away.
-- **No map offset:** the China-only coordinate conversion no longer moves the blue dot and device pins.
+- **Right location:** correct on devices without GPS too, such as tablets.
+- **Right place on the map:** device icons and the blue dot no longer drift.
 - **Alarm works:** remote commands work in every system language.
 - **Route:** asks which map app to open, such as Google Maps or Yandex Maps.
 
@@ -93,8 +93,8 @@ Her bölüm XApps ana ekranından açılıp kapanır. Kapalı bölüm hiç yükl
 Cihazınızı **[i.mi.com/find](https://i.mi.com/find)** adresinden veya diğer Xiaomi cihazlarınızdan genelde 5-10 saniyede, açık adresiyle bulun. Avrupa, Türkiye ve Çin dışındaki tüm bölgeler için; bu bölgelerde normal Cihazı Bul çoğu zaman "Bilinmeyen konum" gösteriyor. Anahtar XSecurity'nin en üstünde ve varsayılan olarak açık.
 
 - **Sunucuda gerçek adres:** cihazın raporu artık açık adresi de taşıyor. Uygulama kapalıyken bile site ve diğer cihazlarınız adresi gösterir.
-- **Doğru konum:** cihazda kalmış Baidu konum seçimi yok sayılır. GPS'siz cihazda binlerce kilometre uzak konum verebiliyordu.
-- **Harita kayması yok:** Çin'e özel koordinat dönüşümü artık mavi noktayı ve pinleri kaydırmaz.
+- **Doğru konum:** tablet gibi GPS'i olmayan cihazlarda da konum doğru çıkar.
+- **Haritada doğru yer:** cihaz simgeleri ve mavi nokta artık kaymaz.
 - **Alarm çalışır:** uzaktan komutlar her sistem dilinde çalışır.
 - **Rota:** hangi harita uygulamasının açılacağını sorar (Google Haritalar, Yandex Haritalar gibi).
 
