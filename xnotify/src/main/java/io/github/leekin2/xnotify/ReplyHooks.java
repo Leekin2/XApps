@@ -528,17 +528,20 @@ final class ReplyHooks {
     }
 
     /**
-     * Collapsed Android-template cards carry an empty ~12dp strip under the headerless row (it is
-     * in stock HyperOS too), which leaves cards with a thumbnail visibly bottom-heavy. Find what
-     * the strip is, log it, and collapse it when it holds nothing visible.
+     * Collapsed Android-template cards carry an empty ~12dp strip under the headerless row (stock
+     * HyperOS too). Text-only cards are fine with it, but a card with a thumbnail is as tall as the
+     * thumbnail already and ends up visibly bottom-heavy, so the strip goes away for those only.
      */
-    private void trimCollapsedStrip(View content) {
-        int rowId = Resources.getSystem().getIdentifier("notification_headerless_view_row", "id", "android");
+    private static void trimCollapsedStrip(View content) {
+        Resources system = Resources.getSystem();
+        int rowId = system.getIdentifier("notification_headerless_view_row", "id", "android");
         if (rowId == 0) return;
         View headerless = content.findViewById(rowId);
         if (headerless == null || !(headerless.getParent() instanceof View)) return;
         View top = (View) headerless.getParent();
         if (!(top.getParent() instanceof ViewGroup)) return;
+        boolean thumbnail = isShown(content, system.getIdentifier("conversation_image_message_container", "id", "android"))
+                || isShown(content, system.getIdentifier("right_icon", "id", "android"));
         ViewGroup column = (ViewGroup) top.getParent();
         for (int i = 0; i < column.getChildCount(); i++) {
             View child = column.getChildAt(i);
@@ -548,17 +551,26 @@ final class ReplyHooks {
                 ViewGroup g = (ViewGroup) child;
                 for (int k = 0; k < g.getChildCount(); k++) if (g.getChildAt(k).getVisibility() == View.VISIBLE) empty = false;
             }
-            ViewGroup.LayoutParams lp = child.getLayoutParams();
-            String margins = lp instanceof ViewGroup.MarginLayoutParams
-                    ? ((ViewGroup.MarginLayoutParams) lp).topMargin + "/" + ((ViewGroup.MarginLayoutParams) lp).bottomMargin : "-";
-            String name;
-            try { name = child.getId() == View.NO_ID ? "no-id" : child.getResources().getResourceName(child.getId()); } catch (Throwable t) { name = "id?"; }
-            info("Collapsed strip: " + child.getClass().getSimpleName() + " " + name + " vis=" + child.getVisibility()
-                    + " h=" + child.getHeight() + " margins=" + margins + " pad=" + child.getPaddingTop() + "/" + child.getPaddingBottom()
-                    + " empty=" + empty);
-            if (empty && child.getVisibility() == View.VISIBLE && child.getHeight() > 0) child.setVisibility(View.GONE);
+            if (!empty) continue;
+            if (thumbnail && child.getVisibility() == View.VISIBLE && child.getHeight() > 0) {
+                child.setTag(TAG_STRIP, Boolean.TRUE);
+                child.setVisibility(View.GONE);
+            } else if (!thumbnail && child.getTag(TAG_STRIP) != null) {
+                // The row was reused for a notification without a thumbnail: give the strip back.
+                child.setTag(TAG_STRIP, null);
+                child.setVisibility(View.VISIBLE);
+            }
         }
     }
+
+    private static boolean isShown(View root, int id) {
+        if (id == 0) return false;
+        View v = root.findViewById(id);
+        return v != null && v.getVisibility() == View.VISIBLE;
+    }
+
+    /** View tag key marking a strip XNotify hid (an id from the framework's range). */
+    private static final int TAG_STRIP = 0x7f0f_5ee3;
 
     /**
      * Pop-ups draw Xiaomi's floating-window handle just under the content. Xiaomi's own templates
