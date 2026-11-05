@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.4
+
+- New XSecurity switch: seconds on the status bar clock (HH:MM:SS). Off by default.
+- New XSecurity switch: Extend Unlock (Smart Lock). Brings back Google's feature that keeps the phone unlocked with a device or place you trust. Off by default. Based on HyperTrust by StevenWin818.
+- Moving from the old XGoogle, XSecurity or XNotify apps: an old app is no longer uninstalled when its settings could not be copied, so they are not lost. XApps tells you to remove it by hand.
+- Removing the XApps module now puts the double press of the power key back if it opened Google Wallet.
+- Google Wallet is no longer added to the LSPosed scope automatically. You are asked when you turn its switch on. If it is already ticked and you don't use it, untick it in LSPosed.
+- Find Device: refreshing one device no longer delays refreshing another, and a failed refresh can be retried right away.
+- Find Device: Route now opens Google Maps directly. Without Google Maps, it asks which map app to open.
+- New XSecurity switch (experimental): Google map. The map inside Find Device shows Google's map, without Baidu's labels and logo. Off by default.
+
 ## 1.0.3
 
 - Find Device fix: now really on by default. In 1.0.2 it stayed off until you turned it on in XSecurity. If you turned it off in 1.0.2, turn it off once more.

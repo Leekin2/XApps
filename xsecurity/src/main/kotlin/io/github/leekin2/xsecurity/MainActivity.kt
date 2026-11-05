@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
             clipboardApps = local.getStringSet(Features.CLIPBOARD_APPS, emptySet())?.size ?: 0
         )
         val actions = Actions(::change, ::restartApps, ::changeLanguage, ::changeLook,
-            { state = state.copy(settingsOpen = it) }, ::openLsposed, ::setIconHidden, ::pickClipboardApps)
+            { state = state.copy(settingsOpen = it) }, ::openLsposed, ::setIconHidden, ::pickClipboardApps, ::openExtendUnlock)
         setContent {
             XTheme(state.look) {
                 if (state.look.hyper) MiuixScreen(state, actions) else MaterialScreen(state, actions)
@@ -233,6 +233,20 @@ class MainActivity : ComponentActivity() {
                 PackageManager.DONT_KILL_APP)
             state = state.copy(iconHidden = hidden)
         }.onFailure { Toast.makeText(this, texts.notConnected, Toast.LENGTH_SHORT).show() }
+    }
+
+    /** Google's own page; Play services does not let other apps open it, so this needs root. */
+    private fun openExtendUnlock() {
+        worker.execute {
+            val ok = runCatching {
+                val process = ProcessBuilder("su", "-c",
+                    "am start -n com.google.android.gms/.trustagent.TrustAgentSearchEntryPointActivity")
+                    .redirectErrorStream(true).start()
+                process.inputStream.readBytes()
+                process.waitFor() == 0
+            }.getOrDefault(false)
+            if (!ok) runOnUiThread { Toast.makeText(this, texts.restartFailed, Toast.LENGTH_LONG).show() }
+        }
     }
 
     /** Changes apply when the scope apps start again; this needs root. */

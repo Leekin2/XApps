@@ -209,6 +209,12 @@ private fun SectionCard(section: Section, state: UiState, t: Texts, actions: Act
                         startAction = { RowIcon(item.icon, section.color) },
                         enabled = featureCanChange(state, item.key)
                     )
+                    if (item.key == F.EXTEND_UNLOCK && state.values[item.key] == true) {
+                        val open = t.features[OPEN_EXTEND_UNLOCK]
+                        ArrowPreference(title = open?.title ?: "", summary = open?.summary,
+                            startAction = { RowIcon(item.icon, section.color) },
+                            onClick = actions.onOpenExtendUnlock)
+                    }
                     if (item.key == F.CLIPBOARD_WHITELIST && state.values[item.key] == true) {
                         val pick = t.features[PICK_CLIPBOARD]
                         ArrowPreference(title = (pick?.title ?: "") + " (${state.clipboardApps})", summary = pick?.summary,

@@ -21,6 +21,10 @@ PhotosUnlimitedHooks ports the spoofed values and approach of Rev4N1/GPhotosUnli
 https://github.com/Rev4N1/GPhotosUnlimited) to LSPosed hooks.
 PhotosFolderHooks follows NexAlloy's "Enable DCIM folders backup control" (GPL-3.0,
 https://github.com/NexAlloy/NexAlloy), written anew with DexKit.
+XSecurity's status bar clock seconds (ClockSecondsHooks) follow HyperCeiler's StatusBarClockNew idea
+(https://github.com/ReChronoRain/HyperCeiler, AGPL-3.0), written anew.
+XSecurity's Extend Unlock switch (ExtendUnlockHooks) is adapted from HyperTrust by StevenWin818
+(GPL-3.0, https://github.com/StevenWin818/HyperTrust).
 The Quick Share "View downloads" fix follows HyperCeiler's BypassForceDownloadui idea
 (https://github.com/ReChronoRain/HyperCeiler, AGPL-3.0); no HyperCeiler code is included.
 The app icon uses the Xiaomi "mi" logo, a trademark of Xiaomi; XGoogle is not affiliated with Xiaomi or Google.

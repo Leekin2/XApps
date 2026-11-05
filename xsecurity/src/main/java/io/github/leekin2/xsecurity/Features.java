@@ -46,6 +46,7 @@ public final class Features {
     public static final String VIDEO_TOOLBOX = "video_toolbox";
     public static final String CALL_TOOLBOX = "call_toolbox";
     public static final String FIND_DEVICE = "find_device_on";
+    public static final String FIND_DEVICE_GOOGLE_MAP = "find_device_google_map";
     public static final String VOLUME_SAFETY_OFF = "volume_safety_off";
     public static final String NOTIFY_SHORT_VIBRATION = "notify_short_vibration";
     // Privacy and system
@@ -70,6 +71,8 @@ public final class Features {
     public static final String CAR_SICKNESS = "car_sickness_relief";
     public static final String APPLOCK_SCRAMBLE = "applock_pin_scramble";
     public static final String LOCKSCREEN_PIN_SCRAMBLE = "lockscreen_pin_scramble";
+    public static final String EXTEND_UNLOCK = "extend_unlock";
+    public static final String CLOCK_SECONDS = "statusbar_clock_seconds";
     public static final String LOW_BATTERY_QUIET = "low_battery_quiet";
     public static final String SIM_SUCCESS_DIALOG_OFF = "sim_success_dialog_off";
     public static final String ROOT_CHECK_OFF = "root_check_off";
@@ -106,7 +109,7 @@ public final class Features {
     public static final String UPDATER_NO_AUTO_DIALOG = "updater_no_auto_dialog";
 
     public static final String[] ALL = {
-            FIND_DEVICE,
+            FIND_DEVICE, FIND_DEVICE_GOOGLE_MAP,
             BATTERY_RANKING, BATTERY_SCREEN_TIME, BATTERY_HEALTH, CHARGE_PROTECT, BATTERY_LIFE, POWER_EXTRAS,
             SMART_CHARGE, SUPER_WIRELESS, POWER_SAVE_REFRESH, POWER_SAVE_BRIGHTNESS, POWER_SAVE_BOOT,
             GAME_FPS, GAME_KEEP_ENABLED, GT_HDR, GT_SUPER_RES, GT_DYNAMIC_PERF, GT_TOUCH, GT_MI_TIME, GT_EXTRAS, GAME_MODES,
@@ -114,7 +117,7 @@ public final class Features {
             NET_QUOTA_KEEP, NET_HOTSPOT_KEEP, NET_APP_CONTROLS, IMS_ICONS, SIM_MENUS,
             VIDEO_TOOLBOX, CALL_TOOLBOX, VOLUME_SAFETY_OFF, NOTIFY_SHORT_VIBRATION,
             FLAG_SECURE, PERM_NO_WAIT, SECOND_SPACE, WARNINGS, FBO, TOOLBOX, DATA_USAGE, APP_INFO, DOCK, CAR_SICKNESS, APPLOCK_SCRAMBLE, LOW_BATTERY_QUIET,
-            SIM_SUCCESS_DIALOG_OFF, ROOT_CHECK_OFF, USB_INSTALL_CHECK_OFF, LOCKSCREEN_PIN_SCRAMBLE,
+            SIM_SUCCESS_DIALOG_OFF, ROOT_CHECK_OFF, USB_INSTALL_CHECK_OFF, LOCKSCREEN_PIN_SCRAMBLE, EXTEND_UNLOCK, CLOCK_SECONDS,
             APP_INFO_BUTTONS, APP_ICON_LAUNCH, MMS_ADS, MMS_FRAUD, MMS_OVERSEAS, MMS_OLD_DEVICE, MMS_COPY_CODE, HOME_PRESTART, HOME_REPORT,
             DARK_MODE_ALL_APPS, STORE_FORCE_CHOOSER, STORE_GETAPPS_MINI,
             CLIPBOARD_WHITELIST, APPLIST_UPLOAD_OFF,
@@ -128,8 +131,8 @@ public final class Features {
      * that change how the phone behaves), plus optional package-manager and framework policies.
      */
     private static final Set<String> OFF_BY_DEFAULT = Set.of(
-            UPDATER_OTA_VALIDATE, UPDATER_NO_AUTO_DIALOG, JOYOSE_CLOUD_OFF, JOYOSE_GPU,
-            APPLOCK_SCRAMBLE, LOCKSCREEN_PIN_SCRAMBLE, LOW_BATTERY_QUIET, GAME_TOAST_OFF, GAME_MACRO, GAME_NETWORK,
+            FIND_DEVICE_GOOGLE_MAP, UPDATER_OTA_VALIDATE, UPDATER_NO_AUTO_DIALOG, JOYOSE_CLOUD_OFF, JOYOSE_GPU,
+            APPLOCK_SCRAMBLE, LOCKSCREEN_PIN_SCRAMBLE, EXTEND_UNLOCK, CLOCK_SECONDS, LOW_BATTERY_QUIET, GAME_TOAST_OFF, GAME_MACRO, GAME_NETWORK,
             APP_INFO_BUTTONS, APP_ICON_LAUNCH, MMS_ADS, MMS_FRAUD, MMS_OVERSEAS, MMS_OLD_DEVICE, MMS_COPY_CODE, HOME_PRESTART, HOME_REPORT,
             NET_QUOTA_KEEP, NET_HOTSPOT_KEEP, SMART_CHARGE, SUPER_WIRELESS, CAR_SICKNESS,
             SIM_SUCCESS_DIALOG_OFF, ROOT_CHECK_OFF, USB_INSTALL_CHECK_OFF, DARK_MODE_ALL_APPS,

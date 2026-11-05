@@ -191,6 +191,16 @@ private fun SectionCard(section: Section, state: UiState, t: Texts, actions: Act
                         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                         modifier = Modifier.clickable(enabled = featureCanChange(state, item.key)) { actions.onChange(item.key, !checked) }
                     )
+                    if (item.key == F.EXTEND_UNLOCK && checked) {
+                        val open = t.features[OPEN_EXTEND_UNLOCK]
+                        ListItem(
+                            headlineContent = { Text(open?.title ?: "") },
+                            supportingContent = open?.summary?.let { { Text(it) } },
+                            leadingContent = { Icon(item.icon, null, tint = section.color) },
+                            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                            modifier = Modifier.clickable(onClick = actions.onOpenExtendUnlock)
+                        )
+                    }
                     if (item.key == F.CLIPBOARD_WHITELIST && checked) {
                         val pick = t.features[PICK_CLIPBOARD]
                         ListItem(

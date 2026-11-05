@@ -5,6 +5,9 @@ import androidx.compose.material.icons.rounded.Block
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.rounded.Map
+import androidx.compose.material.icons.rounded.LockOpen
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.ReportOff
@@ -70,7 +73,8 @@ class Section(val id: String, val icon: ImageVector, val color: Color, val items
 /** Home page order: Find Device and the updater first, then the most used groups. */
 val SECTIONS = listOf(
     Section("finddevice", Icons.Rounded.LocationOn, Color(0xFF2F9E6E), listOf(
-        Item(F.FIND_DEVICE, Icons.Rounded.LocationOn))),
+        Item(F.FIND_DEVICE, Icons.Rounded.LocationOn),
+        Item(F.FIND_DEVICE_GOOGLE_MAP, Icons.Rounded.Map))),
     Section("updater", Icons.Rounded.SystemUpdate, Color(0xFF3482FF), listOf(
         Item(F.UPDATER_NO_AUTO_DIALOG, Icons.Rounded.UpdateDisabled),
         Item(F.UPDATER_OTA_VALIDATE, Icons.Rounded.SystemUpdate))),
@@ -125,6 +129,8 @@ val SECTIONS = listOf(
         Item(F.PERM_NO_WAIT, Icons.Rounded.HourglassDisabled),
         Item(F.APPLOCK_SCRAMBLE, Icons.Rounded.Keyboard),
         Item(F.LOCKSCREEN_PIN_SCRAMBLE, Icons.Rounded.Keyboard),
+        Item(F.EXTEND_UNLOCK, Icons.Rounded.LockOpen),
+        Item(F.CLOCK_SECONDS, Icons.Rounded.Schedule),
         Item(F.CAR_SICKNESS, Icons.Rounded.CarCrash),
         Item(F.SECOND_SPACE, Icons.Rounded.Group),
         Item(F.WARNINGS, Icons.Rounded.CarCrash),
@@ -194,4 +200,6 @@ class Actions(
     val onHideIcon: (Boolean) -> Unit,
     /** Opens the picker for apps allowed to read the clipboard in the background. */
     val onPickClipboardApps: () -> Unit,
+    /** Opens Google's Extend Unlock page, hidden on HyperOS. */
+    val onOpenExtendUnlock: () -> Unit,
 )

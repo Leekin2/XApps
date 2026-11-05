@@ -56,7 +56,7 @@ final class FindDeviceHooks {
     private Field lng;
     private Resolved cache;
     private long retryAfter;
-    private volatile long lastRefreshCommand;
+    private final Map<String, Long> lastRefreshCommand = new java.util.concurrent.ConcurrentHashMap<>();
 
     FindDeviceHooks(Hooks hooks, ClassLoader loader) {
         this.hooks = hooks;
@@ -77,6 +77,7 @@ final class FindDeviceHooks {
         step("server address", this::serverAddress);
         step("map points", this::mapPoints);
         step("refresh command", this::refreshCommand);
+        if (Features.enabled(Features.FIND_DEVICE_GOOGLE_MAP)) step("Google map", () -> new GoogleMapLayer(hooks, loader).install());
         try (DexTargets targets = new DexTargets(loader, apk, data)) {
             step("report result", () -> reportResult(targets));
             step("own address", () -> ownAddress(targets));
@@ -200,6 +201,7 @@ final class FindDeviceHooks {
         sender.setAccessible(true);
         Object locate = enumValue(sender.getParameterTypes()[2], "LOCATION");
         Method isPadOrPhone = device.getMethod("isPadOrPhone");
+        Method getFid = device.getMethod("getFid");
         // Only remote devices get this mission; the device itself reports on another path.
         Constructor<?> mission = loader.loadClass(ROOT + ".coreserver.business.refresh.DeviceDetailRefreshMission")
                 .getDeclaredConstructors()[0];
@@ -207,14 +209,22 @@ final class FindDeviceHooks {
             Object result = chain.proceed();
             Object target = chain.getArg(0);
             if (device.isInstance(target) && Boolean.TRUE.equals(isPadOrPhone.invoke(target))) {
+                String id = String.valueOf(getFid.invoke(target));
                 long now = SystemClock.elapsedRealtime();
-                if (now - lastRefreshCommand > 15000) {
-                    lastRefreshCommand = now;
+                Long last = lastRefreshCommand.get(id);
+                if (last == null || now - last > 15000) {
+                    lastRefreshCommand.put(id, now);
                     new Thread(() -> {
                         try {
                             Context context = application();
-                            sender.invoke(get.invoke(null, context), context, target, locate);
+                            Object reply = sender.invoke(get.invoke(null, context), context, target, locate);
+                            int code = reply instanceof JSONObject ? ((JSONObject) reply).optInt("code", -1) : -1;
+                            if (code != 0) {
+                                lastRefreshCommand.remove(id);
+                                hooks.info("Find Device: refresh command refused: " + code);
+                            }
                         } catch (Throwable failure) {
+                            lastRefreshCommand.remove(id);
                             hooks.info("Find Device: refresh command failed: " + failure.getClass().getSimpleName());
                         }
                     }, "XAppsFindDeviceRefresh").start();
@@ -345,6 +355,14 @@ final class FindDeviceHooks {
             if ((y == 0 && x == 0) || inMainland(y, x)) return chain.proceed();
             String place = y + "," + x;
             Intent view = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + place + "?q=" + place));
+            Intent google = new Intent(view).setPackage("com.google.android.apps.maps");
+            if (!(context instanceof android.app.Activity)) google.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try {
+                context.startActivity(google);
+                return null;
+            } catch (android.content.ActivityNotFoundException missing) {
+                // Google Maps is absent or disabled: offer whatever map app is installed.
+            }
             if (view.resolveActivity(context.getPackageManager()) == null) return chain.proceed();
             Intent chooser = Intent.createChooser(view, chooserTitle());
             if (!(context instanceof android.app.Activity)) chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

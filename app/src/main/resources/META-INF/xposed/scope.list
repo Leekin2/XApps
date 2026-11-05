@@ -3,7 +3,6 @@ com.android.systemui
 com.android.settings
 com.android.camera
 com.google.android.googlequicksearchbox
-com.google.android.apps.walletnfcrel
 com.miui.voiceassist
 com.miui.aod
 com.miui.securitycore

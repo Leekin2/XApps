@@ -5,6 +5,7 @@ import io.github.leekin2.xsecurity.Features as F
 /** Descriptions distinguish master settings from active sessions and granted permissions. */
 /** Key of the "choose apps" row under the background clipboard switch. */
 const val PICK_CLIPBOARD = "clipboard_pick_apps"
+const val OPEN_EXTEND_UNLOCK = "open_extend_unlock"
 
 internal fun extensionLines(language: AppLanguage): Map<String, Line> = when (language) {
     AppLanguage.TR -> mapOf(

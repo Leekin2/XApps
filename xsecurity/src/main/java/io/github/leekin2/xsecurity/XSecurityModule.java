@@ -47,6 +47,8 @@ public final class XSecurityModule extends XposedModule {
             new DarkModeSearchHooks(hooks, param.getClassLoader()).install();
         } else if (SYSTEM_UI.equals(name) && (process == null || process.equals(SYSTEM_UI))) {
             new LockscreenPinHooks(hooks, param.getClassLoader()).install();
+            new ExtendUnlockHooks(hooks, param.getClassLoader()).install();
+            new ClockSecondsHooks(hooks, param.getClassLoader()).install();
             new ImsIconHooks(hooks, param.getClassLoader()).install();
         } else if (PHONE.equals(name) && (process == null || process.equals(PHONE))) {
             new PhoneHooks(hooks, param.getClassLoader()).install();

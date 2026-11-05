@@ -30,7 +30,8 @@ Find your device with its street address, usually in 5-10 seconds, from **[i.mi.
 - **Right location:** correct on devices without GPS too, such as tablets.
 - **Right place on the map:** device icons and the blue dot no longer drift.
 - **Alarm works:** remote commands work in every system language.
-- **Route:** asks which map app to open, such as Google Maps or Yandex Maps.
+- **Route:** opens Google Maps directly. Without Google Maps, it asks which map app to open.
+- **Google map (experimental, separate switch, off by default):** the map inside Find Device shows Google's map, without Baidu's labels and logo. It uses an unofficial Google address; if Google can't be reached, Baidu's map comes back.
 
 The map inside the app is still Xiaomi's Baidu map. A device needs internet to send a new location, and Find Device must be on with your Xiaomi account. The address comes from the phone's geocoding service and goes to Xiaomi with the location it already reports. A tablet without GPS uses Wi-Fi location, so 10-30 m of drift is normal.
 
@@ -96,7 +97,8 @@ Cihazınızı **[i.mi.com/find](https://i.mi.com/find)** adresinden veya diğer 
 - **Doğru konum:** tablet gibi GPS'i olmayan cihazlarda da konum doğru çıkar.
 - **Haritada doğru yer:** cihaz simgeleri ve mavi nokta artık kaymaz.
 - **Alarm çalışır:** uzaktan komutlar her sistem dilinde çalışır.
-- **Rota:** hangi harita uygulamasının açılacağını sorar (Google Haritalar, Yandex Haritalar gibi).
+- **Rota:** doğrudan Google Haritalar'ı açar. Google Haritalar yoksa hangi harita uygulamasının açılacağını sorar.
+- **Google haritası (deneysel, ayrı anahtar, varsayılan kapalı):** Cihazı Bul'un içindeki harita, Baidu'nun yazıları ve logosu olmadan Google haritasını gösterir. Resmî olmayan bir Google adresi kullanır; Google'a ulaşılamazsa Baidu haritası geri gelir.
 
 Uygulamanın içindeki harita yine Xiaomi'nin Baidu haritasıdır. Yeni konum göndermek için cihazda internet gerekir, Cihazı Bul da Xiaomi hesabınızla açık olmalıdır. Adres telefonun adres hizmetinden alınır ve zaten bildirilen konumla birlikte Xiaomi'ye gider. GPS'i olmayan tablet Wi-Fi konumu kullanır, 10-30 metre sapma normaldir.
 

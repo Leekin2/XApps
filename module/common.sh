@@ -11,24 +11,35 @@ copy_prefs() {
   dir=/data/data/$XAPPS_PKG/shared_prefs
   dst=$dir/$3.xml
   [ -f "$src" ] && [ ! -f "$dst" ] || return 0
-  uid=$(stat -c %u "/data/data/$XAPPS_PKG") || return 0
+  uid=$(stat -c %u "/data/data/$XAPPS_PKG") || return 1
   # The app's own label, with its per-app categories (restorecon leaves those out).
-  ctx=$(/system/bin/ls -dZ "/data/data/$XAPPS_PKG") || return 0
+  ctx=$(/system/bin/ls -dZ "/data/data/$XAPPS_PKG") || return 1
   ctx=${ctx%% *}
-  mkdir -p "$dir" && chown "$uid:$uid" "$dir" && chmod 771 "$dir" && chcon "$ctx" "$dir"
-  cp -f "$src" "$dst" && chown "$uid:$uid" "$dst" && chmod 660 "$dst" && chcon "$ctx" "$dst" || return 0
+  mkdir -p "$dir" && chown "$uid:$uid" "$dir" && chmod 771 "$dir" && chcon "$ctx" "$dir" || return 1
+  if ! { cp -f "$src" "$dst" && chown "$uid:$uid" "$dst" && chmod 660 "$dst" && chcon "$ctx" "$dst"; }; then
+    rm -f "$dst"
+    return 1
+  fi
   echo "settings: copied $1 $2"
 }
 
 # Old XGoogle / XSecurity / XNotify / XReply apps: settings come over, then they are uninstalled.
+# An app whose settings did not come over stays, because uninstalling it would lose them for good.
 retire_old_apps() {
   for pkg in $OLD_APPS; do
     pm path "$pkg" > /dev/null 2>&1 || continue
     am force-stop "$pkg" 2>/dev/null
+    copied=true
     case "$pkg" in
-      *.xgoogle) copy_prefs "$pkg" xgoogle_ui xgoogle_ui ;;
-      *.xsecurity) copy_prefs "$pkg" switches xsecurity_switches; copy_prefs "$pkg" ui xsecurity_ui ;;
+      *.xgoogle) copy_prefs "$pkg" xgoogle_ui xgoogle_ui || copied=false ;;
+      *.xsecurity)
+        copy_prefs "$pkg" switches xsecurity_switches || copied=false
+        copy_prefs "$pkg" ui xsecurity_ui || copied=false ;;
     esac
+    if [ "$copied" != true ]; then
+      echo "old app: $pkg kept, its settings could not be copied. Uninstall it by hand"
+      continue
+    fi
     if pm uninstall "$pkg" > /dev/null 2>&1; then echo "old app: $pkg uninstalled"; else echo "old app: $pkg could not be uninstalled, remove it by hand"; fi
   done
 }
@@ -58,11 +69,19 @@ xapps_setup() {
   pm list packages > "$tmp/packages.txt"
   # Before the old apps go: uninstalling one drops its LSPosed settings.
   res=$(app_process -Djava.class.path="$apk" /system/bin io.github.leekin2.xapps.ScopeWriter "$LSPD_DB" "$apk" 0 "$tmp/packages.txt" $OLD_APPS 2>&1)
-  case "$res" in
-    ok*) set -- $res; echo "lsposed: enabled, scope ticked ($2 new), old settings copied ($3)" ;;
-    *) echo "lsposed: could not write ($res), enable XApps and tick its scope in LSPosed" ;;
-  esac
   rm -rf "$tmp"
-  retire_old_apps
+  case "$res" in
+    ok*)
+      set -- $res
+      echo "lsposed: enabled, scope ticked ($2 new), old settings copied ($3)"
+      retire_old_apps
+      ;;
+    *)
+      echo "lsposed: could not write ($res), enable XApps and tick its scope in LSPosed"
+      for pkg in $OLD_APPS; do
+        pm path "$pkg" > /dev/null 2>&1 && echo "old app: $pkg kept, its LSPosed settings were not copied. Uninstall it by hand"
+      done
+      ;;
+  esac
   return 0
 }
