@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Block
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.ReportOff
@@ -49,8 +50,10 @@ import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.UpdateDisabled
+import androidx.compose.material.icons.rounded.Vibration
 import androidx.compose.material.icons.rounded.VideoCall
 import androidx.compose.material.icons.rounded.ViewSidebar
+import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.WifiTethering
 import androidx.compose.material.icons.rounded.CloudOff
 import androidx.compose.material.icons.rounded.Wifi
@@ -64,8 +67,10 @@ class Item(val key: String, val icon: ImageVector)
 /** A folding card of the home page, with its badge color. */
 class Section(val id: String, val icon: ImageVector, val color: Color, val items: List<Item>)
 
-/** Home page order: the updater first, then the most used groups. */
+/** Home page order: Find Device and the updater first, then the most used groups. */
 val SECTIONS = listOf(
+    Section("finddevice", Icons.Rounded.LocationOn, Color(0xFF2F9E6E), listOf(
+        Item(F.FIND_DEVICE, Icons.Rounded.LocationOn))),
     Section("updater", Icons.Rounded.SystemUpdate, Color(0xFF3482FF), listOf(
         Item(F.UPDATER_NO_AUTO_DIALOG, Icons.Rounded.UpdateDisabled),
         Item(F.UPDATER_OTA_VALIDATE, Icons.Rounded.SystemUpdate))),
@@ -107,7 +112,9 @@ val SECTIONS = listOf(
         Item(F.LOW_BATTERY_QUIET, Icons.Rounded.NotificationsOff))),
     Section("media", Icons.Rounded.Movie, Color(0xFFE0558E), listOf(
         Item(F.VIDEO_TOOLBOX, Icons.Rounded.Movie),
-        Item(F.CALL_TOOLBOX, Icons.Rounded.VideoCall))),
+        Item(F.CALL_TOOLBOX, Icons.Rounded.VideoCall),
+        Item(F.VOLUME_SAFETY_OFF, Icons.Rounded.VolumeUp),
+        Item(F.NOTIFY_SHORT_VIBRATION, Icons.Rounded.Vibration))),
     Section("system", Icons.Rounded.Info, Color(0xFF6E7787), listOf(
         Item(F.FLAG_SECURE, Icons.Rounded.Screenshot),
         Item(F.APP_INFO, Icons.Rounded.Info),

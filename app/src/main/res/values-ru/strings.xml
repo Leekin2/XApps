@@ -15,4 +15,6 @@
     <string name="group_old">Старые модули</string>
     <string name="old_summary">Установлен отдельно: удалите его, XApps уже включает его.</string>
     <string name="xapps_version">Версия %1$s</string>
+    <string name="xapps_hide_icon">Скрыть значок на главном экране</string>
+    <string name="xapps_hide_icon_summary">После скрытия открывайте XApps из настроек модуля в LSPosed.</string>
 </resources>

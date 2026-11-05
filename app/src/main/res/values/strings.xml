@@ -19,4 +19,6 @@
     <string name="group_old">Old modules</string>
     <string name="old_summary">Installed separately: uninstall it, XApps already contains it.</string>
     <string name="xapps_version">Version %1$s</string>
+    <string name="xapps_hide_icon">Hide home screen icon</string>
+    <string name="xapps_hide_icon_summary">Once hidden, open XApps from its module settings in LSPosed.</string>
 </resources>

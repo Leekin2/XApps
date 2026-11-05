@@ -15,4 +15,6 @@
     <string name="group_old">旧模块</string>
     <string name="old_summary">已单独安装：请卸载，XApps 已包含它。</string>
     <string name="xapps_version">版本 %1$s</string>
+    <string name="xapps_hide_icon">隐藏桌面图标</string>
+    <string name="xapps_hide_icon_summary">隐藏后可从 LSPosed 的模块设置中打开 XApps。</string>
 </resources>

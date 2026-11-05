@@ -50,7 +50,7 @@ public final class XGoogleModule extends XposedModule {
         if (PhotosUnlimitedHooks.PHOTOS.equals(packageName) && FeatureConfig.enabled(FeaturePolicy.PHOTOS_DCIM))
             PhotosFolderHooks.install(hooks, param.getClassLoader(), processName, param.getApplicationInfo().sourceDir,
                     param.getApplicationInfo().dataDir);
-        if ("com.android.camera".equals(packageName) && FeatureConfig.enabled(FeaturePolicy.CAMERA_LENS)) CameraLensHooks.install(hooks, param.getClassLoader());
+        if ("com.android.camera".equals(packageName) && FeatureConfig.enabled(FeaturePolicy.CAMERA_LENS)) CameraLensHooks.install(hooks, param.getClassLoader(), param.getApplicationInfo().sourceDir, param.getApplicationInfo().dataDir);
         if ("com.android.systemui".equals(packageName) || "com.android.settings".equals(packageName)
                 || "com.google.android.apps.walletnfcrel".equals(packageName)
                 || "com.miui.voiceassist".equals(packageName)

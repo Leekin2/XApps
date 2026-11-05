@@ -15,4 +15,6 @@
     <string name="group_old">Módulos antiguos</string>
     <string name="old_summary">Instalado por separado: desinstálalo, XApps ya lo incluye.</string>
     <string name="xapps_version">Versión %1$s</string>
+    <string name="xapps_hide_icon">Ocultar icono de inicio</string>
+    <string name="xapps_hide_icon_summary">Una vez oculto, abra XApps desde los ajustes del módulo en LSPosed.</string>
 </resources>

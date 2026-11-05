@@ -2,7 +2,9 @@
 package io.github.leekin2.xapps
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -28,6 +30,7 @@ import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Tune
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -80,6 +83,10 @@ class MainActivity : ComponentActivity() {
     private var service by mutableStateOf<XposedService?>(null)
     private var switches by mutableStateOf(mapOf<String, Boolean>())
     private var oldInstalled by mutableStateOf(listOf<Part>())
+    private var iconHidden by mutableStateOf(false)
+
+    // The alias class is under the code namespace.
+    private val launcherAlias get() = ComponentName(this, "io.github.leekin2.xapps.Launcher")
 
     private val listener = object : XposedServiceHelper.OnServiceListener {
         override fun onServiceBind(value: XposedService) { runOnUiThread { bind(value) } }
@@ -96,9 +103,20 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        iconHidden = packageManager.getComponentEnabledSetting(launcherAlias) == PackageManager.COMPONENT_ENABLED_STATE_DISABLED
         // Re-checked on return from an uninstall.
         oldInstalled = PARTS.filter { part ->
             runCatching { packageManager.getPackageInfo(part.oldPackage, 0) }.isSuccess
+        }
+    }
+
+    /** Hides or shows the home screen icon; the app still opens from LSPosed when hidden. */
+    private fun changeIconHidden(hidden: Boolean) {
+        runCatching {
+            packageManager.setComponentEnabledSetting(launcherAlias,
+                if (hidden) PackageManager.COMPONENT_ENABLED_STATE_DISABLED else PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP)
+            iconHidden = hidden
         }
     }
 
@@ -152,6 +170,13 @@ class MainActivity : ComponentActivity() {
                                 startAction = { Tile(Icons.Rounded.Tune, null) }, enabled = on,
                                 onClick = { startActivity(Intent(this@MainActivity, part.settings)) })
                         }
+                    }
+                }
+                item(key = "icon") {
+                    Card(Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
+                        SwitchPreference(checked = iconHidden, onCheckedChange = ::changeIconHidden,
+                            title = stringResource(R.string.xapps_hide_icon), summary = stringResource(R.string.xapps_hide_icon_summary),
+                            startAction = { Tile(Icons.Rounded.VisibilityOff, null) })
                     }
                 }
                 item {

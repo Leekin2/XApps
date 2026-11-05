@@ -134,7 +134,7 @@ class MainActivity : ComponentActivity() {
         runCatching {
             val scope = service.scope.toSet()
             val supported = setOf("system", "com.miui.securitycenter", "com.miui.powerkeeper",
-                "com.android.updater", "com.xiaomi.joyose", "com.android.thememanager", "com.miui.guardprovider", "com.android.settings", "com.android.systemui", "com.android.phone", "com.android.mms")
+                "com.android.updater", "com.xiaomi.joyose", "com.android.thememanager", "com.miui.guardprovider", "com.xiaomi.finddevice", "com.android.settings", "com.android.systemui", "com.android.phone", "com.android.mms")
             val missing = supported.filter { it !in scope }
                 .filter { it == "system" || runCatching { packageManager.getPackageInfo(it, 0) }.isSuccess }
             if (missing.isEmpty()) return
@@ -243,7 +243,7 @@ class MainActivity : ComponentActivity() {
             // Root is proven by "id -u" printing 0; a process that is already gone is not a failure.
             // Processes are found by exact name: "pkill -f" would also match (and kill) this shell.
             val names = "com.miui.securitycenter com.miui.securitycenter.remote com.miui.securitycenter.power " +
-                "com.miui.securitycenter:ui com.miui.securitycenter.bootaware com.miui.powerkeeper com.xiaomi.joyose com.android.updater com.android.thememanager com.miui.guardprovider com.android.settings com.android.mms com.miui.home"
+                "com.miui.securitycenter:ui com.miui.securitycenter.bootaware com.miui.powerkeeper com.xiaomi.joyose com.android.updater com.android.thememanager com.miui.guardprovider com.xiaomi.finddevice com.android.settings com.android.mms com.miui.home"
             val ok = runCatching {
                 val process = ProcessBuilder("su", "-c",
                     "id -u; am force-stop com.miui.securitycenter; am force-stop com.android.updater; " +

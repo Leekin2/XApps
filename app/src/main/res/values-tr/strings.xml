@@ -14,4 +14,6 @@
     <string name="group_old">Eski modüller</string>
     <string name="old_summary">Ayrı olarak yüklü: kaldırın, XApps zaten içeriyor.</string>
     <string name="xapps_version">Sürüm %1$s</string>
+    <string name="xapps_hide_icon">Ana ekran simgesini gizle</string>
+    <string name="xapps_hide_icon_summary">Gizlenince uygulamayı LSPosed modül ayarlarından açın.</string>
 </resources>
