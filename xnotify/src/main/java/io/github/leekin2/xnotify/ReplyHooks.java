@@ -558,16 +558,15 @@ final class ReplyHooks {
     /**
      * The reply box is inflated when the user taps Reply, long after the row was styled, and sits
      * flush against the card's bottom edge. Give it the same breathing room as the buttons.
+     * This is padding applied while inflating, so it is part of the box's own measured height:
+     * a margin set after layout is not counted in the row's height, and tall notifications
+     * (several messages, long text, inline chips) clip it away.
      */
     private static void padReplyBox(View box) {
-        box.post(() -> {
-            if (!(box.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)) return;
-            if (box.getTag(TAG_REPLY_GAP) != null) return;
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) box.getLayoutParams();
-            lp.bottomMargin += Math.round(10 * box.getResources().getDisplayMetrics().density);
-            box.setTag(TAG_REPLY_GAP, Boolean.TRUE);
-            box.setLayoutParams(lp);
-        });
+        if (box.getTag(TAG_REPLY_GAP) != null) return;
+        box.setTag(TAG_REPLY_GAP, Boolean.TRUE);
+        int gap = Math.round(10 * box.getResources().getDisplayMetrics().density);
+        box.setPadding(box.getPaddingLeft(), box.getPaddingTop(), box.getPaddingRight(), box.getPaddingBottom() + gap);
     }
 
     private static final int TAG_REPLY_GAP = 0x7f0f_5ee2;
