@@ -533,6 +533,26 @@ final class ReplyHooks {
      * thumbnail already and ends up visibly bottom-heavy, so the strip goes away for those only.
      */
     private static void trimCollapsedStrip(View content) {
+        applyStripTrim(content);
+        // Rows inside an expanded group are laid out later than the update that styled them, and
+        // the strip can come back, so look again whenever the row is laid out.
+        View top = findStripRow(content);
+        if (top != null && top.getTag(TAG_STRIP_WATCH) == null) {
+            top.setTag(TAG_STRIP_WATCH, Boolean.TRUE);
+            top.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> applyStripTrim(content));
+        }
+    }
+
+    private static View findStripRow(View content) {
+        int rowId = Resources.getSystem().getIdentifier("notification_headerless_view_row", "id", "android");
+        if (rowId == 0) return null;
+        View headerless = content.findViewById(rowId);
+        return headerless != null && headerless.getParent() instanceof View ? (View) headerless.getParent() : null;
+    }
+
+    private static final int TAG_STRIP_WATCH = 0x7f0f_5ee4;
+
+    private static void applyStripTrim(View content) {
         Resources system = Resources.getSystem();
         int rowId = system.getIdentifier("notification_headerless_view_row", "id", "android");
         if (rowId == 0) return;
