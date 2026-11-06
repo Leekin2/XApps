@@ -31,8 +31,13 @@ public final class ScopeWriter {
     public static void main(String[] args) {
         try {
             List<String> old = new ArrayList<>();
-            for (int i = 4; i < args.length; i++) old.add(args[i]);
-            int[] counts = write(args[0], args[1], Integer.parseInt(args[2]), installed(args[3]), old);
+            List<String> disable = new ArrayList<>();
+            boolean off = false;
+            for (int i = 4; i < args.length; i++) {
+                if ("--disable".equals(args[i])) off = true;
+                else (off ? disable : old).add(args[i]);
+            }
+            int[] counts = write(args[0], args[1], Integer.parseInt(args[2]), installed(args[3]), old, disable);
             System.out.println("ok " + counts[0] + " " + counts[1]);
         } catch (Throwable t) {
             System.out.println("fail " + t);
@@ -40,7 +45,8 @@ public final class ScopeWriter {
         }
     }
 
-    private static int[] write(String path, String apk, int user, Set<String> installed, List<String> old) throws Exception {
+    private static int[] write(String path, String apk, int user, Set<String> installed, List<String> old,
+            List<String> disable) throws Exception {
         List<String> scope = new ArrayList<>();
         for (String app : scopeList())
             if (!OPTIONAL.contains(app) && (app.equals("system") || installed.contains(app))) scope.add(app);
@@ -74,6 +80,12 @@ public final class ScopeWriter {
             }
             added += copyScopes(db, old, user);
             int copied = copyConfigs(db, old);
+            // Old modules that stay installed must not hook next to XApps.
+            boolean perUser = !columns(db, "modules").contains("mid");
+            for (String module : disable) {
+                if (perUser) db.execSQL("UPDATE modules_state SET enabled = 0 WHERE module_pkg_name = ?", new Object[]{module});
+                else db.execSQL("UPDATE modules SET enabled = 0 WHERE module_pkg_name = ?", new Object[]{module});
+            }
             db.setTransactionSuccessful();
             return new int[]{added, copied};
         } finally {

@@ -23,23 +23,39 @@ copy_prefs() {
   echo "settings: copied $1 $2"
 }
 
-# Old XGoogle / XSecurity / XNotify / XReply apps: settings come over, then they are uninstalled.
-# An app whose settings did not come over stays, because uninstalling it would lose them for good.
-retire_old_apps() {
+# Old XGoogle / XSecurity / XNotify / XReply apps: their settings come over first. Prints the apps
+# whose settings could not be copied: they stay installed (uninstalling would lose the settings for
+# good) and are switched off in LSPosed instead, so they never hook next to XApps.
+copy_old_settings() {
   for pkg in $OLD_APPS; do
     pm path "$pkg" > /dev/null 2>&1 || continue
     am force-stop "$pkg" 2>/dev/null
     copied=true
     case "$pkg" in
-      *.xgoogle) copy_prefs "$pkg" xgoogle_ui xgoogle_ui || copied=false ;;
+      *.xgoogle) copy_prefs "$pkg" xgoogle_ui xgoogle_ui > /dev/null || copied=false ;;
       *.xsecurity)
-        copy_prefs "$pkg" switches xsecurity_switches || copied=false
-        copy_prefs "$pkg" ui xsecurity_ui || copied=false ;;
+        copy_prefs "$pkg" switches xsecurity_switches > /dev/null || copied=false
+        copy_prefs "$pkg" ui xsecurity_ui > /dev/null || copied=false ;;
     esac
-    if [ "$copied" != true ]; then
-      echo "old app: $pkg kept, its settings could not be copied. Uninstall it by hand"
-      continue
-    fi
+    [ "$copied" = true ] || echo "$pkg"
+  done
+}
+
+# Uninstalls the old apps, except those given as arguments.
+# $1: "off" when the kept apps were switched off in LSPosed, "kept" otherwise; then the kept apps.
+retire_old_apps() {
+  mode=$1; shift
+  for pkg in $OLD_APPS; do
+    pm path "$pkg" > /dev/null 2>&1 || continue
+    case " $* " in
+      *" $pkg "*)
+        if [ "$mode" = off ]; then
+          echo "old app: $pkg kept and switched off in LSPosed, its settings could not be copied. Uninstall it by hand"
+        else
+          echo "old app: $pkg kept, its settings could not be copied. Switch it off in LSPosed and uninstall it by hand"
+        fi
+        continue ;;
+    esac
     if pm uninstall "$pkg" > /dev/null 2>&1; then echo "old app: $pkg uninstalled"; else echo "old app: $pkg could not be uninstalled, remove it by hand"; fi
   done
 }
@@ -64,20 +80,23 @@ xapps_setup() {
   fi
   if [ ! -f "$LSPD_DB" ]; then
     echo "lsposed: not found, install LSPosed and enable XApps there"
-    rm -rf "$tmp"; retire_old_apps; return 0
+    rm -rf "$tmp"; retire_old_apps kept $(copy_old_settings); return 0
   fi
   pm list packages > "$tmp/packages.txt"
+  kept=$(copy_old_settings)
   # Before the old apps go: uninstalling one drops its LSPosed settings.
-  res=$(app_process -Djava.class.path="$apk" /system/bin io.github.leekin2.xapps.ScopeWriter "$LSPD_DB" "$apk" 0 "$tmp/packages.txt" $OLD_APPS 2>&1)
+  res=$(app_process -Djava.class.path="$apk" /system/bin io.github.leekin2.xapps.ScopeWriter "$LSPD_DB" "$apk" 0 "$tmp/packages.txt" $OLD_APPS --disable $kept 2>"$tmp/scope.err" | tail -n 1)
+  err=$(tail -n 3 "$tmp/scope.err" 2>/dev/null | tr '
+' ' ')
   rm -rf "$tmp"
   case "$res" in
     ok*)
       set -- $res
       echo "lsposed: enabled, scope ticked ($2 new), old settings copied ($3)"
-      retire_old_apps
+      retire_old_apps off $kept
       ;;
     *)
-      echo "lsposed: could not write ($res), enable XApps and tick its scope in LSPosed"
+      echo "lsposed: could not write (${res:-no answer}${err:+; $err}), enable XApps and tick its scope in LSPosed"
       for pkg in $OLD_APPS; do
         pm path "$pkg" > /dev/null 2>&1 && echo "old app: $pkg kept, its LSPosed settings were not copied. Uninstall it by hand"
       done

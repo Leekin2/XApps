@@ -110,6 +110,7 @@ final class SecurityHooks {
             if (Features.enabled(Features.VIDEO_TOOLBOX)) run("video toolbox temperature", () -> extra.videoTemperature(targets));
             if (Features.enabled(Features.VIDEO_TOOLBOX)) run("video Dolby", () -> extra.videoDolby(targets));
             if (Features.enabled(Features.VIDEO_TOOLBOX)) run("new video box", () -> extra.newVideoBox(targets));
+            if (Features.enabled(Features.VIDEO_SCREEN_OFF_SOUND)) run("video screen-off sound", () -> extra.screenOffSound(targets));
             if (Features.enabled(Features.CALL_TOOLBOX)) run("call beauty", () -> extra.callBeauty(targets));
             if (in(here, MAIN | REMOTE) && Features.enabled(Features.BATTERY_LIFE)) run("low temperature endurance", () -> extra.lowTempEndurance(targets));
             if (in(here, MAIN | REMOTE) && Features.enabled(Features.CAR_SICKNESS)) run("car sickness relief", () -> extra.carSickness(targets));

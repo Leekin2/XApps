@@ -116,6 +116,7 @@ val SECTIONS = listOf(
         Item(F.LOW_BATTERY_QUIET, Icons.Rounded.NotificationsOff))),
     Section("media", Icons.Rounded.Movie, Color(0xFFE0558E), listOf(
         Item(F.VIDEO_TOOLBOX, Icons.Rounded.Movie),
+        Item(F.VIDEO_SCREEN_OFF_SOUND, Icons.Rounded.VolumeUp),
         Item(F.CALL_TOOLBOX, Icons.Rounded.VideoCall),
         Item(F.VOLUME_SAFETY_OFF, Icons.Rounded.VolumeUp),
         Item(F.NOTIFY_SHORT_VIBRATION, Icons.Rounded.Vibration))),

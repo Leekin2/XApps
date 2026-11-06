@@ -1,7 +1,7 @@
 id=xapps
 name=XApps
-version=1.0.4
-versionCode=144
+version=1.0.5
+versionCode=145
 author=Leekin
 description=XGoogle, XSecurity and XNotify in one module. Installs the XApps app, enables it in LSPosed and ticks its scope. Needs LSPosed.
 updateJson=https://raw.githubusercontent.com/Leekin2/XApps/main/update.json

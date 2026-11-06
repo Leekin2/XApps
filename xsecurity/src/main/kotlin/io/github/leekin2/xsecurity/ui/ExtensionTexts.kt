@@ -6,6 +6,7 @@ import io.github.leekin2.xsecurity.Features as F
 /** Key of the "choose apps" row under the background clipboard switch. */
 const val PICK_CLIPBOARD = "clipboard_pick_apps"
 const val OPEN_EXTEND_UNLOCK = "open_extend_unlock"
+const val EXTEND_UNLOCK_FAILED = "extend_unlock_failed"
 
 internal fun extensionLines(language: AppLanguage): Map<String, Line> = when (language) {
     AppLanguage.TR -> mapOf(

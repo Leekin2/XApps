@@ -245,7 +245,9 @@ class MainActivity : ComponentActivity() {
                 process.inputStream.readBytes()
                 process.waitFor() == 0
             }.getOrDefault(false)
-            if (!ok) runOnUiThread { Toast.makeText(this, texts.restartFailed, Toast.LENGTH_LONG).show() }
+            if (!ok) runOnUiThread {
+                Toast.makeText(this, texts.features[io.github.leekin2.xsecurity.ui.EXTEND_UNLOCK_FAILED]?.title ?: texts.restartFailed, Toast.LENGTH_LONG).show()
+            }
         }
     }
 

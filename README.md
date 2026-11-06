@@ -14,13 +14,17 @@
 
 Each part can be turned on or off on the XApps home screen. A part that is off is not loaded at all, so it costs nothing. Each part keeps its own settings screen.
 
-## New in 1.0.2
+## New in 1.0.5
 
-- **Find Device fix:** see the section below.
-- **Camera Google Lens button:** found by scanning the camera app, so it keeps working after camera updates. Turn it on in XGoogle.
-- **Hide home screen icon:** a switch on the XApps home screen.
-- **Remove the high volume warning:** a switch in XSecurity, off by default.
-- **Short notification vibration:** a switch in XSecurity, off by default. Apps with their own vibration pattern keep it.
+- **Video sound with screen off:** a new XSecurity switch, off by default. Shows "Play video sound with screen off" in the video toolbox on Global ROMs and on devices where Xiaomi hid it, when the system supports it.
+- **Extend Unlock (Smart Lock):** the lock screen now takes the trusted state straight from Android. If you use Smart Lock, please tell us whether a trusted device or place keeps the phone unlocked.
+- **Clock seconds:** no wrong minute for a moment when the minute changes, and no refresh while the screen is off.
+- Fixes for moving from the old apps, for removing the module and for the experimental Google map. See the [changelog](CHANGELOG.md).
+
+## Earlier
+
+- **1.0.4:** seconds on the status bar clock, Extend Unlock (Smart Lock), experimental Google map in Find Device. All off by default.
+- **1.0.2:** Find Device fix (see below), Google Lens button in the camera, hide the home screen icon, remove the high volume warning, short notification vibration.
 
 ## Find Device (Xiaomi Find Device fix)
 
@@ -81,13 +85,17 @@ AGPL-3.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE). Not affiliated with Xiaom
 
 Her bölüm XApps ana ekranından açılıp kapanır. Kapalı bölüm hiç yüklenmez. Her bölümün kendi ayar ekranı vardır.
 
-### 1.0.2'de yeni
+### 1.0.5'te yeni
 
-- **Cihazı Bul düzeltmesi:** aşağıdaki bölüme bakın.
-- **Kamerada Google Lens düğmesi:** kamera uygulaması taranarak bulunur, kamera güncellense de çalışmaya devam eder. XGoogle'dan açılır.
-- **Ana ekran simgesini gizleme:** XApps ana ekranında bir anahtar.
-- **Yüksek ses uyarısını kaldırma:** XSecurity'de bir anahtar, varsayılan kapalı.
-- **Kısa bildirim titreşimi:** XSecurity'de bir anahtar, varsayılan kapalı. Kendi titreşim düzeni olan uygulamalar onu korur.
+- **Ekran kapalıyken video sesi:** XSecurity'de yeni bir anahtar, varsayılan kapalı. Video araç kutusundaki "Ekran kapalıyken video sesi" kısayolunu Global ROM'da ve Xiaomi'nin gizlediği cihazlarda da gösterir; sistem desteklemiyorsa eklenmez.
+- **Genişletilmiş Kilit Açma (Smart Lock):** kilit ekranı güvenilir durumu artık doğrudan Android'den alıyor. Smart Lock kullanıyorsanız, güvenilir cihaz veya yerde telefonun kilitsiz kalıp kalmadığını bize bildirin.
+- **Saatte saniye:** dakika değişirken bir an yanlış dakika görünmez, ekran kapalıyken saat yenilenmez.
+- Eski uygulamalardan geçiş, modülü kaldırma ve deneysel Google haritası için düzeltmeler. Ayrıntılar [değişiklik notunda](CHANGELOG.md).
+
+### Önceki sürümler
+
+- **1.0.4:** durum çubuğu saatinde saniye, Genişletilmiş Kilit Açma (Smart Lock), Cihazı Bul'da deneysel Google haritası. Hepsi varsayılan kapalı.
+- **1.0.2:** Cihazı Bul düzeltmesi (aşağıda), kamerada Google Lens düğmesi, ana ekran simgesini gizleme, yüksek ses uyarısını kaldırma, kısa bildirim titreşimi.
 
 ### Cihazı Bul (Xiaomi Cihazı Bul düzeltmesi)
 

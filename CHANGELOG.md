@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.5
+
+- New XSecurity switch: Video sound with screen off. Shows this video toolbox shortcut on Global ROMs and on devices where Xiaomi hid it, when the system supports it. Off by default.
+- Extend Unlock: the lock screen now takes the trusted state straight from Android instead of working it out itself. Before, a short moment after the lock screen appeared could count as unlocked.
+- Clock seconds: the time no longer shows a wrong minute for a moment when the minute changes, a clock that also shows the date gets the seconds after the time, and the clock is not refreshed while the screen is off.
+- Google map: when the Google layer can't be added, Baidu's map comes back with its logo and the chosen map type instead of an empty map.
+- Moving from the old XGoogle, XSecurity or XNotify apps: an old app that is kept because its settings could not be copied is now switched off in LSPosed, so it doesn't run next to XApps.
+- Removing the module now also resets the power key double press when Google Wallet was chosen from the power key screen.
+- A clearer message when the Extend Unlock page can't open.
+
 ## 1.0.4
 
 - New XSecurity switch: seconds on the status bar clock (HH:MM:SS). Off by default.

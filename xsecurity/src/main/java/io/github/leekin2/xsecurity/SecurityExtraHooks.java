@@ -115,6 +115,34 @@ final class SecurityExtraHooks {
         for (Method method : methods) hooks.constant(method, 0.0f);
     }
 
+    /**
+     * "Play video sound with screen off" in the video toolbox. The Security app hides it on Global
+     * ROMs and where the device flag remove_screen_off_hold_on is set, although the shortcut only
+     * asks the framework to keep the video app running. Shown only when that framework call exists,
+     * so the button is never added where it would do nothing.
+     */
+    void screenOffSound(DexTargets targets) throws Throwable {
+        Class<?> transactions = Class.forName("android.os.MiuiBinderTransaction$IActivityManager", false, null);
+        transactions.getDeclaredField("TRANSACT_ID_SET_PACKAGE_HOLD_ON");
+        int count = 0;
+        List<Method> found = new ArrayList<>();
+        for (Class<?> owner : targets.classesUsing("vb_utils", "resetVideoBoxMode")) {
+            for (Method method : targets.matching("vb_hold_on_" + owner.getName(), () -> MethodMatcher.create()
+                    .declaredClass(owner.getName()).returnType("boolean").paramCount(0)
+                    .addInvoke(MethodMatcher.create().usingStrings(List.of("remove_screen_off_hold_on"))))) {
+                if (!java.lang.reflect.Modifier.isStatic(method.getModifiers())) continue;
+                found.add(method);
+            }
+        }
+        // Exactly one check is expected; anything else is a different app version, left alone.
+        if (found.size() != 1) throw new NoSuchMethodException("Screen-off sound check not unique: " + found.size());
+        for (Method method : found) {
+            hooks.constant(method, true);
+            count++;
+        }
+        hooks.info("video toolbox: screen-off sound checks=" + count);
+    }
+
     /** Dolby in the video toolbox without the game permission check. */
     void videoDolby(DexTargets targets) throws Throwable {
         int count = 0;

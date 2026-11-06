@@ -211,7 +211,6 @@ final class GoogleMapLayer {
             // MAP_TYPE_NONE would also stop the picture layer, so the type stays normal and Baidu's labels go.
             Object result = chain.proceed(new Object[] {1});
             Object map = chain.getThisObject();
-            showBaidu(map, false);
             boolean wanted = Integer.valueOf(2).equals(chain.getArg(0));
             if (wanted != satellite) {
                 satellite = wanted;
@@ -223,12 +222,17 @@ final class GoogleMapLayer {
                 Object layer = layers.get(map);
                 // Clearing alone leaves the old picture on screen: the layer is rebuilt just below.
                 if (layer != null) {
-                    clear.invoke(layer);
-                    remove.invoke(layer);
                     attached.remove(map);
+                    layers.remove(map);
+                    try {
+                        clear.invoke(layer);
+                        remove.invoke(layer);
+                    } catch (Throwable failure) {
+                        hooks.info("Find Device: old Google layer not removed: " + failure.getClass().getSimpleName());
+                    }
                 }
             }
-            if (attached.get(map) == null) {
+            if (attached.get(map) == null) try {
                 // The layer stops at level 20 by default while the map zooms to 22: closer was an empty screen.
                 Object settings = options.getConstructor().newInstance();
                 range.invoke(settings, MAX_ZOOM, 3);
@@ -243,7 +247,13 @@ final class GoogleMapLayer {
                 } else {
                     hooks.info("Find Device: Google map layer refused");
                 }
+            } catch (Throwable failure) {
+                hooks.info("Find Device: Google map layer unavailable: " + failure.getClass().getSimpleName());
             }
+            // Baidu's own map is hidden only while the Google layer is in place: never an empty map.
+            // Without the layer Baidu comes back whole: its logo and the map type the user chose.
+            if (attached.get(map) == null) fallBack();
+            else showBaidu(map, false);
             return result;
         });
     }
