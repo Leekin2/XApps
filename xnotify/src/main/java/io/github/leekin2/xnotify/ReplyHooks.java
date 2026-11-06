@@ -178,6 +178,7 @@ final class ReplyHooks {
                 frost(progress, context);
             }
             if (content != null && send != null) matchSendToBox(content, send, progress);
+            padReplyBox(view);
             return result;
         });
         info("Reply box: Xiaomi style for every notification");
@@ -516,7 +517,12 @@ final class ReplyHooks {
                 try {
                     View list = content.findViewById(actionsId);
                     if (list instanceof ViewGroup) styleButtons((ViewGroup) list, rowView.getContext());
-                    if (containerId != 0) keepClearOfHandle(content.findViewById(containerId));
+                    trimCollapsedStrip(content);
+                    // Action buttons only need the gap in pop-ups (the handle). The reply box gets
+                    // its own gap when it is inflated (see padReplyBox): it is created after this.
+                    boolean buttons = list instanceof ViewGroup && hasVisibleButtons((ViewGroup) list);
+                    View container = containerId != 0 ? content.findViewById(containerId) : null;
+                    if (container != null) keepClearOfHandle(container, buttons && isPopUp(rowView));
                 } catch (Throwable t) {
                     error("Styling action buttons failed", t);
                 }
@@ -527,20 +533,130 @@ final class ReplyHooks {
     }
 
     /**
+     * Collapsed Android-template cards carry an empty ~12dp strip under the headerless row (stock
+     * HyperOS too). Text-only cards are fine with it, but a card with a thumbnail is as tall as the
+     * thumbnail already and ends up visibly bottom-heavy, so the strip goes away for those only.
+     */
+    private static void trimCollapsedStrip(View content) {
+        applyStripTrim(content);
+        // Rows inside an expanded group are laid out later than the update that styled them, and
+        // the strip can come back, so look again whenever the row is laid out.
+        View top = findStripRow(content);
+        if (top != null && top.getTag(TAG_STRIP_WATCH) == null) {
+            top.setTag(TAG_STRIP_WATCH, Boolean.TRUE);
+            top.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> applyStripTrim(content));
+        }
+    }
+
+    private static View findStripRow(View content) {
+        int rowId = Resources.getSystem().getIdentifier("notification_headerless_view_row", "id", "android");
+        if (rowId == 0) return null;
+        View headerless = content.findViewById(rowId);
+        return headerless != null && headerless.getParent() instanceof View ? (View) headerless.getParent() : null;
+    }
+
+    private static final int TAG_STRIP_WATCH = 0x7f0f_5ee4;
+
+    private static void applyStripTrim(View content) {
+        Resources system = Resources.getSystem();
+        int rowId = system.getIdentifier("notification_headerless_view_row", "id", "android");
+        if (rowId == 0) return;
+        View headerless = content.findViewById(rowId);
+        if (headerless == null || !(headerless.getParent() instanceof View)) return;
+        View top = (View) headerless.getParent();
+        if (!(top.getParent() instanceof ViewGroup)) return;
+        boolean thumbnail = isShown(content, system.getIdentifier("conversation_image_message_container", "id", "android"))
+                || isShown(content, system.getIdentifier("right_icon", "id", "android"));
+        ViewGroup column = (ViewGroup) top.getParent();
+        for (int i = 0; i < column.getChildCount(); i++) {
+            View child = column.getChildAt(i);
+            if (child == top) continue;
+            boolean empty = true;
+            if (child instanceof ViewGroup) {
+                ViewGroup g = (ViewGroup) child;
+                for (int k = 0; k < g.getChildCount(); k++) if (g.getChildAt(k).getVisibility() == View.VISIBLE) empty = false;
+            }
+            if (!empty) continue;
+            if (thumbnail && child.getVisibility() == View.VISIBLE) {
+                child.setTag(TAG_STRIP, Boolean.TRUE);
+                child.setVisibility(View.GONE);
+            } else if (!thumbnail && child.getTag(TAG_STRIP) != null) {
+                // The row was reused for a notification without a thumbnail: give the strip back.
+                child.setTag(TAG_STRIP, null);
+                child.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private static boolean isShown(View root, int id) {
+        if (id == 0) return false;
+        View v = root.findViewById(id);
+        return v != null && v.getVisibility() == View.VISIBLE;
+    }
+
+    /** View tag key marking a strip XNotify hid (an id from the framework's range). */
+    private static final int TAG_STRIP = 0x7f0f_5ee3;
+
+    /**
      * Pop-ups draw Xiaomi's floating-window handle just under the content. Xiaomi's own templates
      * leave room for it; under Android's the handle touches the buttons and cuts through the
      * reply box (both live in actions_container). The framework resets this margin on every
      * re-apply, so add the gap to whatever it set.
      */
-    private static void keepClearOfHandle(View container) {
+    private static void keepClearOfHandle(View container, boolean popUp) {
         if (container == null || !(container.getLayoutParams() instanceof ViewGroup.MarginLayoutParams)) return;
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) container.getLayoutParams();
         int gap = Math.round(10 * container.getResources().getDisplayMetrics().density);
         Object applied = container.getTag(TAG_GAP);
-        if (applied instanceof Integer && lp.bottomMargin == (Integer) applied) return;
-        lp.bottomMargin += gap;
-        container.setTag(TAG_GAP, lp.bottomMargin);
+        boolean has = applied instanceof Integer && lp.bottomMargin == (Integer) applied;
+        if (popUp == has) return;
+        if (popUp) {
+            lp.bottomMargin += gap;
+            container.setTag(TAG_GAP, lp.bottomMargin);
+        } else {
+            // The row was a pop-up earlier and now sits in the shade, which has no handle.
+            lp.bottomMargin = Math.max(0, lp.bottomMargin - gap);
+            container.setTag(TAG_GAP, null);
+        }
         container.setLayoutParams(lp);
+    }
+
+    /**
+     * The reply box is inflated when the user taps Reply, long after the row was styled, and sits
+     * flush against the card's bottom edge. Give it the same breathing room as the buttons.
+     * This is padding applied while inflating, so it is part of the box's own measured height:
+     * a margin set after layout is not counted in the row's height, and tall notifications
+     * (several messages, long text, inline chips) clip it away.
+     */
+    private static void padReplyBox(View box) {
+        if (box.getTag(TAG_REPLY_GAP) != null) return;
+        box.setTag(TAG_REPLY_GAP, Boolean.TRUE);
+        int gap = Math.round(10 * box.getResources().getDisplayMetrics().density);
+        box.setPadding(box.getPaddingLeft(), box.getPaddingTop(), box.getPaddingRight(), box.getPaddingBottom() + gap);
+    }
+
+    private static final int TAG_REPLY_GAP = 0x7f0f_5ee2;
+
+    private static boolean hasVisibleButtons(ViewGroup list) {
+        if (list.getVisibility() == View.GONE) return false;
+        for (int i = 0; i < list.getChildCount(); i++) {
+            View child = list.getChildAt(i);
+            if (child instanceof Button && child.getVisibility() != View.GONE) return true;
+        }
+        return false;
+    }
+
+    /** True while the row is shown as a heads-up pop-up (the only place the handle is drawn). */
+    private static boolean isPopUp(View row) {
+        for (String name : new String[] {"isHeadsUp", "isPinned"}) {
+            try {
+                Method m = row.getClass().getMethod(name);
+                if (Boolean.TRUE.equals(m.invoke(row))) return true;
+            } catch (Throwable ignored) {
+                // Not on this System UI build; try the next, else treat as not a pop-up.
+            }
+        }
+        return false;
     }
 
     /** View tag key for the bottom margin XNotify last set (an id from the framework's range). */
