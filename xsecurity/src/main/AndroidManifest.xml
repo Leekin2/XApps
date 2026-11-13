@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <queries>
         <package android:name="com.miui.securitycenter" />
+        <package android:name="com.miui.securityadd" />
         <package android:name="com.miui.powerkeeper" />
         <package android:name="com.android.updater" />
         <package android:name="com.xiaomi.joyose" />
@@ -14,6 +15,10 @@
         <package android:name="com.android.mms" />
         <package android:name="com.xiaomi.finddevice" />
         <package android:name="com.miui.home" />
+        <package android:name="com.mobiletools.systemhelper" />
+        <package android:name="com.xiaomi.registration" />
+        <package android:name="com.miui.misightservice" />
+        <package android:name="com.miui.systemAdSolution" />
         <!-- Lets the clipboard app picker list launchable apps without a broad package permission. -->
         <intent>
             <action android:name="android.intent.action.MAIN" />

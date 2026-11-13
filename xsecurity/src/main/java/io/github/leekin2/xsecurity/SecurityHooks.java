@@ -47,6 +47,8 @@ final class SecurityHooks {
         int here = processFlag(process);
         if (here == 0) return;
         // Fixed class names first: they need no scan.
+        if (in(here, MAIN) && Features.enabled(Features.CHAIN_START_ONCE))
+            run("app-to-app one-time approval", () -> ChainStartHooks.install(hooks, loader));
         if (in(here, MAIN | REMOTE | POWER_PROC) && Features.enabled(Features.BATTERY_RANKING)) run("battery ranking", this::batteryRanking);
         if (in(here, MAIN | REMOTE | POWER_PROC) && Features.enabled(Features.BATTERY_SCREEN_TIME)) run("screen time", this::screenTime);
         if (in(here, MAIN) && Features.enabled(Features.BATTERY_HEALTH)) run("battery health", this::batteryHealth);
@@ -107,11 +109,13 @@ final class SecurityHooks {
             if (Features.enabled(Features.GAME_TOAST_OFF)) run("game toasts off", () -> extra.gameToasts(targets));
             if (Features.enabled(Features.GAME_MACRO)) run("macro for all games", () -> extra.macroAllGames(targets));
             if (Features.enabled(Features.GT_EXTRAS)) run("crosshair service", () -> extra.crosshairService(targets));
-            if (Features.enabled(Features.VIDEO_TOOLBOX)) run("video toolbox temperature", () -> extra.videoTemperature(targets));
-            if (Features.enabled(Features.VIDEO_TOOLBOX)) run("video Dolby", () -> extra.videoDolby(targets));
-            if (Features.enabled(Features.VIDEO_TOOLBOX)) run("new video box", () -> extra.newVideoBox(targets));
+            if (Features.enabled(Features.VIDEO_TEMP_LIMIT)) run("video toolbox temperature", () -> extra.videoTemperature(targets));
+            if (Features.enabled(Features.VIDEO_DOLBY)) run("video Dolby", () -> extra.videoDolby(targets));
+            if (Features.enabled(Features.VIDEO_THEATRE)) run("new video box", () -> extra.newVideoBox(targets));
+            if (Features.enabled(Features.VIDEO_MUSIC_RADAR)) run("video background music recognition", () -> extra.videoMusicRadar(targets));
             if (Features.enabled(Features.VIDEO_SCREEN_OFF_SOUND)) run("video screen-off sound", () -> extra.screenOffSound(targets));
             if (Features.enabled(Features.CALL_TOOLBOX)) run("call beauty", () -> extra.callBeauty(targets));
+            if (Features.enabled(Features.CALL_NOISE_REDUCTION)) run("call noise reduction", () -> extra.callNoiseReduction(targets));
             if (in(here, MAIN | REMOTE) && Features.enabled(Features.BATTERY_LIFE)) run("low temperature endurance", () -> extra.lowTempEndurance(targets));
             if (in(here, MAIN | REMOTE) && Features.enabled(Features.CAR_SICKNESS)) run("car sickness relief", () -> extra.carSickness(targets));
         } catch (Throwable failure) {
@@ -128,7 +132,8 @@ final class SecurityHooks {
         /** Game Turbo and video tools are asked in the services (.remote) and the sidebar (:ui); the rest in the app and its services. */
         int processes() {
             return switch (feature) {
-                case Features.VIDEO_TOOLBOX, Features.CALL_TOOLBOX, Features.GAME_MODES, Features.GT_EXTRAS, Features.GAME_NETWORK -> MAIN | REMOTE | UI;
+                case Features.VIDEO_TOOLBOX, Features.VIDEO_THEATRE, Features.VIDEO_MEMC,
+                     Features.VIDEO_SUPER_RES, Features.VIDEO_CONTOURS, Features.CALL_TOOLBOX, Features.GAME_MODES, Features.GT_EXTRAS, Features.GAME_NETWORK -> MAIN | REMOTE | UI;
                 default -> MAIN | REMOTE;
             };
         }
@@ -137,14 +142,14 @@ final class SecurityHooks {
     private static final Check[] CHECKS = {
             // Video toolbox, theatre mode (Dolby, 3D LUT) and video effects.
             new Check(Features.VIDEO_TOOLBOX, "video toolbox", true, "is_support_video_tool_box"),
-            new Check(Features.VIDEO_TOOLBOX, "theatre 3D", true, "isSupportCinemaVisionWith3d: "),
-            new Check(Features.VIDEO_TOOLBOX, "theatre", true, "Immersive="),
-            new Check(Features.VIDEO_TOOLBOX, "frame insertion", true, "debug.config.media.video.frc.support"),
-            new Check(Features.VIDEO_TOOLBOX, "frame insertion hw", true, "ro.vendor.media.video.frc.support"),
-            new Check(Features.VIDEO_TOOLBOX, "MEMC", true, "debug.config.media.video.mimemc.support"),
-            new Check(Features.VIDEO_TOOLBOX, "AI picture", true, "debug.config.media.video.ais.support"),
-            new Check(Features.VIDEO_TOOLBOX, "AI enhance", true, "debug.config.media.video.aie.support"),
-            new Check(Features.VIDEO_TOOLBOX, "video processing", true, "ro.vendor.media.video.vpp.support"),
+            new Check(Features.VIDEO_THEATRE, "theatre 3D", true, "isSupportCinemaVisionWith3d: "),
+            new Check(Features.VIDEO_THEATRE, "theatre", true, "Immersive="),
+            new Check(Features.VIDEO_MEMC, "frame insertion", true, "debug.config.media.video.frc.support"),
+            new Check(Features.VIDEO_MEMC, "frame insertion hw", true, "ro.vendor.media.video.frc.support"),
+            new Check(Features.VIDEO_MEMC, "MEMC", true, "debug.config.media.video.mimemc.support"),
+            new Check(Features.VIDEO_SUPER_RES, "AI picture", true, "debug.config.media.video.ais.support"),
+            new Check(Features.VIDEO_CONTOURS, "AI enhance", true, "debug.config.media.video.aie.support"),
+            new Check(Features.VIDEO_CONTOURS, "video processing", true, "ro.vendor.media.video.vpp.support"),
             new Check(Features.VIDEO_TOOLBOX, "call AI picture", true, "isSupportConversationAIS return false cause of pkgName is null"),
             // Call toolbox: hand gestures and effects in video calls.
             new Check(Features.CALL_TOOLBOX, "call gestures", true, "persist.vendor.camera.gesture.emoji.support"),
@@ -162,7 +167,6 @@ final class SecurityHooks {
             new Check(Features.GT_EXTRAS, "enhanced DSDA", true, "isEnhancedDsdaSupported"),
             new Check(Features.GT_EXTRAS, "second SIM call reject", true, "isViceImsAutoRejectSupport"),
             new Check(Features.GT_EXTRAS, "GWSD", true, "isGwsdSupport"),
-            new Check(Features.GT_EXTRAS, "screen-off hold", false, "remove_screen_off_hold_on"),
             new Check(Features.GT_EXTRAS, "game wallpaper", false, "remove_vgpaper"),
             // Game Turbo network tools: Wi-Fi low latency, RPS network mode, network optimisation.
             new Check(Features.GAME_NETWORK, "Wi-Fi low latency", true, "support_wifi_low_latency_mode"),

@@ -166,4 +166,5 @@
     <string name="update_message">XGoogle %1$s is available. Open the download page?</string>
     <string name="err_check_companion_state">Could not read the companion module status</string>
     <string name="err_restore_permission">Android Switch needs permission to write system settings. Allow root access for XGoogle and try again, or grant WRITE_SECURE_SETTINGS using ADB.</string>
+    <string name="optional_timeline_scope_note">These optional scopes are requested only for Timeline and are not marked as recommended in LSPosed. Turn Timeline off if you do not use it.</string>
 </resources>

@@ -258,6 +258,7 @@ private fun StatusCard(state: XGoogleState, t: Texts, onClick: () -> Unit) {
                     state.missingScopes.forEach { name ->
                         Text("• " + (if (name == "system") t.systemFramework else name), style = MaterialTheme.typography.bodyMedium)
                     }
+                    if (state.missingTimelineScopes) Text(t.timeline + " — " + t.optionalTimelineScopeNote, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))
                 }
                 Text(if (state.missingScopes.isNotEmpty()) t.statusTap else if (outdated) t.companionUpdateTitle else t.statusTap, style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(top = 10.dp).alpha(0.75f))

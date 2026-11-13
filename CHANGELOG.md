@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.6
+
+- XSecurity: optional Video toolbox music recognition shortcut for compatible Mi Music builds.
+- XSecurity: optional display refresh rate lock based on HyperCeiler LockMaxFps.
+- XSecurity: optional Game Center promotion and booster offer removal.
+- XSecurity: theatre mode, Dolby, MEMC, super resolution, contour enhancement and video temperature control have separate switches. Existing video settings still apply until individually changed.
+- XSecurity: screen-off video sound is controlled by its own switch. Game Turbo extras no longer override its device flag.
+- XNotify: the notification receive screen finds the device manager on MiLink 18.2.4 as well as older builds.
+- XGoogle: the scope status explains why Google Play services and Google Services Framework are optional Timeline scopes.
+- XSecurity: optional one-time approval for Xiaomi app-to-app launch prompts, off by default. File-sharing and other permission prompts are excluded.
+- New XSecurity section: Privacy, four switches, all off by default: stop carrier data collection, stop China Telecom device registration, stop MiSight uploads, and give the ad service no app usage data. Each needs its app approved in the LSPosed scope. Idea from Hyper Privacy Guard.
+- XGoogle: the Talk and Create entries in Google Lens are back on newer Google app versions (17.70 to 17.73). Fix from Coogle 1.3.6-1.3.9 by zopulus.
+- New XSecurity switch (experimental, off by default): Call noise reduction. Shows the Noise reduction button in the call toolbox; it only has an effect on devices whose audio hardware supports it.
+- New XSecurity fix, on by default: floating windows work while Google's motion cues are on. Their bar (move, close, menu) ignored every touch because HyperOS counted the motion cues overlay as a full-screen touch-blocking area. Analysis and fix design by xrh0905.
+
 ## 1.0.5
 
 - New XSecurity switch: Video sound with screen off. Shows this video toolbox shortcut on Global ROMs and on devices where Xiaomi hid it, when the system supports it. Off by default.

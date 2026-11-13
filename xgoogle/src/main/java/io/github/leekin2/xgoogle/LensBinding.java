@@ -16,6 +16,18 @@ final class LensBinding {
         }
         return false;
     }
+    static boolean is1775Pair(Method create, Method talk) {
+        if (!isPredicate(create) || !isPredicate(talk) || !create.getName().equals("c")
+                || !talk.getName().equals("c") || !create.getDeclaringClass().getName().equals("cvtu")
+                || !talk.getDeclaringClass().getName().equals("chmv")) return false;
+        for (Constructor<?> constructor : create.getDeclaringClass().getDeclaredConstructors()) {
+            Class<?>[] p = constructor.getParameterTypes();
+            if (p.length == 4 && p[0].getName().equals("com.google.apps.tiktok.account.AccountId")
+                    && p[1] == talk.getDeclaringClass() && p[2] == boolean.class && p[3] == long.class) return true;
+        }
+        return false;
+    }
+
     static Method[] select(Collection<Method> candidates, Class<?> gate) {
         Method create = null, talk = null;
         for (Method method : candidates) {
@@ -46,9 +58,13 @@ final class LensBinding {
 
     /** Three references, the flags, one reference: Google 17.67 has two flags, 17.68 six. */
     private static boolean isTalkConstructor(Class<?>[] p) {
-        if ((p.length != 6 && p.length != 10) || p[0].isPrimitive() || p[1].isPrimitive()
-                || p[2].isPrimitive() || p[p.length - 1].isPrimitive()) return false;
-        for (int i = 3; i < p.length - 1; i++) if (p[i] != boolean.class) return false;
+        // Talk controller layouts seen so far: three leading references with two, six or ten flags
+        // (Google 17.67, 17.68, 17.70); four leading references with ten or eleven flags (17.72, 17.73).
+        if ((p.length != 6 && p.length != 10 && p.length != 14 && p.length != 15 && p.length != 16)
+                || p[p.length - 1].isPrimitive()) return false;
+        int flagsStart = p.length >= 15 ? 4 : 3;
+        for (int i = 0; i < flagsStart; i++) if (p[i].isPrimitive()) return false;
+        for (int i = flagsStart; i < p.length - 1; i++) if (p[i] != boolean.class) return false;
         return true;
     }
 

@@ -166,4 +166,5 @@
     <string name="update_message">XGoogle %1$s yayınlandı. İndirme sayfası açılsın mı?</string>
     <string name="err_check_companion_state">Ek modül durumu okunamadı</string>
     <string name="err_restore_permission">Android Switch için gerekli sistem ayarı izni verilemedi. Root yöneticisinde XGoogle\'a izin verip yeniden deneyin veya ADB ile WRITE_SECURE_SETTINGS iznini verin.</string>
+    <string name="optional_timeline_scope_note">Bu isteğe bağlı kapsamlar yalnızca Zaman Çizelgesi için istenir; LSPosed’da önerilen olarak işaretlenmez. Kullanmıyorsanız Zaman Çizelgesi’ni kapatın.</string>
 </resources>

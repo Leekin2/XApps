@@ -74,6 +74,7 @@ class Texts internal constructor(private val resources: Resources) {
     val timelineSummary = resources.getString(R.string.timeline_summary)
     /** Second summary line under switches that ask for the Play services / GSF scope. */
     val integrityScopeNote = resources.getString(R.string.integrity_scope_note)
+    val optionalTimelineScopeNote = resources.getString(R.string.optional_timeline_scope_note)
     val passkey = resources.getString(R.string.passkey)
     val passkeySummary = resources.getString(R.string.passkey_summary)
     val location = resources.getString(R.string.location)

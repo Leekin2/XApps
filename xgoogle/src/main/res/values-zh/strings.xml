@@ -166,4 +166,5 @@
     <string name="update_message">XGoogle %1$s 已发布，是否打开下载页面？</string>
     <string name="err_check_companion_state">无法读取附属模块状态</string>
     <string name="err_restore_permission">Android Switch 需要写入系统设置的权限。请授予 XGoogle root 权限后重试，或通过 ADB 授予 WRITE_SECURE_SETTINGS。</string>
+    <string name="optional_timeline_scope_note">这些可选作用域仅用于时间轴，不会在 LSPosed 中标为推荐。不使用时间轴时可将其关闭。</string>
 </resources>

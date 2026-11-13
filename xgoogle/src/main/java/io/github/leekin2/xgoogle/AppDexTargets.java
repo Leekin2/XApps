@@ -49,8 +49,9 @@ final class AppDexTargets implements AutoCloseable {
 
     List<Method> resolve(String feature) throws ReflectiveOperationException {
         // A revised Lens locator must not reuse the old one's miss for the same Google APK.
-        String cacheKey = FeaturePolicy.LENS.equals(feature) ? feature + ".controllers-v2" : feature;
+        String cacheKey = FeaturePolicy.LENS.equals(feature) ? feature + ".controllers-v6" : feature;
         if (!cacheKey.equals(feature) && stored.remove(feature) != null) dirty = true;
+        if (FeaturePolicy.LENS.equals(feature) && stored.remove(feature + ".controllers-v2") != null) dirty = true;
         String saved = stored.getProperty(cacheKey);
         if (saved != null) {
             if (saved.isEmpty()) return List.of();
@@ -90,7 +91,8 @@ final class AppDexTargets implements AutoCloseable {
     private static boolean valid(String feature, List<Method> methods) {
         if (methods.size() < 2 || methods.size() > 514) return false;
         if (FeaturePolicy.LENS.equals(feature)) {
-            return LensBinding.isPair(methods.get(0), methods.get(1));
+            return LensBinding.isPair(methods.get(0), methods.get(1))
+                    || LensBinding.is1775Pair(methods.get(0), methods.get(1));
         }
         return false;
     }
@@ -115,6 +117,24 @@ final class AppDexTargets implements AutoCloseable {
                 candidates.put(caller.getMethodInstance(loader), caller);
         }
         Method[] selected = LensBinding.select(candidates.keySet(), gate.getClassInstance(loader));
+        if (selected == null && gate.getClassInstance(loader).getName().equals("chmv")) {
+            // In 17.75 Talk uses the synchronous eligibility method on the gate itself.
+            // Check the inspected descriptors and keep other versions on the structural locator.
+            for (var method : gate.getDeclaredClass().getMethods()) {
+                if (method.getName().equals("c") && method.getParamCount() == 0
+                        && method.getReturnTypeName().equals("boolean")) {
+                    Method talk = method.getMethodInstance(loader);
+                    for (Method create : candidates.keySet()) {
+                        if (LensBinding.is1775Pair(create, talk)) {
+                            selected = new Method[]{create, talk};
+                            candidates.put(talk, method);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
         if (selected == null) return List.of();
         List<Method> result = new ArrayList<>(List.of(selected));
         List<MethodData> frontier = new ArrayList<>(List.of(candidates.get(selected[0]), candidates.get(selected[1])));

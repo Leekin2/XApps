@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.ReportOff
+import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material.icons.rounded.Sms
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material.icons.rounded.BatteryChargingFull
@@ -84,6 +85,7 @@ val SECTIONS = listOf(
         Item(F.SUPER_WIRELESS, Icons.Rounded.WifiTethering))),
     Section("games", Icons.Rounded.SportsEsports, Color(0xFFE5484D), listOf(
         Item(F.GAME_FPS, Icons.Rounded.Speed),
+        Item(F.GAME_LOCK_MAX_FPS, Icons.Rounded.Speed),
         Item(F.GAME_KEEP_ENABLED, Icons.Rounded.SportsEsports),
         Item(F.GAME_MODES, Icons.Rounded.Bolt),
         Item(F.GT_SUPER_RES, Icons.Rounded.SlowMotionVideo),
@@ -93,6 +95,7 @@ val SECTIONS = listOf(
         Item(F.GT_MI_TIME, Icons.Rounded.Timer),
         Item(F.GT_EXTRAS, Icons.Rounded.GpsFixed),
         Item(F.GAME_TOAST_OFF, Icons.Rounded.NotificationsOff),
+        Item(F.GAME_CENTER_ADS_OFF, Icons.Rounded.Block),
         Item(F.GAME_MACRO, Icons.Rounded.Keyboard),
         Item(F.GAME_NETWORK, Icons.Rounded.Wifi),
         Item(F.JOYOSE_GPU, Icons.Rounded.DeveloperBoard),
@@ -116,8 +119,16 @@ val SECTIONS = listOf(
         Item(F.LOW_BATTERY_QUIET, Icons.Rounded.NotificationsOff))),
     Section("media", Icons.Rounded.Movie, Color(0xFFE0558E), listOf(
         Item(F.VIDEO_TOOLBOX, Icons.Rounded.Movie),
+        Item(F.VIDEO_THEATRE, Icons.Rounded.Movie),
+        Item(F.VIDEO_DOLBY, Icons.Rounded.Movie),
+        Item(F.VIDEO_MEMC, Icons.Rounded.Movie),
+        Item(F.VIDEO_SUPER_RES, Icons.Rounded.Movie),
+        Item(F.VIDEO_CONTOURS, Icons.Rounded.Movie),
+        Item(F.VIDEO_TEMP_LIMIT, Icons.Rounded.Movie),
+        Item(F.VIDEO_MUSIC_RADAR, Icons.Rounded.Movie),
         Item(F.VIDEO_SCREEN_OFF_SOUND, Icons.Rounded.VolumeUp),
         Item(F.CALL_TOOLBOX, Icons.Rounded.VideoCall),
+        Item(F.CALL_NOISE_REDUCTION, Icons.Rounded.VolumeUp),
         Item(F.VOLUME_SAFETY_OFF, Icons.Rounded.VolumeUp),
         Item(F.NOTIFY_SHORT_VIBRATION, Icons.Rounded.Vibration))),
     Section("system", Icons.Rounded.Info, Color(0xFF6E7787), listOf(
@@ -127,6 +138,7 @@ val SECTIONS = listOf(
         Item(F.APP_ICON_LAUNCH, Icons.Rounded.TouchApp),
         Item(F.TOOLBOX, Icons.Rounded.Crop),
         Item(F.DOCK, Icons.Rounded.ViewSidebar),
+        Item(F.FREEFORM_MOTION_CUES, Icons.Rounded.ViewSidebar),
         Item(F.PERM_NO_WAIT, Icons.Rounded.HourglassDisabled),
         Item(F.APPLOCK_SCRAMBLE, Icons.Rounded.Keyboard),
         Item(F.LOCKSCREEN_PIN_SCRAMBLE, Icons.Rounded.Keyboard),
@@ -136,12 +148,18 @@ val SECTIONS = listOf(
         Item(F.SECOND_SPACE, Icons.Rounded.Group),
         Item(F.WARNINGS, Icons.Rounded.CarCrash),
         Item(F.FBO, Icons.Rounded.Storage),
+        Item(F.CHAIN_START_ONCE, Icons.Rounded.Link),
         Item(F.SIM_SUCCESS_DIALOG_OFF, Icons.Rounded.SimCard),
         Item(F.ROOT_CHECK_OFF, Icons.Rounded.Security),
         Item(F.USB_INSTALL_CHECK_OFF, Icons.Rounded.Usb),
         Item(F.DARK_MODE_ALL_APPS, Icons.Rounded.DarkMode),
         Item(F.CLIPBOARD_WHITELIST, Icons.Rounded.ContentPaste),
         Item(F.APPLIST_UPLOAD_OFF, Icons.Rounded.CloudOff))),
+    Section("privacy", Icons.Rounded.CloudOff, Color(0xFF4F6BD8), listOf(
+        Item(F.PRIVACY_OPERATOR, Icons.Rounded.CellTower),
+        Item(F.PRIVACY_TELECOM, Icons.Rounded.CellTower),
+        Item(F.PRIVACY_MISIGHT, Icons.Rounded.CloudOff),
+        Item(F.PRIVACY_AD_USAGE, Icons.Rounded.Block))),
     Section("messages", Icons.Rounded.Sms, Color(0xFF2E9C86), listOf(
         Item(F.MMS_ADS, Icons.Rounded.Block),
         Item(F.MMS_FRAUD, Icons.Rounded.Warning),

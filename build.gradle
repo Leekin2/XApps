@@ -6,6 +6,6 @@ plugins {
 
 // One version for the app and every module's "version" texts.
 ext {
-    xappsVersionCode = 145
-    xappsVersionName = '1.0.5'
+    xappsVersionCode = 146
+    xappsVersionName = '1.0.6'
 }

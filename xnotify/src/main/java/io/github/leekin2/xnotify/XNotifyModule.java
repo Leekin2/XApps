@@ -131,6 +131,36 @@ public final class XNotifyModule extends XposedModule {
      * so on a second visit found phones go to the closed screen and the list stays empty.
      */
     private void hookReceiveScreen(ClassLoader loader) throws Exception {
+        Class<?> strategy = Class.forName(UI + "Notification.DeviceReceiveStrategy", false, loader);
+        Class<?> listenerType = Class.forName(UI + "Notification.DeviceReceiveStrategy$b", false, loader);
+        // Resolve the manager from the strategy's field. In MiLink 18.2.4 Notification.l
+        // is a subscription record, while the actual manager moved to Notification.s.
+        Method register = null;
+        for (java.lang.reflect.Field field : strategy.getDeclaredFields()) {
+            if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) continue;
+            Class<?> candidate = field.getType();
+            if (!candidate.getName().startsWith(UI + "Notification.")) continue;
+            Method target;
+            try { target = ReceiveScreenBinding.register(candidate, listenerType); }
+            catch (NoSuchMethodException missing) { continue; }
+            if (register != null && !register.equals(target)) throw new NoSuchMethodException("Multiple notification managers");
+            register = target;
+        }
+        if (register == null) throw new NoSuchMethodException("Notification manager register method");
+        Class<?> model = register.getDeclaringClass();
+        Method found = model.getDeclaredMethod("k");
+        Method cached = model.getDeclaredMethod("i");
+        if (!List.class.isAssignableFrom(found.getReturnType()) || !List.class.isAssignableFrom(cached.getReturnType()))
+            throw new NoSuchMethodException("Notification device list getters changed");
+        found.setAccessible(true);
+        cached.setAccessible(true);
+        java.lang.reflect.Field slot = null;
+        for (java.lang.reflect.Field f : model.getDeclaredFields()) if (f.getType() == listenerType) slot = f;
+        if (slot == null) throw new NoSuchFieldException("device listener");
+        java.lang.reflect.Field listenerField = slot;
+        listenerField.setAccessible(true);
+        Method onFound = listenerType.getMethod("a", Class.forName(PKG + "discover.NotifiDevice", false, loader));
+        Method onCached = listenerType.getMethod("onCacheDeviceFound", onFound.getParameterTypes()[0]);
         Method route = Class.forName(UI + "ConnectivityHelper", false, loader).getDeclaredMethod("z", Context.class);
         hook(route).setExceptionMode(XposedInterface.ExceptionMode.PROTECTIVE).intercept(chain -> {
             if (reported.add("route")) info("Notifications settings opened: routed to the Receive/Sync screen (was " + chain.proceed() + ")");
@@ -156,18 +186,6 @@ public final class XNotifyModule extends XposedModule {
             error("Send-only page redirect unavailable", t);
         }
 
-        Class<?> model = Class.forName(UI + "Notification.l", false, loader);
-        Class<?> listenerType = Class.forName(UI + "Notification.DeviceReceiveStrategy$b", false, loader);
-        Method register = model.getDeclaredMethod("o", listenerType);
-        Method found = model.getDeclaredMethod("k");
-        Method cached = model.getDeclaredMethod("i");
-        java.lang.reflect.Field slot = null;
-        for (java.lang.reflect.Field f : model.getDeclaredFields()) if (f.getType() == listenerType) slot = f;
-        if (slot == null) throw new NoSuchFieldException("device listener");
-        java.lang.reflect.Field listenerField = slot;
-        listenerField.setAccessible(true);
-        Method onFound = listenerType.getMethod("a", Class.forName(PKG + "discover.NotifiDevice", false, loader));
-        Method onCached = listenerType.getMethod("onCacheDeviceFound", onFound.getParameterTypes()[0]);
         hook(register).setExceptionMode(XposedInterface.ExceptionMode.PROTECTIVE).intercept(chain -> {
             Object listener = chain.getArg(0);
             Object owner = chain.getThisObject();

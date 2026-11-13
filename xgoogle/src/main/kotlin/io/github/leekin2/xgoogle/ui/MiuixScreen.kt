@@ -412,6 +412,7 @@ private fun StatusCard(state: XGoogleState, t: Texts, onStatus: () -> Unit) {
                     state.missingScopes.forEach { name ->
                         Text("• " + (if (name == "system") t.systemFramework else name), color = content, fontSize = 14.sp)
                     }
+                    if (state.missingTimelineScopes) Text(t.timeline + " — " + t.optionalTimelineScopeNote, color = content, fontSize = 13.sp, modifier = Modifier.padding(top = 8.dp))
                 }
                 Text(if (state.missingScopes.isNotEmpty()) t.statusTap else if (outdated) t.companionUpdateTitle else t.statusTap, color = content.copy(alpha = 0.75f), fontSize = 12.sp, modifier = Modifier.padding(top = 10.dp))
             }

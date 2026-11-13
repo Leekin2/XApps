@@ -344,15 +344,16 @@ class MainActivity : ComponentActivity() {
      */
     private fun refreshScopes() {
         val scope = runCatching { SettingsConnection.currentScope() }.getOrNull()
-        if (scope == null || !state.connected) { state = state.copy(missingScopes = emptyList()); return }
-        val missing = state.features.filterValues { it }.keys.flatMap(FeatureScopes::required).distinct()
+        if (scope == null || !state.connected) { state = state.copy(missingScopes = emptyList(), missingTimelineScopes = false); return }
+        val missingPackages = state.features.filterValues { it }.keys.flatMap(FeatureScopes::required).distinct()
             .filter { it !in scope }
-            .mapNotNull { name ->
+        val missing = missingPackages.mapNotNull { name ->
                 if (name == FeatureScopes.SYSTEM) name
                 else runCatching { packageManager.getApplicationInfo(name, 0) }.getOrNull()
                     ?.let { packageManager.getApplicationLabel(it).toString() }
             }
-        state = state.copy(missingScopes = missing)
+        state = state.copy(missingScopes = missing, missingTimelineScopes =
+            missingPackages.any { it == "com.google.android.gms" || it == "com.google.android.gsf" })
     }
 
     /**

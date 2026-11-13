@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity() {
             val hadRun = Features.ALL.any { remote.contains(it) || local.contains(it) } || ui.all.isNotEmpty()
             val editor = remote.edit()
             for (key in Features.ALL) {
-                if (key != Features.APP_INFO_BUTTONS && key != Features.FIND_DEVICE && !remote.contains(key)) {
+                if (key != Features.APP_INFO_BUTTONS && key != Features.FIND_DEVICE && !Features.isVideoOption(key) && !remote.contains(key)) {
                     editor.putBoolean(key, if (hadRun) Features.legacyDefault(key) else false)
                 }
             }
@@ -135,7 +135,13 @@ class MainActivity : ComponentActivity() {
             val scope = service.scope.toSet()
             val supported = setOf("system", "com.miui.securitycenter", "com.miui.powerkeeper",
                 "com.android.updater", "com.xiaomi.joyose", "com.android.thememanager", "com.miui.guardprovider", "com.xiaomi.finddevice", "com.android.settings", "com.android.systemui", "com.android.phone", "com.android.mms")
-            val missing = supported.filter { it !in scope }
+            // The privacy targets are asked for only while their own switch is on.
+            val privacy = mapOf(Features.PRIVACY_OPERATOR to "com.mobiletools.systemhelper",
+                Features.PRIVACY_TELECOM to "com.xiaomi.registration", Features.PRIVACY_MISIGHT to "com.miui.misightservice",
+                Features.PRIVACY_AD_USAGE to "com.miui.systemAdSolution")
+                .filter { state.values[it.key] == true }.values
+            val gameCenter = if (state.values[Features.GAME_CENTER_ADS_OFF] == true) listOf("com.miui.securityadd") else emptyList()
+            val missing = (supported + privacy + gameCenter).filter { it !in scope }
                 .filter { it == "system" || runCatching { packageManager.getPackageInfo(it, 0) }.isSuccess }
             if (missing.isEmpty()) return
             val version = packageManager.getPackageInfo(packageName, 0).longVersionCode
@@ -262,7 +268,7 @@ class MainActivity : ComponentActivity() {
                 "com.miui.securitycenter:ui com.miui.securitycenter.bootaware com.miui.powerkeeper com.xiaomi.joyose com.android.updater com.android.thememanager com.miui.guardprovider com.xiaomi.finddevice com.android.settings com.android.mms com.miui.home"
             val ok = runCatching {
                 val process = ProcessBuilder("su", "-c",
-                    "id -u; am force-stop com.miui.securitycenter; am force-stop com.android.updater; " +
+                    "id -u; am force-stop com.miui.securityadd; am force-stop com.miui.securitycenter; am force-stop com.android.updater; " +
                         "for p in \$(pidof $names); do kill \$p; done; true")
                     .redirectErrorStream(true).start()
                 val output = String(process.inputStream.readBytes())

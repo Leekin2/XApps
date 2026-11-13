@@ -19,10 +19,10 @@ final class PowerKeeperHooks {
     }
 
     void install() {
-        if (Features.enabled(Features.GAME_FPS)) {
+        if (Features.enabled(Features.GAME_FPS) || Features.enabled(Features.GAME_LOCK_MAX_FPS)) {
             try {
                 gameRefreshRate();
-                hooks.info("game refresh rate ready");
+                hooks.info("Game refresh rate controls ready");
             } catch (Throwable failure) {
                 hooks.error("game refresh rate unavailable; stock behaviour kept", failure);
             }
@@ -33,11 +33,15 @@ final class PowerKeeperHooks {
     private void gameRefreshRate() throws Throwable {
         Class<?> display = Class.forName(DISPLAY, false, loader);
         Method setScreenEffect = display.getDeclaredMethod("setScreenEffect", String.class, int.class, int.class);
+        if (setScreenEffect.getReturnType() != void.class) throw new NoSuchMethodException("Unexpected display effect return type");
         Field gameCookie = display.getDeclaredField("COOKIE_GAME");
         Field userFps = display.getDeclaredField("mUserFps");
         gameCookie.setAccessible(true);
         userFps.setAccessible(true);
         hooks.install(setScreenEffect, chain -> {
+            // HyperCeiler LockMaxFps suppresses PowerKeeper's display effect requests.
+            if (Features.enabled(Features.GAME_LOCK_MAX_FPS)) return null;
+            if (!Features.enabled(Features.GAME_FPS)) return chain.proceed();
             Object self = chain.getThisObject();
             int fps = (int) chain.getArg(1);
             int cookie = (int) chain.getArg(2);

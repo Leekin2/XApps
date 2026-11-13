@@ -52,6 +52,14 @@ public final class XSecurityModule extends XposedModule {
             new ImsIconHooks(hooks, param.getClassLoader()).install();
         } else if (PHONE.equals(name) && (process == null || process.equals(PHONE))) {
             new PhoneHooks(hooks, param.getClassLoader()).install();
+        } else if ("com.miui.securityadd".equals(name) && (process == null || process.equals(name))
+                && Features.enabled(Features.GAME_CENTER_ADS_OFF)) {
+            try { GameCenterHooks.install(hooks, param.getClassLoader()); }
+            catch (ReflectiveOperationException | LinkageError failure) {
+                hooks.error("Game Center ad rule unavailable", failure);
+            }
+        } else if (PrivacyHooks.handles(name)) {
+            new PrivacyHooks(hooks, param.getClassLoader()).install(name, info.sourceDir, info.dataDir);
         } else if ("com.xiaomi.finddevice".equals(name) && (process == null || process.equals(name))) {
             new FindDeviceHooks(hooks, param.getClassLoader()).install(info.sourceDir, info.dataDir);
         } else if ("com.android.mms".equals(name) && (process == null || process.equals(name))) {
@@ -80,6 +88,9 @@ public final class XSecurityModule extends XposedModule {
         }
         if (Features.enabled(Features.FLAG_SECURE)) {
             new FlagSecureHooks(hooks, param.getClassLoader()).install();
+        }
+        if (Features.enabled(Features.FREEFORM_MOTION_CUES)) {
+            new FreeformMotionCuesHooks(hooks, param.getClassLoader()).install();
         }
         if (Features.enabled(Features.VOLUME_SAFETY_OFF)) {
             new VolumeSafetyHooks(hooks, param.getClassLoader()).install();

@@ -13,6 +13,7 @@ public final class Features {
     public static final String BATTERY_HEALTH = "battery_health";
     public static final String CHARGE_PROTECT = "charge_protect";
     // Games
+    public static final String GAME_LOCK_MAX_FPS = "game_lock_max_fps";
     public static final String GAME_FPS = "game_fps";
     public static final String GAME_KEEP_ENABLED = "game_keep_enabled";
     public static final String GT_HDR = "gt_hdr";
@@ -22,6 +23,7 @@ public final class Features {
     public static final String GT_MI_TIME = "gt_mi_time";
     public static final String GT_EXTRAS = "gt_extras";
     public static final String GAME_MODES = "game_modes";
+    public static final String GAME_CENTER_ADS_OFF = "game_center_ads_off";
     public static final String GAME_TOAST_OFF = "game_toast_off";
     public static final String GAME_MACRO = "game_macro_all_apps";
     public static final String GAME_NETWORK = "game_network_tools";
@@ -43,13 +45,28 @@ public final class Features {
     public static final String IMS_ICONS = "ims_global_icons";
     public static final String SIM_MENUS = "sim_volte_wfc_menus";
     // Video and calls
+    public static final String VIDEO_THEATRE = "video_theatre";
+    public static final String VIDEO_DOLBY = "video_dolby";
+    public static final String VIDEO_MEMC = "video_memc";
+    public static final String VIDEO_SUPER_RES = "video_super_res";
+    public static final String VIDEO_CONTOURS = "video_contours";
+    public static final String VIDEO_TEMP_LIMIT = "video_temp_limit";
+    public static final String VIDEO_MUSIC_RADAR = "video_music_radar";
     public static final String VIDEO_TOOLBOX = "video_toolbox";
     public static final String CALL_TOOLBOX = "call_toolbox";
+    public static final String CALL_NOISE_REDUCTION = "call_noise_reduction";
+    public static final String PRIVACY_OPERATOR = "privacy_operator";
+    public static final String PRIVACY_TELECOM = "privacy_telecom";
+    public static final String PRIVACY_MISIGHT = "privacy_misight";
+    public static final String PRIVACY_AD_USAGE = "privacy_ad_usage";
     public static final String VIDEO_SCREEN_OFF_SOUND = "video_screen_off_sound";
     public static final String FIND_DEVICE = "find_device_on";
     public static final String FIND_DEVICE_GOOGLE_MAP = "find_device_google_map";
     public static final String VOLUME_SAFETY_OFF = "volume_safety_off";
+    /** A fix, so on until turned off; "_on" so no earlier install has stored it as off. */
+    public static final String FREEFORM_MOTION_CUES = "freeform_motion_cues_fix_on";
     public static final String NOTIFY_SHORT_VIBRATION = "notify_short_vibration";
+    public static final String CHAIN_START_ONCE = "chain_start_allow_once";
     // Privacy and system
     public static final String FLAG_SECURE = "flag_secure_off";
     public static final String PERM_NO_WAIT = "perm_no_wait";
@@ -113,15 +130,17 @@ public final class Features {
             FIND_DEVICE, FIND_DEVICE_GOOGLE_MAP,
             BATTERY_RANKING, BATTERY_SCREEN_TIME, BATTERY_HEALTH, CHARGE_PROTECT, BATTERY_LIFE, POWER_EXTRAS,
             SMART_CHARGE, SUPER_WIRELESS, POWER_SAVE_REFRESH, POWER_SAVE_BRIGHTNESS, POWER_SAVE_BOOT,
-            GAME_FPS, GAME_KEEP_ENABLED, GT_HDR, GT_SUPER_RES, GT_DYNAMIC_PERF, GT_TOUCH, GT_MI_TIME, GT_EXTRAS, GAME_MODES,
-            GAME_TOAST_OFF, GAME_MACRO, GAME_NETWORK, JOYOSE_GPU, JOYOSE_CLOUD_OFF,
+            GAME_LOCK_MAX_FPS, GAME_FPS, GAME_KEEP_ENABLED, GT_HDR, GT_SUPER_RES, GT_DYNAMIC_PERF, GT_TOUCH, GT_MI_TIME, GT_EXTRAS, GAME_MODES,
+            GAME_CENTER_ADS_OFF, GAME_TOAST_OFF, GAME_MACRO, GAME_NETWORK, JOYOSE_GPU, JOYOSE_CLOUD_OFF,
             NET_QUOTA_KEEP, NET_HOTSPOT_KEEP, NET_APP_CONTROLS, IMS_ICONS, SIM_MENUS,
-            VIDEO_TOOLBOX, VIDEO_SCREEN_OFF_SOUND, CALL_TOOLBOX, VOLUME_SAFETY_OFF, NOTIFY_SHORT_VIBRATION,
+            VIDEO_TOOLBOX, VIDEO_THEATRE, VIDEO_DOLBY, VIDEO_MEMC, VIDEO_SUPER_RES, VIDEO_CONTOURS, VIDEO_TEMP_LIMIT,
+            VIDEO_MUSIC_RADAR, VIDEO_SCREEN_OFF_SOUND, CALL_TOOLBOX, CALL_NOISE_REDUCTION, FREEFORM_MOTION_CUES, VOLUME_SAFETY_OFF, NOTIFY_SHORT_VIBRATION,
             FLAG_SECURE, PERM_NO_WAIT, SECOND_SPACE, WARNINGS, FBO, TOOLBOX, DATA_USAGE, APP_INFO, DOCK, CAR_SICKNESS, APPLOCK_SCRAMBLE, LOW_BATTERY_QUIET,
             SIM_SUCCESS_DIALOG_OFF, ROOT_CHECK_OFF, USB_INSTALL_CHECK_OFF, LOCKSCREEN_PIN_SCRAMBLE, EXTEND_UNLOCK, CLOCK_SECONDS,
             APP_INFO_BUTTONS, APP_ICON_LAUNCH, MMS_ADS, MMS_FRAUD, MMS_OVERSEAS, MMS_OLD_DEVICE, MMS_COPY_CODE, HOME_PRESTART, HOME_REPORT,
             DARK_MODE_ALL_APPS, STORE_FORCE_CHOOSER, STORE_GETAPPS_MINI,
-            CLIPBOARD_WHITELIST, APPLIST_UPLOAD_OFF,
+            CLIPBOARD_WHITELIST, APPLIST_UPLOAD_OFF, CHAIN_START_ONCE,
+            PRIVACY_OPERATOR, PRIVACY_TELECOM, PRIVACY_MISIGHT, PRIVACY_AD_USAGE,
             THEME_THIRD_PARTY, THEME_FIX_RESET,
             CP_DOWNGRADE, CP_VERIFY, CP_ARSC, CP_DIGEST, CP_EXACT, CP_PREVIOUS, CP_HIDDEN, CP_SHARED, CP_AGENT, CP_BLOCK, CP_PERSISTENT, CP_SYSTEM_UI_UID,
             UPDATER_OTA_VALIDATE, UPDATER_NO_AUTO_DIALOG
@@ -132,13 +151,16 @@ public final class Features {
      * that change how the phone behaves), plus optional package-manager and framework policies.
      */
     private static final Set<String> OFF_BY_DEFAULT = Set.of(
-            FIND_DEVICE_GOOGLE_MAP, VIDEO_SCREEN_OFF_SOUND, UPDATER_OTA_VALIDATE, UPDATER_NO_AUTO_DIALOG, JOYOSE_CLOUD_OFF, JOYOSE_GPU,
-            APPLOCK_SCRAMBLE, LOCKSCREEN_PIN_SCRAMBLE, EXTEND_UNLOCK, CLOCK_SECONDS, LOW_BATTERY_QUIET, GAME_TOAST_OFF, GAME_MACRO, GAME_NETWORK,
+            VIDEO_MUSIC_RADAR,
+            GAME_LOCK_MAX_FPS,
+            FIND_DEVICE_GOOGLE_MAP, VIDEO_SCREEN_OFF_SOUND, CALL_NOISE_REDUCTION, UPDATER_OTA_VALIDATE, UPDATER_NO_AUTO_DIALOG, JOYOSE_CLOUD_OFF, JOYOSE_GPU,
+            APPLOCK_SCRAMBLE, LOCKSCREEN_PIN_SCRAMBLE, EXTEND_UNLOCK, CLOCK_SECONDS, LOW_BATTERY_QUIET, GAME_CENTER_ADS_OFF, GAME_TOAST_OFF, GAME_MACRO, GAME_NETWORK,
             APP_INFO_BUTTONS, APP_ICON_LAUNCH, MMS_ADS, MMS_FRAUD, MMS_OVERSEAS, MMS_OLD_DEVICE, MMS_COPY_CODE, HOME_PRESTART, HOME_REPORT,
             NET_QUOTA_KEEP, NET_HOTSPOT_KEEP, SMART_CHARGE, SUPER_WIRELESS, CAR_SICKNESS,
             SIM_SUCCESS_DIALOG_OFF, ROOT_CHECK_OFF, USB_INSTALL_CHECK_OFF, DARK_MODE_ALL_APPS,
             STORE_FORCE_CHOOSER, STORE_GETAPPS_MINI, THEME_THIRD_PARTY, THEME_FIX_RESET, FLAG_SECURE, VOLUME_SAFETY_OFF, NOTIFY_SHORT_VIBRATION,
-            CLIPBOARD_WHITELIST, APPLIST_UPLOAD_OFF,
+            CLIPBOARD_WHITELIST, APPLIST_UPLOAD_OFF, CHAIN_START_ONCE,
+            PRIVACY_OPERATOR, PRIVACY_TELECOM, PRIVACY_MISIGHT, PRIVACY_AD_USAGE,
             POWER_SAVE_REFRESH, POWER_SAVE_BRIGHTNESS, POWER_SAVE_BOOT, GAME_KEEP_ENABLED, NET_APP_CONTROLS, IMS_ICONS, SIM_MENUS,
             CP_DOWNGRADE, CP_VERIFY, CP_ARSC, CP_DIGEST, CP_EXACT, CP_PREVIOUS, CP_HIDDEN, CP_SHARED, CP_AGENT, CP_BLOCK, CP_PERSISTENT, CP_SYSTEM_UI_UID);
 
@@ -149,7 +171,7 @@ public final class Features {
      * settings once (see MainActivity), so this change never turns anything off for them.
      */
     public static boolean defaultValue(String key) {
-        return FIND_DEVICE.equals(key);
+        return FIND_DEVICE.equals(key) || FREEFORM_MOTION_CUES.equals(key);
     }
 
     /**
@@ -171,8 +193,16 @@ public final class Features {
     /** Old installs keep their header row until the new independent switch is explicitly saved. */
     public static boolean read(SharedPreferences p, String key) {
         if (p == null) return defaultValue(key);
-        boolean fallback = FIND_DEVICE.equals(key) || (APP_INFO_BUTTONS.equals(key) && p.getBoolean(APP_INFO, false));
+        boolean fallback = FIND_DEVICE.equals(key) || FREEFORM_MOTION_CUES.equals(key) || (APP_INFO_BUTTONS.equals(key) && p.getBoolean(APP_INFO, false));
+        if (isVideoOption(key)) fallback = p.getBoolean(VIDEO_TOOLBOX, false);
         return p.getBoolean(key, fallback);
+    }
+
+    public static boolean isVideoOption(String key) {
+        return switch (key) {
+            case VIDEO_THEATRE, VIDEO_DOLBY, VIDEO_MEMC, VIDEO_SUPER_RES, VIDEO_CONTOURS, VIDEO_TEMP_LIMIT -> true;
+            default -> false;
+        };
     }
 
     /** A stored list of package names (empty when unset or settings are unavailable). */

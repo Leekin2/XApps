@@ -143,6 +143,33 @@ final class SecurityExtraHooks {
         hooks.info("video toolbox: screen-off sound checks=" + count);
     }
 
+    /** Global and China Security 13.8.1 use the same Mi Music radar intent. */
+    void videoMusicRadar(DexTargets targets) throws Throwable {
+        List<Method> checks = new ArrayList<>();
+        for (Class<?> owner : targets.classesUsing("video_music_radar_owner", "miui-music://radar?miref=VideoToolBox")) {
+            for (Method method : targets.matching("video_music_radar_region_" + owner.getName(),
+                    () -> MethodMatcher.create().declaredClass(owner.getName())
+                            .returnType("boolean").paramTypes("android.content.Context")
+                            .usingStrings(List.of("com.miui.player")).usingNumbers(List.of(11110)))) {
+                if (Modifier.isStatic(method.getModifiers())) checks.add(method);
+            }
+        }
+        if (checks.size() != 1) throw new NoSuchMethodException("Music radar region check not unique: " + checks.size());
+        hooks.install(checks.get(0), chain -> {
+            if (Boolean.TRUE.equals(chain.proceed())) return true;
+            if (!Features.enabled(Features.VIDEO_MUSIC_RADAR) || !(chain.getArg(0) instanceof Context context)) return false;
+            var pm = context.getPackageManager();
+            var intent = new android.content.Intent(android.content.Intent.ACTION_VIEW,
+                    android.net.Uri.parse("miui-music://radar?miref=VideoToolBox")).setPackage("com.miui.player");
+            try {
+                return pm.getPackageInfo("com.miui.player", 0).getLongVersionCode() >= 11110
+                        && intent.resolveActivity(pm) != null;
+            } catch (android.content.pm.PackageManager.NameNotFoundException missing) {
+                return false;
+            }
+        });
+    }
+
     /** Dolby in the video toolbox without the game permission check. */
     void videoDolby(DexTargets targets) throws Throwable {
         int count = 0;
@@ -212,6 +239,21 @@ final class SecurityExtraHooks {
     /** Keep support discovery and sensor/state checks together. */
     void carSickness(DexTargets targets) throws Throwable {
         new CarSicknessHooks(hooks, loader).install(targets);
+    }
+
+    /**
+     * Shows "Noise reduction" in the call toolbox. The Security app shows it only when the vendor
+     * audio declares voice-print noise reduction (ro.vendor.audio.vpnr.scene). The button only sends
+     * audio parameters, so on audio hardware without the algorithm it changes nothing.
+     */
+    void callNoiseReduction(DexTargets targets) throws Throwable {
+        List<Method> found = new ArrayList<>();
+        for (Method method : targets.usingStrings("call_vpnr", "boolean", "ro.vendor.audio.vpnr.scene")) {
+            if (method.getParameterCount() == 0 && Modifier.isStatic(method.getModifiers())) found.add(method);
+        }
+        // Exactly one check is expected; anything else is a different app version, left alone.
+        if (found.size() != 1) throw new NoSuchMethodException("Call noise reduction check not unique: " + found.size());
+        hooks.constant(found.get(0), true);
     }
 
     /** Beauty in video calls: face tracking, privacy camera and auto light. */

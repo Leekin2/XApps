@@ -44,6 +44,8 @@ data class XGoogleState(
     val restoreOpening: Boolean = false,
     /** Apps the switched-on features need that are not ticked in LSPosed (labels; "system" for the framework). */
     val missingScopes: List<String> = emptyList(),
+    /** Optional Timeline scopes are deliberately not recommended to every LSPosed user. */
+    val missingTimelineScopes: Boolean = false,
     val update: UpdateStatus = UpdateStatus.IDLE,
     val updateVersion: String = "",
     val assistant: AssistantInfo = AssistantInfo.Loading,

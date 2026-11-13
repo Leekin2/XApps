@@ -7,7 +7,7 @@ XGoogle is distributed under GPL-3.0; see LICENSE.
 XGoogle is a fork of Coogle 1.2 by zopulus (https://github.com/zopulus/coogle),
 modified by Leekinn for Xiaomi HyperOS 4. See CHANGELOG.md for the changes.
 AppDexTargets, LensBinding and WalletPreviewBinding/Hooks and the companion's NoMount check
-come from Coogle 1.3.2-1.3.5 (zopulus; NoMount fix by Andrea-lyz), adapted for XGoogle.
+come from Coogle 1.3.2-1.3.9 (zopulus; NoMount fix by Andrea-lyz), adapted for XGoogle.
 DexKit (https://github.com/LuckyPray/DexKit) is an Apache-2.0 dependency.
 Miuix (https://github.com/compose-miuix-ui/miuix) is an Apache-2.0 dependency used for the optional HyperOS-style settings screen.
 Google Maps Timeline (TimelineHooks, Gcj02) follows the idea of SherlockChiang/ReLocationReportEnabler (MIT,
@@ -25,6 +25,11 @@ XSecurity's status bar clock seconds (ClockSecondsHooks) follow HyperCeiler's St
 (https://github.com/ReChronoRain/HyperCeiler, AGPL-3.0), written anew.
 XSecurity's Extend Unlock switch (ExtendUnlockHooks) is adapted from HyperTrust by StevenWin818
 (GPL-3.0, https://github.com/StevenWin818/HyperTrust).
+XSecurity's floating window fix for Google's motion cues (FreeformMotionCuesHooks) follows the
+analysis and fix design by xrh0905 (https://gist.github.com/xrh0905/978c53f427681a6d1db634d043401cd9),
+written anew.
+XSecurity's Privacy switches (PrivacyHooks) stop the same collection steps as Hyper Privacy Guard
+(io.github.hyperprivacyguard, AGPL-3.0), written anew; no code of it is included.
 The Quick Share "View downloads" fix follows HyperCeiler's BypassForceDownloadui idea
 (https://github.com/ReChronoRain/HyperCeiler, AGPL-3.0); no HyperCeiler code is included.
 The app icon uses the Xiaomi "mi" logo, a trademark of Xiaomi; XGoogle is not affiliated with Xiaomi or Google.
@@ -67,6 +72,13 @@ HyperCeiler (https://github.com/ReChronoRain/HyperCeiler)
     rules, rewritten against this module's own hook API. The logic and target
     class/method names were taken from the following HyperCeiler sources:
 
+      - PowerKeeperHooks.java (optional maximum refresh rate lock)
+          adapted from rules/powerkeeper/LockMaxFps.kt
+      - GameCenterHooks.java
+          adapted from rules/securityadd/DisableGameBoosterAds.java
+      - ChainStartHooks.java
+          inspired by rules/securitycenter/RemoveOpenAppConfirmationPopup.kt at
+          HyperCeiler 0830c5875570; rewritten for the validated launch dialog only
       - DarkModeHooks.java
           from rules/systemframework/display/AllDarkMode.kt
           (itself derived from SetoHook by SetoSkins)
