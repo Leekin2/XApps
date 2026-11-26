@@ -101,8 +101,8 @@ fun MiuixScreen(state: UiState, actions: Actions) {
     BackHandler(state.settingsOpen) { actions.onSettings(false) }
     Scaffold(topBar = {
         TopAppBar(
-            title = if (state.settingsOpen) t.tabSettings else "XSecurity",
-            subtitle = if (state.settingsOpen) "XSecurity" else t.subtitle,
+            title = if (state.settingsOpen) t.tabSettings else if (state.aodOnly) "XAod" else "XSecurity",
+            subtitle = if (state.settingsOpen) (if (state.aodOnly) "XAod" else "XSecurity") else if (state.aodOnly) t.sections["aod"] ?: t.subtitle else t.subtitle,
             scrollBehavior = bar,
             color = if (blur) Color.Transparent else surface,
             modifier = if (blur) Modifier.textureBlur(backdrop, RectangleShape, 25f,
@@ -130,7 +130,7 @@ fun MiuixScreen(state: UiState, actions: Actions) {
                 item { SettingsPage(state, t, actions) }
             } else {
                 item { StatusHeader(state, t) }
-                items(SECTIONS, key = { it.id }) { section -> SectionCard(section, state, t, actions) }
+                items(sectionsFor(state), key = { it.id }) { section -> SectionCard(section, state, t, actions) }
                 item { RestartButton(state, t, actions) }
             }
         }
@@ -147,13 +147,13 @@ private fun StatusHeader(state: UiState, t: Texts) {
         false -> Triple(if (dark) Color(0xFFFF6B6B) else Color(0xFFD32F2F), Icons.Rounded.HighlightOff, t.inactive)
         true -> Triple(if (dark) Color(0xFF4ADE80) else Color(0xFF1B8A3C), Icons.Rounded.CheckCircle, t.active)
     }
-    val total = SECTIONS.sumOf { it.items.size }
-    val on = SECTIONS.sumOf { s -> s.items.count { state.values[it.key] == true } }
+    val total = sectionsFor(state).sumOf { it.items.size }
+    val on = sectionsFor(state).sumOf { s -> s.items.count { state.values[it.key] == true } }
     Card(Modifier.padding(horizontal = 12.dp).padding(top = 12.dp, bottom = 8.dp)) {
         Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(56.dp).clip(RoundedCornerShape(18.dp)).background(accent.copy(alpha = 0.16f)),
                 contentAlignment = Alignment.Center) {
-                Icon(Icons.Rounded.Shield, null, Modifier.size(30.dp), tint = accent)
+                Icon(if (state.aodOnly) Icons.Rounded.DarkMode else Icons.Rounded.Shield, null, Modifier.size(30.dp), tint = accent)
                 Icon(icon, null, Modifier.size(18.dp).align(Alignment.BottomEnd).padding(end = 4.dp, bottom = 4.dp), tint = accent)
             }
             Spacer(Modifier.width(16.dp))
@@ -215,9 +215,23 @@ private fun SectionCard(section: Section, state: UiState, t: Texts, actions: Act
                             startAction = { RowIcon(item.icon, section.color) },
                             onClick = actions.onOpenExtendUnlock)
                     }
+                    val choice = CHOICES[item.key]
+                    if (choice != null && state.values[item.key] == true) {
+                        val pick = t.features[choice.pick]
+                        val value = state.ints[choice.key] ?: choice.default
+                        ArrowPreference(title = (pick?.title ?: "") + ": " + choice.format(value, state.language), summary = pick?.summary?.takeIf { it.isNotEmpty() },
+                            startAction = { RowIcon(item.icon, section.color) },
+                            onClick = { actions.onPickChoice(item.key) }, enabled = state.connected != false)
+                    }
+                    if (item.key == F.AOD_KITS && state.values[item.key] == true) {
+                        val open = t.features[OPEN_KITS]
+                        ArrowPreference(title = open?.title ?: "", summary = open?.summary,
+                            startAction = { RowIcon(item.icon, section.color) },
+                            onClick = actions.onOpenKits, enabled = state.connected != false)
+                    }
                     if (item.key == F.CLIPBOARD_WHITELIST && state.values[item.key] == true) {
                         val pick = t.features[PICK_CLIPBOARD]
-                        ArrowPreference(title = (pick?.title ?: "") + " (${state.clipboardApps})", summary = pick?.summary,
+                        ArrowPreference(title = (pick?.title ?: "") + " (${state.clipboardApps})", summary = pick?.summary?.takeIf { it.isNotEmpty() },
                             startAction = { RowIcon(item.icon, section.color) },
                             onClick = actions.onPickClipboardApps, enabled = state.connected != false)
                     }
@@ -230,9 +244,9 @@ private fun SectionCard(section: Section, state: UiState, t: Texts, actions: Act
 @Composable
 private fun RestartButton(state: UiState, t: Texts, actions: Actions) {
     Column(Modifier.padding(horizontal = 12.dp).padding(top = 14.dp)) {
-        TextButton(text = t.restart, onClick = actions.onRestart, modifier = Modifier.fillMaxWidth(),
+        TextButton(text = if (state.aodOnly) aodRestart(state.language) else t.restart, onClick = actions.onRestart, modifier = Modifier.fillMaxWidth(),
             enabled = state.connected == true && !state.restarting, colors = ButtonDefaults.textButtonColorsPrimary())
-        Text(t.restartSummary, fontSize = 12.sp, color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
+        Text(if (state.aodOnly) aodRestartSummary(state.language) else t.restartSummary, fontSize = 12.sp, color = MiuixTheme.colorScheme.onSurfaceVariantSummary,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
     }
 }

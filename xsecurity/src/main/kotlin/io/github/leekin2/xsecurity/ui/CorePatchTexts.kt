@@ -17,6 +17,8 @@ internal fun corePatchLines(language: AppLanguage): Map<String, Line> {
             Line("Engeli atla", "Nothing OS gibi desteklenen üretici engelleme listelerini atlar; HyperOS'ta bu sınıf bulunmayabilir"),
             Line("Kalıcı sistem uygulamalarını güncellemeye izin ver", "SystemUI gibi kalıcı uygulamaların güncelleme engelini kurulum sırasında kaldırır. System Framework kapsamı ve yeniden başlatma gerekir. ⚠ İleri düzey: uyumsuz APK, SystemUI çökmesine veya telefonun açılmamasına yol açabilir. Yalnızca cihazını kurtarmayı bilen kullanıcılar etkinleştirmeli"),
             Line("SystemUI güncellemelerinde mevcut UID’yi koru", "Farklı sharedUserId bildiren SystemUI güncellemelerinde telefonda kayıtlı kimliği korur. System Framework ve yeniden başlatma gerekir. Bu güncellemeler kullanılırken XSecurity ve bu seçenek etkin kalmalıdır; Android/ROM uyumluluğunu sağlamaz. ⚠ İleri düzey: uyumsuz APK veya korumanın kapatılması SystemUI çökmesine ya da telefonun açılmamasına yol açabilir. Yalnızca cihazını kurtarmayı bilen kullanıcılar etkinleştirmeli"),
+            Line("APK korumasını kaldır (ApkProtectionRemove)", "Kurulum sırasında APK tam imza doğrulamasını (verifySignaturesInternal) ve şema uyumluluk kısıtlamalarını atlar. System Framework kapsamı ve yeniden başlatma gerekir. ⚠ Değiştirilmiş APK'lara karşı korumayı azaltır"),
+            Line("APK imza doğrulamasını kapat (HyperOS)", "HyperOS sistem uygulaması güncelleme engellerini (verifyIsolationViolation / canBeUpdate) ve kurulum sırasındaki imza doğrulamalarını devre dışı bırakır. System Framework kapsamı ve yeniden başlatma gerekir. ⚠ Yalnızca ne yaptığını bilen kullanıcılar açmalı"),
         )
         AppLanguage.EN -> listOf(
             Line("Allow downgrades", "Allows APKs with lower version codes; older versions may be incompatible with existing app data"),
@@ -31,6 +33,8 @@ internal fun corePatchLines(language: AppLanguage): Map<String, Line> {
             Line("Bypass vendor blocklist", "Bypasses supported vendor blocklists such as Nothing OS; this class may not exist on HyperOS"),
             Line("Allow persistent system app updates", "Removes the update restriction for persistent apps such as SystemUI during installation. Requires System Framework scope and reboot. ⚠ Advanced users only: an incompatible APK may crash SystemUI or prevent the phone from booting. Enable only if you know how to recover your device"),
             Line("Keep installed UID for SystemUI updates", "Retains the phone’s existing identity when a SystemUI update declares a different sharedUserId. Requires System Framework and reboot. XSecurity and this option must remain enabled with these updates; this does not provide Android/ROM compatibility. ⚠ Advanced users only: an incompatible APK or disabling this protection may crash SystemUI or prevent booting. Enable only if you know how to recover your device"),
+            Line("Remove APK protection (ApkProtectionRemove)", "Skips full APK signature verification (verifySignaturesInternal) and scheme/compat restrictions during installation. Requires System Framework scope and reboot. ⚠ Reduces protection against modified APKs"),
+            Line("Disable APK signature verification (HyperOS)", "Disables HyperOS system-app update blocks (verifyIsolationViolation / canBeUpdate) and install-flow APK signature verification. Requires System Framework scope and reboot. ⚠ Advanced users only"),
         )
         AppLanguage.RU -> listOf(
             Line("Разрешить понижение версии", "Разрешает APK с меньшим кодом версии; старое приложение может не понимать текущие данные"),
@@ -45,6 +49,8 @@ internal fun corePatchLines(language: AppLanguage): Map<String, Line> {
             Line("Обойти блокировку производителя", "Обходит поддерживаемые списки блокировки, например Nothing OS; на HyperOS класса может не быть"),
             Line("Разрешить обновление постоянных системных приложений", "Снимает запрет обновления постоянных приложений, например SystemUI, во время установки. Нужны System Framework и перезагрузка. ⚠ Для опытных пользователей: несовместимый APK может вызвать сбой SystemUI или помешать загрузке телефона. Включайте, только если умеете восстановить устройство"),
             Line("Сохранять UID при обновлении SystemUI", "Сохраняет установленную идентичность SystemUI при другом sharedUserId в обновлении. Нужны System Framework и перезагрузка. XSecurity и эта опция должны оставаться включёнными; совместимость Android/ROM не обеспечивается. ⚠ Для опытных пользователей: несовместимый APK или отключение защиты могут вызвать сбой SystemUI или загрузки. Включайте, только если умеете восстановить устройство"),
+            Line("Снять защиту APK (ApkProtectionRemove)", "Пропускает полную проверку подписи APK (verifySignaturesInternal) и ограничения схемы при установке. Нужны System Framework и перезагрузка. ⚠ Снижает защиту от изменённых APK"),
+            Line("Отключить проверку подписи APK (HyperOS)", "Отключает блокировки обновления системных приложений HyperOS (verifyIsolationViolation / canBeUpdate) и проверку подписи при установке. Нужны System Framework и перезагрузка. ⚠ Только для опытных пользователей"),
         )
         AppLanguage.ES -> listOf(
             Line("Permitir versiones anteriores", "Permite APK con código de versión inferior; los datos actuales pueden ser incompatibles"),
@@ -59,6 +65,8 @@ internal fun corePatchLines(language: AppLanguage): Map<String, Line> {
             Line("Omitir bloqueo del fabricante", "Omite listas compatibles como las de Nothing OS; la clase puede no existir en HyperOS"),
             Line("Permitir actualizar apps persistentes del sistema", "Elimina la restricción de actualización de apps persistentes como SystemUI durante la instalación. Requiere System Framework y reinicio. ⚠ Solo usuarios avanzados: un APK incompatible puede bloquear SystemUI o impedir el arranque. Actívalo solo si sabes recuperar tu dispositivo"),
             Line("Conservar UID al actualizar SystemUI", "Conserva la identidad instalada si una actualización de SystemUI declara otro sharedUserId. Requiere System Framework y reinicio. XSecurity y esta opción deben seguir activos; no proporciona compatibilidad con Android/ROM. ⚠ Solo usuarios avanzados: un APK incompatible o desactivar esta protección puede bloquear SystemUI o impedir el arranque. Actívalo solo si sabes recuperar tu dispositivo"),
+            Line("Quitar protección APK (ApkProtectionRemove)", "Omite la verificación completa de firma APK (verifySignaturesInternal) y restricciones de esquema al instalar. Requiere System Framework y reinicio. ⚠ Reduce la protección contra APK modificados"),
+            Line("Desactivar verificación de firma APK (HyperOS)", "Desactiva los bloqueos de actualización de apps del sistema en HyperOS (verifyIsolationViolation / canBeUpdate) y la verificación de firma al instalar. Requiere System Framework y reinicio. ⚠ Solo usuarios avanzados"),
         )
         AppLanguage.ZH -> listOf(
             Line("允许降级", "允许安装较低版本号 APK；旧版本可能不兼容现有应用数据"),
@@ -73,6 +81,8 @@ internal fun corePatchLines(language: AppLanguage): Map<String, Line> {
             Line("绕过厂商拦截", "绕过受支持厂商（如 Nothing OS）的拦截名单；HyperOS 可能不存在相应类"),
             Line("允许更新常驻系统应用", "仅在安装过程中解除 SystemUI 等常驻应用的更新限制。需要勾选 System Framework 并重启手机。⚠ 仅限高级用户：不兼容的 APK 可能导致 SystemUI 崩溃或手机无法启动。请仅在了解如何恢复设备时启用"),
             Line("SystemUI 更新时保留现有 UID", "SystemUI 更新声明不同 sharedUserId 时保留手机已安装的身份。需要系统框架作用域和重启；使用这些更新时须保持 XSecurity 和此选项启用，不提供跨 Android/ROM 兼容性。⚠ 仅限高级用户：不兼容的 APK 或关闭此保护可能导致 SystemUI 崩溃或手机无法启动。请仅在了解如何恢复设备时启用"),
+            Line("移除 APK 保护（ApkProtectionRemove）", "安装时跳过完整 APK 签名验证（verifySignaturesInternal）与签名方案限制。需要勾选 System Framework 并重启手机。⚠ 会降低对修改版 APK 的防护"),
+            Line("停用 APK 签名验证（HyperOS）", "解除 HyperOS 系统应用更新拦截（verifyIsolationViolation / canBeUpdate）并跳过安装流程中的签名验证。需要勾选 System Framework 并重启手机。⚠ 仅限高级用户"),
         )
     }
     return F.CORE_PATCH.zip(lines).toMap()

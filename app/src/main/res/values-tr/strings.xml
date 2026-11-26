@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="module_description">XApps for HyperOS: XGoogle, XSecurity ve XNotify tek modülde. Her bölümü uygulamadan açıp kapatın.</string>
+    <string name="module_description">XApps for HyperOS: XGoogle, XSecurity, XNotify ve XAod tek modülde. Her bölümü uygulamadan açıp kapatın.</string>
     <string name="connected">LSPosed\'da etkin</string>
     <string name="connected_summary">Açık bölümler LSPosed\'da işaretli uygulamalarda çalışır.</string>
     <string name="not_connected">Etkin değil</string>
@@ -8,7 +8,7 @@
     <string name="group_parts">Bölümler</string>
     <string name="google_summary">Google Asistan, Gemini, Arama için Daire Çiz, Lens, Wallet ve Google hizmetleri HyperOS\'ta</string>
     <string name="security_summary">Güvenlik uygulaması kilitleri, Oyun Turbo ekstraları, pil sağlığı, VoLTE simgeleri ve sistem ayarları</string>
-    <string name="notify_summary">Telefon bildirimleri Xiaomi tablette ve her uygulamaya Xiaomi yanıt kutusu</string>
+    <string name="notify_summary">Süper Ada\'da mesajlar, her uygulamaya Xiaomi yanıt kutusu ve telefon bildirimleri Xiaomi tablette</string>
     <string name="open_settings">Ayarlar</string>
     <string name="xapps_restart_hint">Bir bölümü açıp kapatmak yeniden başlatınca geçerli olur.</string>
     <string name="group_old">Eski modüller</string>
@@ -16,4 +16,14 @@
     <string name="xapps_version">Sürüm %1$s</string>
     <string name="xapps_hide_icon">Ana ekran simgesini gizle</string>
     <string name="xapps_hide_icon_summary">Gizlenince uygulamayı LSPosed modül ayarlarından açın.</string>
+    <string name="aod_summary">Her zaman açık ekran: zamanlayıcı, düşük pil sınırı, kenar ışığı, şarj bilgisi, çalan şarkı, kitler ve gizli stiller</string>
+    <string name="group_backup">Yedekle ve geri yükle</string>
+    <string name="backup_export">Ayarları yedekle</string>
+    <string name="backup_export_summary">Tüm XGoogle, XSecurity, XNotify ve XAod ayarlarını JSON dosyasına kaydeder.</string>
+    <string name="backup_import">Yedekten geri yükle</string>
+    <string name="backup_import_summary">Daha önce kaydedilen XApps yedek dosyasını yükler; uygulamak için yeniden başlatın.</string>
+    <string name="backup_exported">Yedek kaydedildi (%1$d ayar)</string>
+    <string name="backup_restored">%1$d ayar geri yüklendi. Uygulamak için yeniden başlatın.</string>
+    <string name="backup_failed">Yedek dosyası kaydedilemedi.</string>
+    <string name="backup_invalid">Geri yüklenemedi: geçersiz yedek dosyası.</string>
 </resources>

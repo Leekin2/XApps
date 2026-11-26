@@ -15,3 +15,18 @@ prepare_google_mount() {
         : > "$google_dir/.replace"
     fi
 }
+
+# Stage only XApps' own Google APK copy outside the module's mount tree when switched off.
+# Same-filesystem rename keeps the APK and split files together across interrupted boots.
+apply_google_mount_choice() {
+    mount_root="$1"
+    mount_live="$mount_root/system/priv-app/GoogleQuickSearchBox"
+    mount_parked="$mount_root/google-app-off"
+    if [ -e /data/adb/xapps_google_mount_off ]; then
+        if [ -e "$mount_live" ] && [ ! -e "$mount_parked" ]; then
+            mv "$mount_live" "$mount_parked" || return 1
+        fi
+    elif [ -e "$mount_parked" ] && [ ! -e "$mount_live" ]; then
+        mkdir -p "${mount_live%/*}" && mv "$mount_parked" "$mount_live" || return 1
+    fi
+}

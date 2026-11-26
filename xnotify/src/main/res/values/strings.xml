@@ -4,6 +4,20 @@
     <string name="settings_forward_summary">Forward every app\'s notifications between Xiaomi devices (Interconnectivity) and let them pop up on the tablet.</string>
     <string name="settings_reply">Xiaomi reply box</string>
     <string name="settings_reply_summary">Xiaomi\'s reply box and buttons for Telegram, WhatsApp and every other notification (formerly XReply). Uninstall XReply if it is still installed.</string>
+    <string name="settings_charge_island">Live charging power on the island</string>
+    <string name="settings_charge_island_summary">The charging island shows the power going into the battery right now (for example 27 W), updated every second, instead of only the charger maximum.</string>
+    <string name="settings_music_spectrum">Music island follows the song</string>
+    <string name="settings_music_spectrum_summary">The bars on the music island move with the song playing (bass to treble) in the album art colours, instead of a fixed animation.</string>
+    <string name="settings_clear_particles">Particle clear animation</string>
+    <string name="settings_clear_particles_summary">Tapping clear all dissolves the notifications into drifting particles instead of sliding them away.</string>
     <string name="settings_restart">Changes apply after a reboot (or after restarting System UI and Interconnectivity).</string>
     <string name="settings_no_service">LSPosed is not connected: enable XApps in LSPosed and open this screen again.</string>
+    <string name="settings_section_shade">Notification shade</string>
+    <string name="settings_section_island">Super Island</string>
+    <string name="settings_section_devices">Other Xiaomi devices</string>
+    <string name="settings_round_clear">Round clear-all button</string>
+    <string name="settings_round_clear_summary">Give the clear-all button a circular outline.</string>
+    <string name="settings_custom_carrier">Custom carrier label</string>
+    <string name="settings_custom_carrier_summary">Use your own carrier label on the lock screen and in the notification and control centers.</string>
+    <string name="settings_carrier_text">Carrier text</string>
 </resources>

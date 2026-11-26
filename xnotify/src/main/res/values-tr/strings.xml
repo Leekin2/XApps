@@ -4,6 +4,20 @@
     <string name="settings_forward_summary">Her uygulamanın bildirimini Xiaomi cihazlar arasında aktarır (Cihazlar arası bağlantı) ve tablette açılır pencere olarak gösterir.</string>
     <string name="settings_reply">Xiaomi yanıt kutusu</string>
     <string name="settings_reply_summary">Telegram, WhatsApp ve diğer tüm bildirimlerde Xiaomi\'nin yanıt kutusu ve butonları (eski XReply). XReply hâlâ yüklüyse kaldırın.</string>
+    <string name="settings_charge_island">Adada canlı şarj gücü</string>
+    <string name="settings_charge_island_summary">Şarj adası yalnızca adaptörün en yüksek gücünü değil, o anda bataryaya giren gücü (örneğin 27 W) saniyede bir güncelleyerek gösterir.</string>
+    <string name="settings_music_spectrum">Müzik adası şarkıya göre oynar</string>
+    <string name="settings_music_spectrum_summary">Müzik adasındaki çubuklar sabit bir animasyon yerine çalan şarkıya göre (bastan tize) albüm kapağının renkleriyle hareket eder.</string>
+    <string name="settings_clear_particles">Parçacıklı temizleme animasyonu</string>
+    <string name="settings_clear_particles_summary">Tümünü temizle düğmesine dokununca bildirimler kayarak gitmek yerine parçacıklara ayrılıp dağılır.</string>
     <string name="settings_restart">Değişiklikler yeniden başlatmadan sonra geçerli olur (veya System UI ve Cihazlar arası bağlantı yeniden başlatılınca).</string>
     <string name="settings_no_service">LSPosed bağlı değil: XApps\'i LSPosed\'da etkinleştirip bu ekranı yeniden açın.</string>
+    <string name="settings_section_shade">Bildirim paneli</string>
+    <string name="settings_section_island">Süper Ada</string>
+    <string name="settings_section_devices">Diğer Xiaomi cihazlar</string>
+    <string name="settings_round_clear">Yuvarlak tümünü temizle düğmesi</string>
+    <string name="settings_round_clear_summary">Tümünü temizle düğmesine yuvarlak biçim verir.</string>
+    <string name="settings_custom_carrier">Özel operatör etiketi</string>
+    <string name="settings_custom_carrier_summary">Kilit ekranında, bildirim panelinde ve kontrol merkezinde kendi operatör metnini gösterir.</string>
+    <string name="settings_carrier_text">Operatör metni</string>
 </resources>

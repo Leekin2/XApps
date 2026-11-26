@@ -44,6 +44,38 @@ public final class CompanionInstaller {
         }
         return state;
     }
+    private static final String GOOGLE_MOUNT_OFF = "/data/adb/xapps_google_mount_off";
+    private static final String GOOGLE_MOUNT_AVAILABLE = """
+            d=%s
+            mount_available() {
+                [ -f "$d/module.prop" ] && [ ! -e "$d/remove" ] && [ ! -e "$d/disable" ] &&
+                    grep -q apply_google_mount_choice "$d/post-fs-data.sh" &&
+                    { [ -f "$d/system/priv-app/GoogleQuickSearchBox/base.apk" ] ||
+                      [ -f "$d/google-app-off/base.apk" ]; }
+            }
+            """.formatted(DIR);
+
+    /** The switch controls the APK copy managed by XApps, independently of ROM copies and updates. */
+    public static Boolean googleMountEnabled() throws Exception {
+        String result = run(GOOGLE_MOUNT_AVAILABLE + """
+                if ! mount_available; then echo unavailable
+                elif [ -e %s ]; then echo off
+                else echo on
+                fi
+                """.formatted(GOOGLE_MOUNT_OFF), 20).trim();
+        return switch (result.substring(result.lastIndexOf('\n') + 1)) {
+            case "on" -> true;
+            case "off" -> false;
+            case "unavailable" -> null;
+            default -> throw new java.io.IOException("Google mount state unreadable");
+        };
+    }
+
+    public static void setGoogleMountEnabled(boolean enabled) throws Exception {
+        run(GOOGLE_MOUNT_AVAILABLE + "mount_available || exit 1\n"
+                + (enabled ? "rm -f " : "touch ") + GOOGLE_MOUNT_OFF, 20);
+    }
+
     /** versionCode of the companion module packed into the APK. */
     static int bundledVersion(Context context) throws java.io.IOException {
         try (java.util.zip.ZipInputStream zip = new java.util.zip.ZipInputStream(context.getAssets().open(ASSET))) {

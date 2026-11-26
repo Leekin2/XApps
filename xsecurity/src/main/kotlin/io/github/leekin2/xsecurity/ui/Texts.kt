@@ -56,7 +56,7 @@ private val TR = Texts(
     sections = mapOf("finddevice" to "Cihazı Bul", "privacy" to "Gizlilik", "messages" to "Mesajlar", "launcher" to "Başlatıcı",
         "corepatch" to "Core Patch",
         "updater" to "OTA doğrulamasını kaldır", "charge" to "Şarj", "games" to "Oyunlar", "network" to "Ağ",
-        "battery" to "Pil", "media" to "Video ve arama", "system" to "İzinler ve sistem", "store" to "Uygulama mağazası", "theme" to "Temalar",
+        "aod" to "Her zaman açık ekran", "aod_look" to "Görünüm", "aod_show" to "Ne zaman görünsün", "aod_extras" to "Ekran ekleri", "battery" to "Pil", "media" to "Video ve arama", "system" to "İzinler ve sistem", "store" to "Uygulama mağazası", "theme" to "Temalar",
     ),
     features = mapOf(
         F.UPDATER_NO_AUTO_DIALOG to Line("\"Otomatik güncellemeler açılsın mı?\" diyaloğunu kapat", "Güncelleyici her üç günde bir bu soruyu sormaz"),
@@ -153,7 +153,7 @@ private val EN = Texts(
     sections = mapOf("finddevice" to "Find Device", "privacy" to "Privacy", "messages" to "Messages", "launcher" to "Launcher",
         "corepatch" to "Core Patch",
         "updater" to "Remove OTA verification", "charge" to "Charging", "games" to "Games", "network" to "Network",
-        "battery" to "Battery", "media" to "Video and calls", "system" to "Permissions and system", "store" to "App store", "theme" to "Themes",
+        "aod" to "Always-on display", "aod_look" to "Look", "aod_show" to "When it shows", "aod_extras" to "Extras on the AOD", "battery" to "Battery", "media" to "Video and calls", "system" to "Permissions and system", "store" to "App store", "theme" to "Themes",
     ),
     features = mapOf(
         F.UPDATER_NO_AUTO_DIALOG to Line("No \"Turn on automatic updates\" dialog", "The updater stops asking every three days"),
@@ -250,7 +250,7 @@ private val RU = Texts(
     sections = mapOf("finddevice" to "Найти устройство", "privacy" to "Конфиденциальность", "messages" to "Сообщения", "launcher" to "Лаунчер",
         "corepatch" to "Core Patch",
         "updater" to "Убрать проверку OTA", "charge" to "Зарядка", "games" to "Игры", "network" to "Сеть",
-        "battery" to "Батарея", "media" to "Видео и звонки", "system" to "Разрешения и система", "store" to "Магазин приложений", "theme" to "Темы",
+        "aod" to "Always-on дисплей", "aod_look" to "Внешний вид", "aod_show" to "Когда показывать", "aod_extras" to "Дополнения на AOD", "battery" to "Батарея", "media" to "Видео и звонки", "system" to "Разрешения и система", "store" to "Магазин приложений", "theme" to "Темы",
     ),
     features = mapOf(
         F.UPDATER_NO_AUTO_DIALOG to Line("Без вопроса «Включить автообновления?»", "Приложение обновлений перестаёт спрашивать каждые три дня"),
@@ -347,7 +347,7 @@ private val ES = Texts(
     sections = mapOf("finddevice" to "Buscar dispositivo", "privacy" to "Privacidad", "messages" to "Mensajes", "launcher" to "Lanzador",
         "corepatch" to "Core Patch",
         "updater" to "Quitar la verificación OTA", "charge" to "Carga", "games" to "Juegos", "network" to "Red",
-        "battery" to "Batería", "media" to "Vídeo y llamadas", "system" to "Permisos y sistema", "store" to "Tienda de apps", "theme" to "Temas",
+        "aod" to "Pantalla siempre activa", "aod_look" to "Aspecto", "aod_show" to "Cuándo se muestra", "aod_extras" to "Extras en el AOD", "battery" to "Batería", "media" to "Vídeo y llamadas", "system" to "Permisos y sistema", "store" to "Tienda de apps", "theme" to "Temas",
     ),
     features = mapOf(
         F.UPDATER_NO_AUTO_DIALOG to Line("Sin el diálogo «¿Activar actualizaciones automáticas?»", "El actualizador deja de preguntar cada tres días"),
@@ -444,7 +444,7 @@ private val ZH = Texts(
     sections = mapOf("finddevice" to "查找设备", "privacy" to "隐私", "messages" to "短信", "launcher" to "桌面",
         "corepatch" to "Core Patch",
         "updater" to "移除 OTA 验证", "charge" to "充电", "games" to "游戏", "network" to "网络",
-        "battery" to "电池", "media" to "视频与通话", "system" to "权限与系统", "store" to "应用商店", "theme" to "主题",
+        "aod" to "息屏显示", "aod_look" to "外观", "aod_show" to "显示时机", "aod_extras" to "息屏附加内容", "battery" to "电池", "media" to "视频与通话", "system" to "权限与系统", "store" to "应用商店", "theme" to "主题",
     ),
     features = mapOf(
         F.UPDATER_NO_AUTO_DIALOG to Line("关闭“开启自动更新”弹窗", "系统更新不再每三天询问一次"),

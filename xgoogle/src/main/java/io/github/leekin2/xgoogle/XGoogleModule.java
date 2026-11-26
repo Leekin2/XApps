@@ -59,6 +59,8 @@ public final class XGoogleModule extends XposedModule {
                 || "com.google.android.googlequicksearchbox".equals(packageName)) {
             MigrationEntry.attach(this);
             MigrationEntry.hookPackage(packageName, param.getClassLoader());
+            if ("com.google.android.googlequicksearchbox".equals(packageName))
+                GoogleAppFeatureHooks.install(hooks, param.getClassLoader());
             if ("com.google.android.googlequicksearchbox".equals(packageName) && FeatureConfig.enabled(FeaturePolicy.LENS)) LensHooks.install(hooks, param.getClassLoader(),
                     param.getApplicationInfo().sourceDir, param.getApplicationInfo().dataDir);
             if ("com.google.android.googlequicksearchbox".equals(packageName) && FeatureConfig.enabled(FeaturePolicy.LIVE_TRANSLATE))

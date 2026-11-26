@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Only XApps (and the system) may tell System UI which lock screen kits to show. -->
+    <permission android:name="io.github.leekin2.xapps.permission.LOCK_KITS" android:protectionLevel="signature" />
+    <uses-permission android:name="io.github.leekin2.xapps.permission.LOCK_KITS" />
     <queries>
         <package android:name="com.miui.securitycenter" />
         <package android:name="com.miui.securityadd" />
@@ -19,6 +22,7 @@
         <package android:name="com.xiaomi.registration" />
         <package android:name="com.miui.misightservice" />
         <package android:name="com.miui.systemAdSolution" />
+        <package android:name="com.google.android.inputmethod.latin" />
         <!-- Lets the clipboard app picker list launchable apps without a broad package permission. -->
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -28,5 +32,10 @@
     <application>
         <!-- Opened from the XApps home screen. -->
         <activity android:name=".MainActivity" android:exported="false" android:theme="@style/AppTheme" />
+        <activity android:name=".AodActivity" android:exported="false" android:theme="@style/AppTheme" />
+        <!-- Lock screen kits picker: opened from XApps and from HyperOS Settings > Lock screen (Settings runs as the system). -->
+        <activity android:name=".KitsActivity" android:exported="false" android:theme="@android:style/Theme.DeviceDefault.NoActionBar" />
+        <!-- Kits chosen in the lock screen editor (com.miui.aod) are saved through XApps. -->
+        <provider android:name=".KitsProvider" android:authorities="io.github.leekin2.xapps.kits" android:exported="true" />
     </application>
 </manifest>

@@ -87,7 +87,7 @@ fun MaterialScreen(state: UiState, actions: Actions) {
         modifier = Modifier.fillMaxSize().nestedScroll(scroll.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
-                title = { Text(if (state.settingsOpen) t.tabSettings else "XSecurity") },
+                title = { Text(if (state.settingsOpen) t.tabSettings else if (state.aodOnly) "XAod" else "XSecurity") },
                 navigationIcon = {
                     if (state.settingsOpen) IconButton(onClick = { actions.onSettings(false) }) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, t.tabHome)
@@ -105,15 +105,15 @@ fun MaterialScreen(state: UiState, actions: Actions) {
                 item { SettingsPage(state, t, actions) }
             } else {
                 item { StatusHeader(state, t) }
-                items(SECTIONS, key = { it.id }) { section -> SectionCard(section, state, t, actions) }
+                items(sectionsFor(state), key = { it.id }) { section -> SectionCard(section, state, t, actions) }
                 item {
                     Button(onClick = actions.onRestart, enabled = state.connected == true && !state.restarting,
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(top = 16.dp)) {
                         Icon(Icons.Rounded.RestartAlt, null)
                         Spacer(Modifier.width(8.dp))
-                        Text(t.restart)
+                        Text(if (state.aodOnly) aodRestart(state.language) else t.restart)
                     }
-                    Text(t.restartSummary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    Text(if (state.aodOnly) aodRestartSummary(state.language) else t.restartSummary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
                 }
             }
@@ -129,12 +129,12 @@ private fun StatusHeader(state: UiState, t: Texts) {
         false -> Triple(scheme.error, Icons.Rounded.HighlightOff, t.inactive)
         true -> Triple(Color(0xFF2E9D57), Icons.Rounded.CheckCircle, t.active)
     }
-    val total = SECTIONS.sumOf { it.items.size }
-    val on = SECTIONS.sumOf { s -> s.items.count { state.values[it.key] == true } }
+    val total = sectionsFor(state).sumOf { it.items.size }
+    val on = sectionsFor(state).sumOf { s -> s.items.count { state.values[it.key] == true } }
     ElevatedCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
         Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(56.dp).clip(RoundedCornerShape(18.dp)).background(accent.copy(alpha = 0.16f)), contentAlignment = Alignment.Center) {
-                Icon(Icons.Rounded.Shield, null, Modifier.size(30.dp), tint = accent)
+                Icon(if (state.aodOnly) Icons.Rounded.DarkMode else Icons.Rounded.Shield, null, Modifier.size(30.dp), tint = accent)
                 Icon(icon, null, Modifier.size(18.dp).align(Alignment.BottomEnd).padding(end = 4.dp, bottom = 4.dp), tint = accent)
             }
             Spacer(Modifier.width(16.dp))
@@ -201,11 +201,33 @@ private fun SectionCard(section: Section, state: UiState, t: Texts, actions: Act
                             modifier = Modifier.clickable(onClick = actions.onOpenExtendUnlock)
                         )
                     }
+                    val choice = CHOICES[item.key]
+                    if (choice != null && checked) {
+                        val pick = t.features[choice.pick]
+                        val value = state.ints[choice.key] ?: choice.default
+                        ListItem(
+                            headlineContent = { Text((pick?.title ?: "") + ": " + choice.format(value, state.language)) },
+                            supportingContent = pick?.summary?.takeIf { it.isNotEmpty() }?.let { { Text(it) } },
+                            leadingContent = { Icon(item.icon, null, tint = section.color) },
+                            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                            modifier = Modifier.clickable(enabled = state.connected != false) { actions.onPickChoice(item.key) }
+                        )
+                    }
+                    if (item.key == F.AOD_KITS && checked) {
+                        val open = t.features[OPEN_KITS]
+                        ListItem(
+                            headlineContent = { Text(open?.title ?: "") },
+                            supportingContent = open?.summary?.let { { Text(it) } },
+                            leadingContent = { Icon(item.icon, null, tint = section.color) },
+                            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                            modifier = Modifier.clickable(enabled = state.connected != false) { actions.onOpenKits() }
+                        )
+                    }
                     if (item.key == F.CLIPBOARD_WHITELIST && checked) {
                         val pick = t.features[PICK_CLIPBOARD]
                         ListItem(
                             headlineContent = { Text((pick?.title ?: "") + " (${state.clipboardApps})") },
-                            supportingContent = pick?.summary?.let { { Text(it) } },
+                            supportingContent = pick?.summary?.takeIf { it.isNotEmpty() }?.let { { Text(it) } },
                             leadingContent = { Icon(item.icon, null, tint = section.color) },
                             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                             modifier = Modifier.clickable(enabled = state.connected != false) { actions.onPickClipboardApps() }

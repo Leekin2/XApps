@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_forward">Notificaciones del teléfono en la tableta</string>
+    <string name="settings_forward_summary">Reenvía las notificaciones de todas las apps entre dispositivos Xiaomi y las muestra como ventanas emergentes en la tableta.</string>
+    <string name="settings_reply">Cuadro de respuesta de Xiaomi</string>
+    <string name="settings_reply_summary">Cuadro de respuesta y botones de Xiaomi para Telegram, WhatsApp y cualquier otra notificación (antes XReply). Desinstala XReply si sigue instalado.</string>
+    <string name="settings_charge_island">Potencia de carga en vivo en la isla</string>
+    <string name="settings_charge_island_summary">La isla de carga muestra la potencia real que entra en la batería (por ejemplo 27 W) cada segundo en lugar del máximo del cargador.</string>
+    <string name="settings_music_spectrum">La isla de música sigue la canción</string>
+    <string name="settings_music_spectrum_summary">Las barras de la isla de música se mueven al ritmo de la canción con los colores de la carátula.</string>
+    <string name="settings_clear_particles">Animación de borrado con partículas</string>
+    <string name="settings_clear_particles_summary">Al tocar borrar todo, las notificaciones se disuelven en partículas en lugar de deslizarse.</string>
+    <string name="settings_restart">Los cambios se aplican tras reiniciar (o al reiniciar System UI e Interconnectivity).</string>
+    <string name="settings_no_service">LSPosed no está conectado: activa XApps en LSPosed y vuelve a abrir esta pantalla.</string>
+    <string name="settings_section_shade">Panel de notificaciones</string>
+    <string name="settings_section_island">Super Isla</string>
+    <string name="settings_section_devices">Otros dispositivos Xiaomi</string>
+    <string name="settings_round_clear">Botón circular de borrar todo</string>
+    <string name="settings_round_clear_summary">Da un contorno circular al botón de borrar todo.</string>
+    <string name="settings_custom_carrier">Etiqueta de operador personalizada</string>
+    <string name="settings_custom_carrier_summary">Muestra tu propio texto de operador en la pantalla de bloqueo y en los paneles.</string>
+    <string name="settings_carrier_text">Texto del operador</string>
 </resources>

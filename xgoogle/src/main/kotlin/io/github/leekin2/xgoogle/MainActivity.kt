@@ -60,11 +60,11 @@ class MainActivity : ComponentActivity() {
                 if (state.look.hyper) MiuixScreen(state, ::changeSetting, ::openAssistant, ::changeIconVisibility,
                     ::openModuleManager, ::openRepository, ::openTelegram, ::changeLanguage,
                     ::changeLook, ::confirmDialog, ::dismissDialog, { showDialog(DialogKind.RESTART) }, ::checkUpdates, ::openSupport,
-                    ::openGoogleRestore, ::openEarthquakeAlerts, tab) { tab = it }
+                    ::openGoogleRestore, ::openEarthquakeAlerts, ::changeGoogleMount, tab) { tab = it }
                 else MaterialScreen(state, ::changeSetting, ::openAssistant, ::changeIconVisibility,
                     ::openModuleManager, ::openRepository, ::openTelegram, ::changeLanguage,
                     ::changeLook, ::confirmDialog, ::dismissDialog, { showDialog(DialogKind.RESTART) }, ::checkUpdates, ::openSupport,
-                    ::openGoogleRestore, ::openEarthquakeAlerts, tab) { tab = it }
+                    ::openGoogleRestore, ::openEarthquakeAlerts, ::changeGoogleMount, tab) { tab = it }
             }
         }
         SettingsConnection.connect(this)
@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
         state = state.copy(assistant = readAssistant(), iconHidden = iconHidden())
         refreshScopes()
         if (preferences != null && usesCompanion()) checkCompanion(false)
+        refreshGoogleMount()
     }
 
     override fun onDestroy() {
@@ -225,6 +226,32 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun refreshGoogleMount() {
+        worker.execute {
+            val mounted = runCatching { CompanionInstaller.googleMountEnabled() }.getOrNull()
+            runOnUiThread {
+                if (!isDestroyed) state = state.copy(googleMountEnabled = mounted)
+            }
+        }
+    }
+
+    private fun changeGoogleMount(enabled: Boolean) {
+        if (state.googleMountBusy || state.googleMountEnabled == null) return
+        state = state.copy(googleMountBusy = true)
+        worker.execute {
+            val result = runCatching { CompanionInstaller.setGoogleMountEnabled(enabled) }
+            runOnUiThread {
+                if (isDestroyed) return@runOnUiThread
+                state = state.copy(googleMountBusy = false)
+                result.onSuccess { state = state.copy(googleMountEnabled = enabled) }
+                    .onFailure { failure ->
+                        error(if (failure is RootShell.Failure) failureText(failure, texts.googleMountError)
+                            else texts.googleMountError)
+                    }
+            }
+        }
+    }
+
     private fun checkCompanion(enableAfterCheck: Boolean) {
         if (state.busy) return
         val lastCheck = companionCheckedAt
@@ -277,6 +304,7 @@ class MainActivity : ComponentActivity() {
         worker.execute {
             val result = runCatching {
                 CompanionInstaller.install(this)
+                refreshGoogleMount()
                 // Without this marker the companion's first boot would take the nav handle.
                 if (navigationOff && SystemCompatibility.isHyperOs()) CompanionInstaller.applyHyperOsNavigationKey(false)
                 if (powerOff && SystemCompatibility.isHyperOs()) CompanionInstaller.applyHyperOsPowerKey(false)

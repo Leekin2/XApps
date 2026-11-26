@@ -16,7 +16,8 @@ final class JoyoseHooks {
     void install(String apkPath, String dataDir) {
         boolean gpu = Features.enabled(Features.JOYOSE_GPU);
         boolean cloud = Features.enabled(Features.JOYOSE_CLOUD_OFF);
-        if (!gpu && !cloud) return;
+        boolean frameControl = Features.enabled(Features.JOYOSE_NO_FC);
+        if (!gpu && !cloud && !frameControl) return;
         try (DexTargets targets = new DexTargets(loader, apkPath, dataDir)) {
             if (gpu) run("GPU tuner", () -> {
                 List<Method> methods = targets.usingStrings("gpu_tuner", "boolean", "GPUTUNER_SWITCH");
@@ -26,6 +27,12 @@ final class JoyoseHooks {
             if (cloud) run("Joyose cloud sync off", () -> {
                 List<Method> methods = targets.usingStrings("joyose_sync", "void", "job exist, sync local...");
                 if (methods.isEmpty()) throw new NoSuchMethodException("Joyose cloud sync not found");
+                for (Method method : methods) hooks.install(method, chain -> null);
+            });
+            // Joyose caps a game's frame rate through SurfaceFlinger ("FC"); from kashi's FPS patcher.
+            if (frameControl) run("Joyose frame cap off", () -> {
+                List<Method> methods = targets.usingStrings("joyose_fc", "void", "start FC");
+                if (methods.isEmpty()) throw new NoSuchMethodException("Joyose frame control not found");
                 for (Method method : methods) hooks.install(method, chain -> null);
             });
         } catch (Throwable failure) {

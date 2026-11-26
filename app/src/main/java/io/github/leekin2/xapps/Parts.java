@@ -6,6 +6,7 @@ public final class Parts {
     public static final String GOOGLE = "google";
     public static final String SECURITY = "security";
     public static final String NOTIFY = "notify";
+    public static final String AOD = "aod";
 
     private Parts() { }
 }

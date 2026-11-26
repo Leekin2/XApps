@@ -59,22 +59,53 @@ public final class XNotifyModule extends XposedModule {
 
     /** Switches from the settings screen; read when a process starts, so they apply after a restart. */
     private boolean setting(String key) {
+        return setting(key, true);
+    }
+
+    private boolean setting(String key, boolean byDefault) {
         try {
-            return getRemotePreferences(SettingsActivity.GROUP).getBoolean(key, true);
+            return getRemotePreferences(SettingsActivity.GROUP).getBoolean(key, byDefault);
         } catch (Throwable t) {
-            return true;
+            return byDefault;
         }
     }
 
     @Override
     public void onPackageReady(XposedModuleInterface.PackageReadyParam param) {
+        if ("com.android.settings".equals(param.getPackageName()) && param.isFirstPackage()) {
+            try { SettingsEntry.install(this, param.getClassLoader()); info("HyperOS Settings: notification and AOD rows"); }
+            catch (Throwable t) { error("HyperOS Settings rows unavailable", t); }
+            return;
+        }
         if (SYSTEMUI.equals(param.getPackageName())) {
             if (setting(SettingsActivity.FORWARD)) {
                 try { hookHeadsUp(param.getClassLoader()); } catch (Throwable t) { error("Pop-up hook unavailable", t); }
             }
             if (!setting(SettingsActivity.REPLY)) info("Reply box: switched off in settings");
             else if (xreplyInstalled()) info("Reply box: left to the XReply module, which is still installed");
-            else new ReplyHooks(this).install(param.getClassLoader());
+            else new ReplyHooks(this, false).install(param.getClassLoader());
+            if (setting(SettingsActivity.ROUND_CLEAR, false)) {
+                try { ShadeOptions.roundClear(this, param.getClassLoader()); }
+                catch (Throwable t) { error("Round clear button unavailable", t); }
+            }
+            if (setting(SettingsActivity.CUSTOM_CARRIER, false)) {
+                try {
+                    String label = getRemotePreferences(SettingsActivity.GROUP).getString(SettingsActivity.CARRIER_TEXT, "");
+                    if (!label.isBlank()) ShadeOptions.carrier(this, param.getClassLoader(), label.strip());
+                } catch (Throwable t) { error("Custom carrier label unavailable", t); }
+            }
+            if (setting(SettingsActivity.MUSIC_SPECTRUM, false)) {
+                try { new MusicSpectrum(this).install(param.getClassLoader()); info("Music island: live spectrum"); }
+                catch (Throwable t) { error("Music island spectrum unavailable", t); }
+            }
+            if (setting(SettingsActivity.CHARGE_ISLAND, false)) {
+                try { new ChargeIsland(this).install(param.getClassLoader()); info("Charging island: live power"); }
+                catch (Throwable t) { error("Charging island hook unavailable", t); }
+            }
+            if (setting(SettingsActivity.CLEAR_PARTICLES, false)) {
+                try { new ClearParticles(this).install(param.getClassLoader()); info("Clear all dissolves notifications into particles"); }
+                catch (Throwable t) { error("Clear-all particle hook unavailable", t); }
+            }
             return;
         }
         if (!MILINK.equals(param.getPackageName()) || !setting(SettingsActivity.FORWARD)) return;

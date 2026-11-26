@@ -127,8 +127,14 @@ final class LensHooks {
         if (id == 0) return;
         android.view.View decor = activity.getWindow().getDecorView();
         boolean[] asked = {false};
-        decor.getViewTreeObserver().addOnPreDrawListener(() -> {
-            android.view.View gallery = decor.findViewById(id);
+        android.view.View[] cached = {null};
+        android.view.ViewTreeObserver.OnPreDrawListener[] holder = new android.view.ViewTreeObserver.OnPreDrawListener[1];
+        holder[0] = () -> {
+            android.view.View gallery = cached[0];
+            if (gallery == null || !gallery.isAttachedToWindow()) {
+                gallery = decor.findViewById(id);
+                cached[0] = gallery;
+            }
             if (gallery == null) return true;
             if (galleryBlocked()) {
                 if (gallery.getVisibility() == android.view.View.VISIBLE) {
@@ -142,23 +148,47 @@ final class LensHooks {
                         });
                     }
                 }
-            } else if (gallery.getVisibility() == android.view.View.INVISIBLE) {
-                gallery.setVisibility(android.view.View.VISIBLE);
+            } else {
+                if (gallery.getVisibility() == android.view.View.INVISIBLE) gallery.setVisibility(android.view.View.VISIBLE);
+                decor.getViewTreeObserver().removeOnPreDrawListener(holder[0]);
             }
             return true;
+        };
+        decor.getViewTreeObserver().addOnPreDrawListener(holder[0]);
+        decor.addOnAttachStateChangeListener(new android.view.View.OnAttachStateChangeListener() {
+            @Override public void onViewAttachedToWindow(android.view.View v) { }
+            @Override public void onViewDetachedFromWindow(android.view.View v) {
+                v.getViewTreeObserver().removeOnPreDrawListener(holder[0]);
+                v.removeOnAttachStateChangeListener(this);
+            }
         });
     }
 
     /** A screen shown over the lock screen must not still be there the next time the phone wakes. */
     static void closeOnScreenOff(android.app.Activity activity) {
+        java.util.concurrent.atomic.AtomicBoolean done = new java.util.concurrent.atomic.AtomicBoolean();
         android.content.BroadcastReceiver off = new android.content.BroadcastReceiver() {
             @Override public void onReceive(android.content.Context context, android.content.Intent intent) {
-                try { activity.unregisterReceiver(this); } catch (Throwable ignored) { }
+                if (done.compareAndSet(false, true)) {
+                    try { activity.unregisterReceiver(this); } catch (Throwable ignored) { }
+                }
                 activity.finish();
             }
         };
         activity.registerReceiver(off, new android.content.IntentFilter(android.content.Intent.ACTION_SCREEN_OFF),
                 android.content.Context.RECEIVER_EXPORTED);
+        android.view.View decor = activity.getWindow() == null ? null : activity.getWindow().getDecorView();
+        if (decor != null) {
+            decor.addOnAttachStateChangeListener(new android.view.View.OnAttachStateChangeListener() {
+                @Override public void onViewAttachedToWindow(android.view.View v) { }
+                @Override public void onViewDetachedFromWindow(android.view.View v) {
+                    if (done.compareAndSet(false, true)) {
+                        try { activity.unregisterReceiver(off); } catch (Throwable ignored) { }
+                    }
+                    v.removeOnAttachStateChangeListener(this);
+                }
+            });
+        }
     }
 
     static void install(HookInstaller hooks, ClassLoader loader, String apkPath, String dataDir) {

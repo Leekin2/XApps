@@ -1,5 +1,37 @@
 # Changelog
 
+## Unreleased
+
+- XGoogle: a separate switch controls whether XApps mounts its Google app copy as a system app. It takes effect after reboot and keeps the saved APK and splits available for re-enabling.
+
+- XGoogle: with the Google Wallet switch on, a double press of the power key also opens Google Wallet when HyperOS would open Smart Cards (com.miui.tsmclient), as on HyperOS 3 (issue #2).
+- XNotify: new "Particle clear animation" switch (off by default). Clear all dissolves the notification cards into drifting particles, then the shade closes as before.
+- XNotify: adds "Notification extras" inside HyperOS Settings → Notifications & Control center, adds "Always-on display extras (XAod)" and "Lock screen kits" inside HyperOS Settings → Always-on display & Lock screen, and groups XNotify settings into Notification shade, Super Island, and Other Xiaomi devices.
+- XNotify: new "Live charging power on the island" switch (off by default). The charging island shows the power going into the battery right now, updated every second, and a wired island stays up for 10 seconds.
+- XNotify: new "Music island follows the song" switch (off by default). The music island bars move with the song playing, in the album art colours.
+- XNotify: settings texts translated into Russian, Spanish and Chinese.
+- XSecurity: "Keep maximum refresh rate" now also stops PowerKeeper lowering the rate when you switch apps, not only for games.
+- XSecurity: new switches, all off by default: no refresh rate drop when the phone is hot (a 60 Hz cap stored earlier is ignored too), no Joyose frame rate cap in games, no CPU cap in Battery Saver, key task boost (devices with SchedAssi), and the PowerKeeper *#*#76937#*#* menu on stable builds. From kashi's FPS Limitations patcher.
+- XSecurity: closes a PowerKeeper test hook that let any app point PowerKeeper's cloud settings at another server. Always on while PowerKeeper is in the scope.
+- XSecurity: new switches from kashi's Security Center mod, all off by default:
+  - Keep the security score at 100.
+  - Charge limit: battery protection and smart charging stop at a level you choose (60-100%) instead of 80%.
+  - No heads-up notifications over a full-screen video while the video toolbox is on.
+  - Game toolbox: a Block shade button, playback controls for the song playing, and a summary after each game (play time, battery used, peak temperature).
+  - App info: install and update dates, split APKs, signature, granted permissions, activities (tap to open) and an APK backup to /sdcard/Security.
+  - App manager: batch force stop, clear cache, disable or enable.
+  - App info always offers the MIUI permission editor.
+  - Battery protection page: live current, voltage, power and time to full, and a daily health history.
+  - Security settings: crash logs (user apps, system apps, system and boot), readable and copyable.
+  - Sidebar: clipboard history (last 50 texts, pin and delete; sensitive copies are never kept) and a two-column sidebar with screenshot, screen recording, clipboard and Circle to Search on top. Each tool closes the sidebar first, so it is never in the screenshot, recording or Circle to Search; the clipboard list opens above it with one short line per entry; the panel is always wide enough for two columns, also after the Security app restarts.
+  - Every hidden feature kashi's mod turns on, in six groups: Game Turbo tools, video toolbox, call toolbox, battery and performance modes, system features, and suggestions and ads off.
+  - Game & video toolbox frosted glass blur (`KashiPanelGlass`) and per-app daily mobile data limit (MB quota with notify / restrict until midnight) plus enhanced daily data calculation.
+- XSecurity: new "Enhanced keyboard toolbar" switch (off by default) in Permissions & system. Unlocks Xiaomi's bottom keyboard bar (clipboard, phrases, keyboard switcher) for Gboard and other third-party keyboards with the Android 15+ bottom-inset fix, and natively unlocks HyperOS's own full-screen keyboard & theme options inside HyperOS Settings → Languages & input.
+- XSecurity: the FPS switches are together in the Games section.
+- XSecurity: two new optional Core Patch switches (off by default, System Framework scope + reboot): "Remove APK protection (ApkProtectionRemove)" (skips full `verifySignaturesInternal` and scheme/compat restrictions) and "Disable APK signature verification (HyperOS)" (adds HyperOS `PackageManagerServiceImpl.verifyIsolationViolation` / `canBeUpdate` bypass and install-flow signature verification bypass).
+- XAod: new separate Always-on display panel on the XApps home screen (com.miui.aod / System UI plugin), from kashi's HyperOS AOD mod, all off by default: grayscale AOD, lunar date in every language, all lock screen editor templates, full screen AOD, flagship effects, auto off timer, battery cutoff, off in darkness or a pocket, burn-in shift interval, notification edge glow with a colour, charging info with its position, now playing, screen state while the AOD shows, smart AOD with the light and proximity sensors, and the AOD features kashi's mod turns on (step counter, AOD wallpaper, video depth wallpapers and more).
+- XAod: lock screen kits, as in kashi's HyperOS AOD mod: glass gauges under the lock screen clock (date, temperature, alarm, battery, sunrise and sunset, UV, air quality, steps, and wide device battery and earbuds kits). Long-press the lock screen and open Customize: the kits show in the editor preview; (−) removes a kit, a tap opens the "Add kit" sheet, a long press then a drag up or down places them and a drag sideways reorders them. They can also be edited from Settings → Lock screen → Lock screen kits. Notifications move below the kits, the kits hide on the PIN screen and when the phone is unlocked, and they can also show on the AOD. They replace the old text row at the bottom of the AOD and lock screen.
+
 ## 1.0.6
 
 - XSecurity: optional Video toolbox music recognition shortcut for compatible Mi Music builds.

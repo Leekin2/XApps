@@ -35,3 +35,6 @@ wallet_backup=/data/adb/xgoogle_double_click_power_key
 # User enrollment/model databases are intentionally not erased during uninstall.
 # Removing the module removes the XApps app too.
 pm uninstall io.github.leekin2.xapps > /dev/null 2>&1
+
+# Remove the Google APK mount preference on a full XApps uninstall.
+rm -f /data/adb/xapps_google_mount_off

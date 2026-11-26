@@ -56,8 +56,12 @@ final class ReplyHooks {
 
     private final XposedInterface xposed;
 
-    ReplyHooks(XposedInterface xposed) {
+    /** False when the bubble button becomes the floating window button instead of going away. */
+    private final boolean hideBubble;
+
+    ReplyHooks(XposedInterface xposed, boolean hideBubble) {
         this.xposed = xposed;
+        this.hideBubble = hideBubble;
     }
 
     void install(ClassLoader loader) {
@@ -65,7 +69,9 @@ final class ReplyHooks {
         try { hookActionButtons(loader); } catch (Throwable t) { error("Action button hook unavailable", t); }
         try { hookSentReply(loader); } catch (Throwable t) { error("Sent reply hook unavailable", t); }
         try { hookCountPill(); } catch (Throwable t) { error("Count pill hook unavailable", t); }
-        try { hookBubbleButton(loader); } catch (Throwable t) { error("Bubble button hook unavailable", t); }
+        if (hideBubble) {
+            try { hookBubbleButton(loader); } catch (Throwable t) { error("Bubble button hook unavailable", t); }
+        }
     }
 
     private XposedInterface.HookBuilder hook(Method method) {

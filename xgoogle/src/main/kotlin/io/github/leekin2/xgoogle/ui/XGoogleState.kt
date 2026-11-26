@@ -49,6 +49,8 @@ data class XGoogleState(
     val update: UpdateStatus = UpdateStatus.IDLE,
     val updateVersion: String = "",
     val assistant: AssistantInfo = AssistantInfo.Loading,
+    val googleMountEnabled: Boolean? = null,
+    val googleMountBusy: Boolean = false,
     val companion: CompanionState = CompanionState.UNKNOWN,
     val iconHidden: Boolean = false,
     val dialog: DialogKind = DialogKind.NONE,

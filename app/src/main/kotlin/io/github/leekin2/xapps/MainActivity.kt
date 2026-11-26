@@ -7,9 +7,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -23,10 +25,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.HighlightOff
+import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Restore
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Tune
@@ -77,6 +82,8 @@ private val PARTS = listOf(
         io.github.leekin2.xsecurity.MainActivity::class.java, "io.github.leekin2.xsecurity"),
     Part(Parts.NOTIFY, R.string.notify, R.string.notify_summary, Icons.Rounded.Notifications, Color(0xFFFF8A00),
         io.github.leekin2.xnotify.SettingsActivity::class.java, "io.github.leekin2.xnotify"),
+    Part(Parts.AOD, R.string.aod, R.string.aod_summary, Icons.Rounded.DarkMode, Color(0xFF5B5BD6),
+        io.github.leekin2.xsecurity.AodActivity::class.java, "io.github.leekin2.xaod"),
 )
 
 class MainActivity : ComponentActivity() {
@@ -87,6 +94,34 @@ class MainActivity : ComponentActivity() {
 
     // The alias class is under the code namespace.
     private val launcherAlias get() = ComponentName(this, "io.github.leekin2.xapps.Launcher")
+
+    private val exportBackup = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        if (uri == null) return@registerForActivityResult
+        val current = service ?: return@registerForActivityResult
+        runCatching {
+            val (json, result) = ConfigBackup.exportJson(current)
+            contentResolver.openOutputStream(uri)?.use { out ->
+                out.write(json.toByteArray(Charsets.UTF_8))
+            } ?: error("Cannot open output stream")
+            Toast.makeText(this, getString(R.string.backup_exported, result.entries), Toast.LENGTH_LONG).show()
+        }.onFailure {
+            Toast.makeText(this, getString(R.string.backup_failed), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private val importBackup = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        val current = service ?: return@registerForActivityResult
+        runCatching {
+            val raw = contentResolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
+                ?: error("Cannot open input stream")
+            val result = ConfigBackup.importJson(current, raw)
+            bind(current)
+            Toast.makeText(this, getString(R.string.backup_restored, result.entries), Toast.LENGTH_LONG).show()
+        }.onFailure {
+            Toast.makeText(this, getString(R.string.backup_invalid), Toast.LENGTH_LONG).show()
+        }
+    }
 
     private val listener = object : XposedServiceHelper.OnServiceListener {
         override fun onServiceBind(value: XposedService) { runOnUiThread { bind(value) } }
@@ -170,6 +205,21 @@ class MainActivity : ComponentActivity() {
                                 startAction = { Tile(Icons.Rounded.Tune, null) }, enabled = on,
                                 onClick = { startActivity(Intent(this@MainActivity, part.settings)) })
                         }
+                    }
+                }
+                item(key = "backup") {
+                    SmallTitle(stringResource(R.string.group_backup), Modifier.padding(top = 6.dp))
+                    Card(Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
+                        ArrowPreference(title = stringResource(R.string.backup_export),
+                            summary = stringResource(R.string.backup_export_summary),
+                            startAction = { Tile(Icons.Rounded.Backup, Color(0xFF00897B)) },
+                            enabled = connected,
+                            onClick = { exportBackup.launch(ConfigBackup.defaultFileName()) })
+                        ArrowPreference(title = stringResource(R.string.backup_import),
+                            summary = stringResource(R.string.backup_import_summary),
+                            startAction = { Tile(Icons.Rounded.Restore, Color(0xFF3949AB)) },
+                            enabled = connected,
+                            onClick = { importBackup.launch(arrayOf("application/json", "*/*")) })
                     }
                 }
                 item(key = "icon") {

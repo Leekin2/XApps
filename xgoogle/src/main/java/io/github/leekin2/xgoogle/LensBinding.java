@@ -59,9 +59,9 @@ final class LensBinding {
     /** Three references, the flags, one reference: Google 17.67 has two flags, 17.68 six. */
     private static boolean isTalkConstructor(Class<?>[] p) {
         // Talk controller layouts seen so far: three leading references with two, six or ten flags
-        // (Google 17.67, 17.68, 17.70); four leading references with ten or eleven flags (17.72, 17.73).
-        if ((p.length != 6 && p.length != 10 && p.length != 14 && p.length != 15 && p.length != 16)
-                || p[p.length - 1].isPrimitive()) return false;
+        // (Google 17.67, 17.68, 17.70); four leading references with ten+ flags (17.72, 17.73, 17.75+).
+        boolean known = p.length == 6 || p.length == 10 || p.length == 14 || (p.length >= 15 && p.length <= 20);
+        if (!known || p[p.length - 1].isPrimitive()) return false;
         int flagsStart = p.length >= 15 ? 4 : 3;
         for (int i = 0; i < flagsStart; i++) if (p[i].isPrimitive()) return false;
         for (int i = flagsStart; i < p.length - 1; i++) if (p[i] != boolean.class) return false;

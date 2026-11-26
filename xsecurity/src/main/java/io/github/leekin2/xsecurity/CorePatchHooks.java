@@ -52,10 +52,17 @@ final class CorePatchHooks {
         else if (Features.enabled(Features.CP_SHARED)) hooks.info("Core Patch shared UID requires signer-capability option; stock behaviour kept");
         if (Features.enabled(Features.CP_SHARED) && Features.enabled(Features.CP_DIGEST)) step("shared UID member state", () -> new SharedUidStateHooks(hooks, loader).install());
         if (Features.enabled(Features.CP_AGENT)) step("verification agent", this::verificationAgent);
-        if (Features.enabled(Features.CP_BLOCK)) step("Nothing OS blocklist", () -> {
+        // Nothing OS's blocklist only exists on Nothing phones; elsewhere there is nothing to do.
+        if (Features.enabled(Features.CP_BLOCK) && classExists("com.nothing.server.ex.NtConfigListServiceImpl")) step("Nothing OS blocklist", () -> {
             constant("com.nothing.server.ex.NtConfigListServiceImpl", "isInstallingAppForbidden", boolean.class, false);
             constant("com.nothing.server.ex.NtConfigListServiceImpl", "isStartingAppForbidden", boolean.class, false);
         });
+        if (Features.enabled(Features.CP_APK_PROTECTION_REMOVE)) {
+            step("APK protection remove (verifier)", this::apkProtectionRemove);
+        }
+        if (Features.enabled(Features.CP_DISABLE_SIG_VERIFY)) {
+            step("HyperOS & APK signature verification bypass", this::disableApkSignatureVerification);
+        }
     }
 
     private void step(String name, Step step) {
@@ -177,6 +184,125 @@ final class CorePatchHooks {
         constant(session.getName(), "isAdbVerificationEnabled", boolean.class, false);
     }
 
+    /**
+     * ApkProtectionRemove (vc54) equivalent as runtime system_server hooks:
+     * skips full APK v2/v3/v4 signature verification during install and relaxes scheme/compat checks.
+     */
+    private void apkProtectionRemove() throws ReflectiveOperationException {
+        Class<?> verifier = loader.loadClass("android.util.apk.ApkSignatureVerifier");
+        int count = 0;
+        for (Method m : verifier.getDeclaredMethods()) {
+            Class<?>[] p = m.getParameterTypes();
+            if ("verifySignaturesInternal".equals(m.getName()) && p.length >= 4 && p[3] == boolean.class) {
+                hooks.install(m, chain -> {
+                    Object[] args = chain.getArgs().toArray();
+                    args[3] = false;
+                    return chain.proceed(args);
+                });
+                count++;
+            } else if ("getMinimumSignatureSchemeVersionForTargetSdk".equals(m.getName()) && m.getReturnType() == int.class) {
+                hooks.install(m, chain -> 1);
+                count++;
+            }
+        }
+        try { constant("com.android.server.pm.ScanPackageUtils", "assertMinSignatureSchemeIsValid", void.class, null); count++; }
+        catch (Throwable ignored) { }
+        for (String name : new String[]{"matchSignaturesCompat", "matchSignaturesRecover"}) {
+            try { constant("com.android.server.pm.PackageManagerServiceUtils", name, boolean.class, false); count++; }
+            catch (Throwable ignored) { }
+        }
+        if (count == 0) throw new NoSuchMethodException("ApkProtectionRemove targets");
+    }
+
+    /**
+     * DisableApkSignatureVerification (vc16) equivalent as runtime system_server hooks:
+     * covers HyperOS miui-services PackageManagerServiceImpl (verifyIsolationViolation / canBeUpdate),
+     * StrictJarVerifier rollback enforcement, install-scoped Signature.verify / SigningDetails, and
+     * PackageManagerServiceUtils / VerifyingSession / KeySetManagerService checks.
+     */
+    private void disableApkSignatureVerification() throws ReflectiveOperationException {
+        int count = 0;
+        // HyperOS miui-services.jar system-app update / isolation checks
+        if (classExists("com.android.server.pm.PackageManagerServiceImpl")) {
+            for (String name : new String[]{"verifyIsolationViolation", "canBeUpdate"}) {
+                try { constant("com.android.server.pm.PackageManagerServiceImpl", name, void.class, null); count++; }
+                catch (Throwable ignored) { }
+            }
+        }
+        // PackageManagerServiceUtils & VerifyingSession & KeySetManagerService
+        try { constant("com.android.server.pm.PackageManagerServiceUtils", "checkDowngrade", void.class, null); count++; }
+        catch (Throwable ignored) { }
+        for (String name : new String[]{"matchSignaturesCompat", "matchSignaturesRecover", "matchSignatureInSystem", "verifySignatures"}) {
+            try { constant("com.android.server.pm.PackageManagerServiceUtils", name, boolean.class, false); count++; }
+            catch (Throwable ignored) { }
+        }
+        try {
+            methods("com.android.server.pm.KeySetManagerService", "checkUpgradeKeySetLocked", boolean.class,
+                    chain -> {
+                        Object res = chain.proceed();
+                        return Boolean.TRUE.equals(res) ? res : (inInstallFlow() ? true : res);
+                    });
+            count++;
+        } catch (Throwable ignored) { }
+        try { constant("com.android.server.pm.VerifyingSession", "isVerificationEnabled", boolean.class, false); count++; }
+        catch (Throwable ignored) { }
+        try { constant("android.content.res.AssetManager", "containsAllocatedTable", boolean.class, false); count++; }
+        catch (Throwable ignored) { }
+        try { constant("android.util.apk.ApkSignatureVerifier", "getMinimumSignatureSchemeVersionForTargetSdk", int.class, 1); count++; }
+        catch (Throwable ignored) { }
+        // StrictJarVerifier rollback enforcement & digest check
+        try {
+            Class<?> sjv = loader.loadClass("android.util.jar.StrictJarVerifier");
+            for (java.lang.reflect.Constructor<?> c : sjv.getDeclaredConstructors()) {
+                Class<?>[] p = c.getParameterTypes();
+                if (p.length == 4 && p[3] == boolean.class) {
+                    hooks.install(c, chain -> {
+                        Object[] args = chain.getArgs().toArray();
+                        args[3] = false;
+                        return chain.proceed(args);
+                    });
+                    count++;
+                }
+            }
+            constant(sjv.getName(), "verifyMessageDigest", boolean.class, true);
+            count++;
+        } catch (Throwable ignored) { }
+        // Install-flow-scoped crypto & SigningDetails bypass (never affects TLS/network outside install flow;
+        // fast-paths valid checks before calling inInstallFlow() so normal system_server traffic pays zero stack-walk cost)
+        try {
+            Method sigVerify = java.security.Signature.class.getDeclaredMethod("verify", byte[].class);
+            hooks.install(sigVerify, chain -> {
+                Object res = chain.proceed();
+                return Boolean.TRUE.equals(res) ? res : (inInstallFlow() ? true : res);
+            });
+            count++;
+        } catch (Throwable ignored) { }
+        try {
+            Method digestEq = java.security.MessageDigest.class.getDeclaredMethod("isEqual", byte[].class, byte[].class);
+            hooks.install(digestEq, chain -> {
+                Object res = chain.proceed();
+                return Boolean.TRUE.equals(res) ? res : (inInstallFlow() ? true : res);
+            });
+            count++;
+        } catch (Throwable ignored) { }
+        try {
+            Class<?> details = loader.loadClass("android.content.pm.SigningDetails");
+            for (Method m : details.getDeclaredMethods()) {
+                if (m.getReturnType() != boolean.class) continue;
+                String n = m.getName();
+                if ("checkCapability".equals(n) || "checkCapabilityRecover".equals(n)
+                        || "hasCommonAncestor".equals(n) || "signaturesMatchExactly".equals(n)) {
+                    hooks.install(m, chain -> {
+                        Object res = chain.proceed();
+                        return Boolean.TRUE.equals(res) ? res : (inInstallFlow() ? true : res);
+                    });
+                    count++;
+                }
+            }
+        } catch (Throwable ignored) { }
+        if (count == 0) throw new NoSuchMethodException("DisableApkSignatureVerification targets");
+    }
+
     static boolean inInstallFlow() {
         if (Boolean.TRUE.equals(ORIGINAL_SIGNING.get())) return false;
         for (StackTraceElement frame : Thread.currentThread().getStackTrace()) {
@@ -198,5 +324,9 @@ final class CorePatchHooks {
             if (previous == null) ORIGINAL_SIGNING.remove();
             else ORIGINAL_SIGNING.set(previous);
         }
+    }
+
+    private boolean classExists(String name) {
+        try { loader.loadClass(name); return true; } catch (Throwable t) { return false; }
     }
 }

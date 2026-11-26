@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <!-- The Super Island app picker lists apps that have a home screen icon. -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
     <application>
-        <!-- Opened from the XApps home screen. -->
+        <!-- Opened from the XApps home screen and from HyperOS Settings (Notifications). -->
         <activity android:name=".SettingsActivity" android:exported="false"
             android:label="XNotify" android:theme="@android:style/Theme.DeviceDefault.DayNight" />
     </application>

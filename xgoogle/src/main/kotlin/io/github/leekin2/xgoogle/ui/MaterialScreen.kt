@@ -143,6 +143,7 @@ fun MaterialScreen(
     onSupport: () -> Unit,
     onRestore: () -> Unit,
     onEarthquake: () -> Unit,
+    onGoogleMount: (Boolean) -> Unit,
     /** Kept by the caller, so switching between the two looks stays on the same tab. */
     tab: Int,
     onTab: (Int) -> Unit
@@ -175,7 +176,7 @@ fun MaterialScreen(
                     .then(if (state.look.blur) Modifier.layerBackdrop(backdrop).background(background) else Modifier)
                     .verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
                     Spacer(Modifier.height(12.dp))
-                    if (tab == 0) HomeTab(state, t, onSetting, onAssistant, onStatus, onRestartApps, onRestore, onEarthquake)
+                    if (tab == 0) HomeTab(state, t, onSetting, onAssistant, onStatus, onRestartApps, onRestore, onEarthquake, onGoogleMount)
                     else SettingsTab(state, t, onIconVisibility, onAbout, onTelegram, onLanguage, onLook, onCheckUpdates, onSupport)
                     // Room for the floating bar.
                     Spacer(Modifier.height(112.dp))
@@ -269,7 +270,7 @@ private fun StatusCard(state: XGoogleState, t: Texts, onClick: () -> Unit) {
 
 @Composable
 private fun HomeTab(state: XGoogleState, t: Texts, onSetting: (String, Boolean) -> Unit, onAssistant: () -> Unit,
-    onStatus: () -> Unit, onRestartApps: () -> Unit, onRestore: () -> Unit, onEarthquake: () -> Unit) {
+    onStatus: () -> Unit, onRestartApps: () -> Unit, onRestore: () -> Unit, onEarthquake: () -> Unit, onGoogleMount: (Boolean) -> Unit) {
     StatusCard(state, t, onStatus)
     // While connecting, show the cached switches as usable; taps wait for the connection.
     val available = state.connected || state.loading
@@ -284,9 +285,13 @@ private fun HomeTab(state: XGoogleState, t: Texts, onSetting: (String, Boolean) 
         ToggleRow(t, 1, 3, Icons.Rounded.Mic, t.heyGoogle, if (state.companion == CompanionState.NOT_MOUNTED) t.companionNotMountedHint else t.companion(state.companion),
             checked = state.features[FeaturePolicy.HEY_GOOGLE] == true, enabled = available && !state.busy,
             onChange = { onSetting(FeaturePolicy.HEY_GOOGLE, it) })
-        ToggleRow(t, 2, 3, Icons.Rounded.PowerSettingsNew, t.powerKey, t.powerKeySummary,
+        ToggleRow(t, 2, if (state.googleMountEnabled != null) 4 else 3, Icons.Rounded.PowerSettingsNew, t.powerKey, t.powerKeySummary,
             checked = state.features[FeaturePolicy.POWER_KEY] == true, enabled = available && !state.busy,
             onChange = { onSetting(FeaturePolicy.POWER_KEY, it) })
+        state.googleMountEnabled?.let { enabled ->
+            ToggleRow(t, 3, 4, Icons.Rounded.PowerSettingsNew, t.googleMountTitle, t.googleMountSummary,
+                checked = enabled, enabled = !state.googleMountBusy, onChange = onGoogleMount)
+        }
     }
     Group(t.groupSearch) {
         // Circle to Search's own options fold under it, so the list stays short.

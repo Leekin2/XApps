@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import io.github.leekin2.xgoogle.XGoogleModule;
 import io.github.leekin2.xnotify.XNotifyModule;
+import io.github.leekin2.xsecurity.XAodModule;
 import io.github.leekin2.xsecurity.XSecurityModule;
 import io.github.libxposed.api.XposedModule;
 import io.github.libxposed.api.XposedModuleInterface;
@@ -28,6 +29,7 @@ public final class XAppsModule extends XposedModule {
         add(prefs, Parts.GOOGLE, XGoogleModule::new);
         add(prefs, Parts.SECURITY, XSecurityModule::new);
         add(prefs, Parts.NOTIFY, XNotifyModule::new);
+        add(prefs, Parts.AOD, XAodModule::new);
         for (XposedModule part : parts) {
             try { part.onModuleLoaded(param); }
             catch (Throwable failure) { Log.e(TAG, part.getClass().getSimpleName() + " failed to load", failure); }

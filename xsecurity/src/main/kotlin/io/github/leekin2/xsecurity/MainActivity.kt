@@ -25,7 +25,10 @@ import io.github.libxposed.service.XposedService
 import java.util.Locale
 import java.util.concurrent.Executors
 
-class MainActivity : ComponentActivity() {
+open class MainActivity : ComponentActivity() {
+    /** The XAod panel subclass shows only the always-on display options. */
+    protected open val aodOnly = false
+
     private companion object {
         /** Set once the install's defaults have been frozen; keeps updates from resetting choices. */
         const val MATERIALIZED = "defaults_materialized"
@@ -54,6 +57,7 @@ class MainActivity : ComponentActivity() {
         // First run follows the system language; afterwards the user's choice wins.
         val language = ui.getString("language", null)?.let(AppLanguage::of) ?: AppLanguage.forSystem(Locale.getDefault().language)
         state = state.copy(
+            aodOnly = aodOnly,
             values = Features.ALL.associateWith { Features.read(local, it) },
             language = language,
             nativeLauncher = runCatching {
@@ -62,10 +66,11 @@ class MainActivity : ComponentActivity() {
             }.getOrDefault(false),
             look = Look(ui.getBoolean("hyper", true), ui.getInt("theme", 0), ui.getBoolean("monet", false), ui.getBoolean("blur", false)),
             iconHidden = iconHidden(),
-            clipboardApps = local.getStringSet(Features.CLIPBOARD_APPS, emptySet())?.size ?: 0
+            clipboardApps = local.getStringSet(Features.CLIPBOARD_APPS, emptySet())?.size ?: 0,
+            ints = io.github.leekin2.xsecurity.ui.CHOICES.values.associate { it.key to local.getInt(it.key, it.default) }
         )
         val actions = Actions(::change, ::restartApps, ::changeLanguage, ::changeLook,
-            { state = state.copy(settingsOpen = it) }, ::openLsposed, ::setIconHidden, ::pickClipboardApps, ::openExtendUnlock)
+            { state = state.copy(settingsOpen = it) }, ::openLsposed, ::setIconHidden, ::pickClipboardApps, ::openExtendUnlock, ::pickChoice, onOpenKits = ::openKits)
         setContent {
             XTheme(state.look) {
                 if (state.look.hyper) MiuixScreen(state, actions) else MaterialScreen(state, actions)
@@ -134,14 +139,15 @@ class MainActivity : ComponentActivity() {
         runCatching {
             val scope = service.scope.toSet()
             val supported = setOf("system", "com.miui.securitycenter", "com.miui.powerkeeper",
-                "com.android.updater", "com.xiaomi.joyose", "com.android.thememanager", "com.miui.guardprovider", "com.xiaomi.finddevice", "com.android.settings", "com.android.systemui", "com.android.phone", "com.android.mms")
+                "com.android.updater", "com.xiaomi.joyose", "com.android.thememanager", "com.miui.guardprovider", "com.xiaomi.finddevice", "com.android.settings", "com.android.systemui", "com.android.phone", "com.android.mms", "com.miui.aod")
             // The privacy targets are asked for only while their own switch is on.
             val privacy = mapOf(Features.PRIVACY_OPERATOR to "com.mobiletools.systemhelper",
                 Features.PRIVACY_TELECOM to "com.xiaomi.registration", Features.PRIVACY_MISIGHT to "com.miui.misightservice",
                 Features.PRIVACY_AD_USAGE to "com.miui.systemAdSolution")
                 .filter { state.values[it.key] == true }.values
             val gameCenter = if (state.values[Features.GAME_CENTER_ADS_OFF] == true) listOf("com.miui.securityadd") else emptyList()
-            val missing = (supported + privacy + gameCenter).filter { it !in scope }
+            val keyboard = if (state.values[Features.ENHANCED_KEYBOARD] == true) listOf("com.google.android.inputmethod.latin") else emptyList()
+            val missing = (supported + privacy + gameCenter + keyboard).filter { it !in scope }
                 .filter { it == "system" || runCatching { packageManager.getPackageInfo(it, 0) }.isSuccess }
             if (missing.isEmpty()) return
             val version = packageManager.getPackageInfo(packageName, 0).longVersionCode
@@ -203,6 +209,25 @@ class MainActivity : ComponentActivity() {
             .show()
     }
 
+    /** Value picker for a switch that takes one; saved where the hooks read it. */
+    private fun pickChoice(switchKey: String) {
+        val choice = io.github.leekin2.xsecurity.ui.CHOICES[switchKey] ?: return
+        val remote = preferences ?: return Toast.makeText(this, texts.notConnected, Toast.LENGTH_SHORT).show()
+        val shown = state.ints[choice.key] ?: choice.default
+        val pick = texts.features[choice.pick]
+        android.app.AlertDialog.Builder(this)
+            .setTitle(pick?.title)
+            .setSingleChoiceItems(choice.values.map { choice.format(it, state.language) }.toTypedArray(), choice.values.indexOf(shown)) { dialog, index ->
+                val value = choice.values[index]
+                remote.edit().putInt(choice.key, value).apply()
+                local.edit().putInt(choice.key, value).apply()
+                state = state.copy(ints = state.ints + (choice.key to value))
+                dialog.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
     private fun changeLanguage(language: AppLanguage) {
         ui.edit().putString("language", language.code).apply()
         state = state.copy(language = language)
@@ -242,6 +267,10 @@ class MainActivity : ComponentActivity() {
     }
 
     /** Google's own page; Play services does not let other apps open it, so this needs root. */
+    private fun openKits() {
+        startActivity(android.content.Intent(this, io.github.leekin2.xsecurity.KitsActivity::class.java))
+    }
+
     private fun openExtendUnlock() {
         worker.execute {
             val ok = runCatching {
@@ -264,12 +293,16 @@ class MainActivity : ComponentActivity() {
         worker.execute {
             // Root is proven by "id -u" printing 0; a process that is already gone is not a failure.
             // Processes are found by exact name: "pkill -f" would also match (and kill) this shell.
-            val names = "com.miui.securitycenter com.miui.securitycenter.remote com.miui.securitycenter.power " +
-                "com.miui.securitycenter:ui com.miui.securitycenter.bootaware com.miui.powerkeeper com.xiaomi.joyose com.android.updater com.android.thememanager com.miui.guardprovider com.xiaomi.finddevice com.android.settings com.android.mms com.miui.home"
+            val cmd = if (aodOnly) {
+                "id -u; for p in \$(pidof com.miui.aod com.android.systemui); do kill \$p; done; true"
+            } else {
+                val names = "com.miui.securitycenter com.miui.securitycenter.remote com.miui.securitycenter.power " +
+                    "com.miui.securitycenter:ui com.miui.securitycenter.bootaware com.miui.powerkeeper com.xiaomi.joyose com.android.updater com.android.thememanager com.miui.guardprovider com.xiaomi.finddevice com.android.settings com.android.mms com.miui.home com.miui.aod"
+                "id -u; am force-stop com.miui.securityadd; am force-stop com.miui.securitycenter; am force-stop com.android.updater; " +
+                    "for p in \$(pidof $names); do kill \$p; done; true"
+            }
             val ok = runCatching {
-                val process = ProcessBuilder("su", "-c",
-                    "id -u; am force-stop com.miui.securityadd; am force-stop com.miui.securitycenter; am force-stop com.android.updater; " +
-                        "for p in \$(pidof $names); do kill \$p; done; true")
+                val process = ProcessBuilder("su", "-c", cmd)
                     .redirectErrorStream(true).start()
                 val output = String(process.inputStream.readBytes())
                 process.waitFor()

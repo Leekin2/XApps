@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="module_description">适用于 HyperOS 的 XApps：XGoogle、XSecurity 和 XNotify 合为一个模块。可在应用中分别开关各部分。</string>
+    <string name="module_description">适用于 HyperOS 的 XApps：XGoogle、XSecurity、XNotify 和 XAod 合为一个模块。可在应用中分别开关各部分。</string>
     <string name="xapps_subtitle">适用于 HyperOS 的 XApps</string>
     <string name="connected">已在 LSPosed 中启用</string>
     <string name="connected_summary">已开启的部分会在 LSPosed 中勾选的应用里生效。</string>
@@ -9,7 +9,7 @@
     <string name="group_parts">组成部分</string>
     <string name="google_summary">在 HyperOS 上使用 Google 助理、Gemini、圈定即搜、Lens、Wallet 和 Google 服务</string>
     <string name="security_summary">手机管家功能解锁、游戏加速扩展、电池健康、VoLTE 图标和系统调整</string>
-    <string name="notify_summary">在小米平板上显示手机通知，并为所有应用提供小米回复框</string>
+    <string name="notify_summary">超级岛消息、为所有应用提供小米回复框，并在小米平板上显示手机通知</string>
     <string name="open_settings">设置</string>
     <string name="xapps_restart_hint">开启或关闭某个部分需重启后生效。</string>
     <string name="group_old">旧模块</string>
@@ -17,4 +17,14 @@
     <string name="xapps_version">版本 %1$s</string>
     <string name="xapps_hide_icon">隐藏桌面图标</string>
     <string name="xapps_hide_icon_summary">隐藏后可从 LSPosed 的模块设置中打开 XApps。</string>
+    <string name="aod_summary">息屏显示：定时、低电量关闭、边缘光、充电信息、正在播放、小组件和隐藏样式</string>
+    <string name="group_backup">备份与恢复</string>
+    <string name="backup_export">备份设置</string>
+    <string name="backup_export_summary">将 XGoogle、XSecurity、XNotify 和 XAod 的所有设置保存为 JSON 文件。</string>
+    <string name="backup_import">恢复设置</string>
+    <string name="backup_import_summary">导入之前保存的 XApps 备份文件，重启后生效。</string>
+    <string name="backup_exported">备份已保存（共 %1$d 项设置）</string>
+    <string name="backup_restored">已恢复 %1$d 项设置，请重启以生效。</string>
+    <string name="backup_failed">无法保存备份文件。</string>
+    <string name="backup_invalid">恢复失败：备份文件无效。</string>
 </resources>

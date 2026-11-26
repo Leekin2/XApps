@@ -167,4 +167,7 @@
     <string name="err_check_companion_state">No se pudo leer el estado del módulo complementario</string>
     <string name="err_restore_permission">Android Switch necesita permiso para escribir ajustes del sistema. Permite acceso root a XGoogle y vuelve a intentarlo, o concede WRITE_SECURE_SETTINGS mediante ADB.</string>
     <string name="optional_timeline_scope_note">Estos ámbitos opcionales solo se solicitan para la cronología y no figuran como recomendados en LSPosed. Desactiva la cronología si no la usas.</string>
+    <string name="google_mount_title">Google como aplicación del sistema</string>
+    <string name="google_mount_summary">Monta la copia de Google gestionada por XApps. Los cambios se aplican al reiniciar.</string>
+    <string name="google_mount_error">No se pudo cambiar este ajuste.</string>
 </resources>

@@ -434,18 +434,20 @@ final class SecurityExtraHooks {
                     Object section = group.get(self);
                     android.content.pm.PackageInfo pkg = (android.content.pm.PackageInfo) info.get(self);
                     Context ctx = (Context) context.invoke(self);
-                    if (section == null || pkg == null || ctx == null || find.invoke(section, "xsecurity_uid") != null) return;
+                    if (section == null || pkg == null || ctx == null || (find.invoke(section, "xsecurity_uid") != null || find.invoke(section, "xsecurity_installed") != null)) return;
                     boolean tr = "tr".equals(java.util.Locale.getDefault().getLanguage());
                     android.content.pm.ApplicationInfo app = pkg.applicationInfo;
-                    String[][] rows = {
-                            {"xsecurity_version_code", tr ? "Sürüm kodu" : "Version code", String.valueOf(pkg.getLongVersionCode())},
-                            {"xsecurity_uid", "UID", String.valueOf(app.uid)},
-                            {"xsecurity_data", tr ? "Veri klasörü" : "Data folder", app.dataDir},
-                            {"xsecurity_apk", tr ? "APK dosyası" : "APK file", app.sourceDir},
-                            {"xsecurity_min_sdk", tr ? "En düşük SDK" : "Minimum SDK", String.valueOf(app.minSdkVersion)},
-                            {"xsecurity_target_sdk", tr ? "Hedef SDK" : "Target SDK", String.valueOf(app.targetSdkVersion)},
-                            {"xsecurity_play_store", tr ? "Play Store’da aç" : "Open in Play Store", ""},
-                    };
+                    java.util.List<String[]> rows = new java.util.ArrayList<>();
+                    if (Features.enabled(Features.APP_INFO)) {
+                        rows.add(new String[] {"xsecurity_version_code", tr ? "Sürüm kodu" : "Version code", String.valueOf(pkg.getLongVersionCode())});
+                        rows.add(new String[] {"xsecurity_uid", "UID", String.valueOf(app.uid)});
+                        rows.add(new String[] {"xsecurity_data", tr ? "Veri klasörü" : "Data folder", app.dataDir});
+                        rows.add(new String[] {"xsecurity_apk", tr ? "APK dosyası" : "APK file", app.sourceDir});
+                        rows.add(new String[] {"xsecurity_min_sdk", tr ? "En düşük SDK" : "Minimum SDK", String.valueOf(app.minSdkVersion)});
+                        rows.add(new String[] {"xsecurity_target_sdk", tr ? "Hedef SDK" : "Target SDK", String.valueOf(app.targetSdkVersion)});
+                        rows.add(new String[] {"xsecurity_play_store", tr ? "Play Store’da aç" : "Open in Play Store", ""});
+                    }
+                    if (Features.enabled(Features.APP_INFO_MORE)) rows.addAll(AppInfoMore.rows(ctx, pkg, tr));
                     for (String[] row : rows) {
                         Object item = newText.newInstance(ctx);
                         setKey.invoke(item, row[0]);
@@ -461,6 +463,7 @@ final class SecurityExtraHooks {
                                 case "toString":
                                     return "xsecurity_play_store".equals(row[0]) ? "xsecurity_play_store" : "xsecurity_copy";
                                 default:
+                                    if (AppInfoMore.click(ctx, pkg, row[0], tr)) return true;
                                     if ("xsecurity_play_store".equals(row[0])) {
                                         openPlayStore(ctx, pkg.packageName, tr);
                                         return true;

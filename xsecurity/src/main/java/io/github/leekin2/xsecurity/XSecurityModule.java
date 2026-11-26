@@ -66,6 +66,12 @@ public final class XSecurityModule extends XposedModule {
             new MessageHooks(hooks, param.getClassLoader()).install(info.sourceDir, info.dataDir);
         } else if ("com.miui.home".equals(name) && (process == null || process.equals(name))) {
             new HomeHooks(hooks, param.getClassLoader()).install();
+        } else if ("com.miui.screenshot".equals(name)) {
+            new ScreenshotHooks(hooks, param.getClassLoader()).install();
+        } else if (Features.enabled(Features.ENHANCED_KEYBOARD)
+                && EnhancedKeyboardHooks.isCandidateIme(name)
+                && (process == null || process.equals(name))) {
+            new EnhancedKeyboardHooks(hooks).installIme(name, param.getClassLoader());
         }
     }
 
@@ -98,5 +104,7 @@ public final class XSecurityModule extends XposedModule {
         if (Features.enabled(Features.NOTIFY_SHORT_VIBRATION)) {
             new NotificationVibrationHooks(hooks, param.getClassLoader()).install();
         }
+        // The enhanced keyboard's system_server rule (AppsFilterUtils.canQueryViaComponents) is
+        // not installed: it ran reflection on one of system_server's hottest paths.
     }
 }

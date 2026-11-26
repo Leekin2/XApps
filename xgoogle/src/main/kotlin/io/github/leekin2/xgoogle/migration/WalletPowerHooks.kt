@@ -121,6 +121,33 @@ internal object WalletPowerHooks {
             )
             HookLog.i("WalletPowerHooks", "Installed HyperOS power key route to Google Wallet")
         }.onFailure { HookLog.w("WalletPowerHooks", "HyperOS wallet binding unavailable; original behavior retained", it) }
+        hookMiPay(loader)
+    }
+
+    /**
+     * HyperOS 3 (and a power key left on Xiaomi's Smart Cards) opens com.miui.tsmclient through
+     * launchMiPay instead. While the Wallet switch is on, a double press opens Google Wallet there
+     * too; other shortcuts that open Smart Cards are left alone.
+     */
+    private fun hookMiPay(loader: ClassLoader) {
+        runCatching {
+            val target = ModernReflect.findClass("com.miui.server.input.util.ShortCutActionsUtils", loader)
+            val method = target.getDeclaredMethod("launchMiPay", String::class.java)
+            require(method.returnType == Boolean::class.javaPrimitiveType)
+            val contextField = ModernReflect.findField(target, "mContext")
+            require(Context::class.java.isAssignableFrom(contextField.type))
+            ModernReflect.findAndHookMethod(target, "launchMiPay", String::class.java,
+                object : ModernMethodHook() {
+                    override fun beforeHookedMethod(param: MethodHookParam) {
+                        if (!FeatureConfig.enabled(FeaturePolicy.WALLET)) return
+                        if (param.args.firstOrNull() != "double_click_power_key") return
+                        val context = contextField.get(param.thisObject ?: return) as? Context ?: return
+                        if (openGoogleWallet(context, currentUser())) param.result = true
+                    }
+                },
+            )
+            HookLog.i("WalletPowerHooks", "Smart Cards power key route goes to Google Wallet")
+        }.onFailure { HookLog.w("WalletPowerHooks", "Smart Cards power key route unavailable; original behavior retained", it) }
     }
 
     /**

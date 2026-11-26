@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_forward">Уведомления телефона на планшете</string>
+    <string name="settings_forward_summary">Пересылать уведомления всех приложений между устройствами Xiaomi и показывать всплывающие окна на планшете.</string>
+    <string name="settings_reply">Поле ответа Xiaomi</string>
+    <string name="settings_reply_summary">Поле ответа и кнопки Xiaomi для Telegram, WhatsApp и всех остальных уведомлений (ранее XReply). Удалите XReply, если он всё ещё установлен.</string>
+    <string name="settings_charge_island">Мощность зарядки на острове</string>
+    <string name="settings_charge_island_summary">Остров зарядки показывает текущую мощность (например 27 W) с обновлением каждую секунду вместо максимума адаптера.</string>
+    <string name="settings_music_spectrum">Музыкальный остров в такт песне</string>
+    <string name="settings_music_spectrum_summary">Полосы на музыкальном острове двигаются в такт музыке в цветах обложки альбома.</string>
+    <string name="settings_clear_particles">Очистка частицами</string>
+    <string name="settings_clear_particles_summary">Нажатие «Очистить все» рассыпает уведомления в частицы вместо обычного сдвига.</string>
+    <string name="settings_restart">Изменения вступят в силу после перезагрузки (или перезапуска System UI и Interconnectivity).</string>
+    <string name="settings_no_service">LSPosed не подключён: включите XApps в LSPosed и откройте этот экран снова.</string>
+    <string name="settings_section_shade">Шторка уведомлений</string>
+    <string name="settings_section_island">Суперостров</string>
+    <string name="settings_section_devices">Другие устройства Xiaomi</string>
+    <string name="settings_round_clear">Круглая кнопка очистки</string>
+    <string name="settings_round_clear_summary">Придаёт кнопке «Очистить все» круглую форму.</string>
+    <string name="settings_custom_carrier">Своё название оператора</string>
+    <string name="settings_custom_carrier_summary">Показывает ваш текст вместо названия оператора на экране блокировки, в шторке и центре управления.</string>
+    <string name="settings_carrier_text">Текст оператора</string>
 </resources>

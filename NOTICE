@@ -121,11 +121,29 @@ Material Design Icons (https://github.com/google/material-design-icons)
     manager/src/main/kotlin/org/matrix/vector/manager/ui/components/PackageActionMenu.kt
     and gradle/libs.versions.toml. No LSPosed application code is copied.
 
+kashi / Mods Center FPS Limitations patcher (Unlicense, https://t.me/kashis_cringey_stuffs)
+    PowerKeeperHooks.java (refresh rate, thermal, Battery Saver CPU cap, 76937 menu,
+    cloud test hook) and JoyoseHooks.java (frame control) follow the patch points of
+    this patcher, used with the author's permission; written anew as hooks.
+    KashiSecurityHooks.java, AppInfoMore.java, BatchActions.java, BatteryLive.java and
+    CrashLogs.java, SidebarHooks.java and KashiFlags.java (the list of feature checks his mod
+    answers with a fixed value) follow features of kashi's HyperOS Security Center mod; AodHooks.java,
+    AodOverlay.java and AodKits.java follow kashi's HyperOS AOD mod (Mods Center, used with the author's
+    permission). VideoTools.java and LockKits.java (lock screen kits) follow kashi's mods too.
+    Kashi's code is not included; each feature is written anew as hooks.
+
+RC1844/MIUI_IME_Unlock and HyperCeiler (https://github.com/ReChronoRain/HyperCeiler, AGPL-3.0)
+    EnhancedKeyboardHooks.java follows the hook points these projects use to open Xiaomi's
+    keyboard bottom bar to other keyboards; written anew, no code is copied.
+
 miuix (https://github.com/miuix-kotlin-multiplatform/miuix)
     Used for the HyperOS-style settings UI, under its own license.
 
 ===== XNotify
 XNotify (including the former XReply) is distributed under GPL-3.0 by Leekinn.
+XNotify's Super Island features (IslandHooks, ChargeIsland, MusicSpectrum) follow the approach of
+1812z/HyperIsland (MIT, https://github.com/1812z/HyperIsland), written anew for HyperOS 4; the island
+JSON fields follow D4vidDf/HyperIsland-ToolKit (Apache-2.0, https://github.com/D4vidDf/HyperIsland-ToolKit).
 
 ===== XApps
 Miuix (https://github.com/compose-miuix-ui/miuix) and DexKit (https://github.com/LuckyPray/DexKit) are Apache-2.0 dependencies.

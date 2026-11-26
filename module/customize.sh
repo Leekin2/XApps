@@ -50,6 +50,14 @@ for apk in $paths; do
     cp -f "$apk" "$APP_DIR/${apk##*/}" || google=false
 done
 unset IFS
+# When the switch is off, Google may not have an installed user copy. Preserve the saved
+# APK and splits across module updates so the user can turn the option back on later.
+if [ -z "$paths" ] && [ -e /data/adb/xapps_google_mount_off ]; then
+    saved=/data/adb/modules/xapps/google-app-off
+    if [ -f "$saved/base.apk" ]; then
+        cp -f "$saved"/*.apk "$APP_DIR/" || google=false
+    fi
+fi
 [ -f "$APP_DIR/base.apk" ] || google=false
 if [ "$google" = true ]; then
     # NoMount merges instead of replacing; the same check runs again on every boot (post-fs-data.sh).
@@ -61,6 +69,9 @@ if [ "$google" = true ]; then
 else
     rm -rf "$APP_DIR"
     ui_print "  Google app not found: install it from the Play Store, then flash XApps again"
+fi
+if [ -f "$APP_DIR/base.apk" ]; then
+    apply_google_mount_choice "$MODPATH" || abort "! Could not apply the Google system app preference"
 fi
 
 # Android Auto: a system stub; the Play Store version installs over it at any time.

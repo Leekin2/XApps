@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="module_description">XApps для HyperOS: XGoogle, XSecurity и XNotify в одном модуле. Каждую часть можно включить или выключить в приложении.</string>
+    <string name="module_description">XApps для HyperOS: XGoogle, XSecurity, XNotify и XAod в одном модуле. Каждую часть можно включить или выключить в приложении.</string>
     <string name="xapps_subtitle">XApps для HyperOS</string>
     <string name="connected">Активен в LSPosed</string>
     <string name="connected_summary">Включённые части работают в приложениях, отмеченных в LSPosed.</string>
@@ -9,7 +9,7 @@
     <string name="group_parts">Части</string>
     <string name="google_summary">Google Ассистент, Gemini, «Обвести и найти», Lens, Wallet и сервисы Google в HyperOS</string>
     <string name="security_summary">Разблокировки приложения «Безопасность», дополнения Game Turbo, состояние батареи, значки VoLTE и системные настройки</string>
-    <string name="notify_summary">Уведомления телефона на планшете Xiaomi и поле ответа Xiaomi для любых приложений</string>
+    <string name="notify_summary">Сообщения на Суперострове, поле ответа Xiaomi для любых приложений и уведомления телефона на планшете Xiaomi</string>
     <string name="open_settings">Настройки</string>
     <string name="xapps_restart_hint">Включение или выключение части вступает в силу после перезагрузки.</string>
     <string name="group_old">Старые модули</string>
@@ -17,4 +17,14 @@
     <string name="xapps_version">Версия %1$s</string>
     <string name="xapps_hide_icon">Скрыть значок на главном экране</string>
     <string name="xapps_hide_icon_summary">После скрытия открывайте XApps из настроек модуля в LSPosed.</string>
+    <string name="aod_summary">Always-on дисплей: таймеры, отключение при низком заряде, подсветка краёв, зарядка, музыка, виджеты и скрытые стили</string>
+    <string name="group_backup">Резервное копирование</string>
+    <string name="backup_export">Сохранить настройки</string>
+    <string name="backup_export_summary">Сохранить все настройки XGoogle, XSecurity, XNotify и XAod в файл JSON.</string>
+    <string name="backup_import">Восстановить настройки</string>
+    <string name="backup_import_summary">Загрузить сохранённый файл резервной копии XApps и перезагрузить устройство.</string>
+    <string name="backup_exported">Резервная копия сохранена (%1$d настроек)</string>
+    <string name="backup_restored">Восстановлено настроек: %1$d. Перезагрузите устройство для применения.</string>
+    <string name="backup_failed">Не удалось сохранить файл резервной копии.</string>
+    <string name="backup_invalid">Не удалось восстановить: неверный файл резервной копии.</string>
 </resources>

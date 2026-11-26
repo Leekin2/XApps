@@ -147,6 +147,7 @@ fun MiuixScreen(
     onSupport: () -> Unit,
     onRestore: () -> Unit,
     onEarthquake: () -> Unit,
+    onGoogleMount: (Boolean) -> Unit,
     /** Kept by the caller, so switching between the two looks stays on the same tab. */
     tab: Int,
     onTab: (Int) -> Unit
@@ -203,6 +204,10 @@ fun MiuixScreen(
                         Toggle(Icons.Rounded.PowerSettingsNew, t.powerKey, t.powerKeySummary,
                             state.features[FeaturePolicy.POWER_KEY] == true, available && !state.busy
                         ) { onSetting(FeaturePolicy.POWER_KEY, it) }
+                        state.googleMountEnabled?.let { enabled ->
+                            Toggle(Icons.Rounded.PowerSettingsNew, t.googleMountTitle, t.googleMountSummary,
+                                enabled, !state.googleMountBusy, onChange = onGoogleMount)
+                        }
                     }
                     Group(t.groupSearch) {
                         // Circle to Search's own options fold under it, so the list stays short.

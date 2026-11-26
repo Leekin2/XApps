@@ -167,4 +167,7 @@
     <string name="err_check_companion_state">Не удалось прочитать состояние дополнительного модуля</string>
     <string name="err_restore_permission">Android Switch нужно разрешение на запись системных настроек. Разрешите XGoogle root-доступ и повторите попытку или выдайте WRITE_SECURE_SETTINGS через ADB.</string>
     <string name="optional_timeline_scope_note">Эти необязательные области нужны только для хронологии и не отмечены как рекомендуемые в LSPosed. Отключите хронологию, если она вам не нужна.</string>
+    <string name="google_mount_title">Google как системное приложение</string>
+    <string name="google_mount_summary">Подключать копию Google, управляемую XApps. Изменение вступит в силу после перезагрузки.</string>
+    <string name="google_mount_error">Не удалось изменить этот параметр.</string>
 </resources>

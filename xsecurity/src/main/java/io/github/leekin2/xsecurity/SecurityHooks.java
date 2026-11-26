@@ -59,7 +59,11 @@ final class SecurityHooks {
         if (in(here, MAIN) && Features.enabled(Features.DOCK)) run("sidebar 50 apps", this::dockLimit);
         if (in(here, MAIN) && (Features.enabled(Features.APP_INFO) || Features.enabled(Features.APP_ICON_LAUNCH)))
             run("app info actions", this::appInfoActions);
-        if (in(here, MAIN) && Features.enabled(Features.APP_INFO)) run("more app details", () -> new SecurityExtraHooks(hooks, loader).moreAppDetails());
+        if (in(here, MAIN) && (Features.enabled(Features.APP_INFO) || Features.enabled(Features.APP_INFO_MORE))) run("more app details", () -> new SecurityExtraHooks(hooks, loader).moreAppDetails());
+        if (in(here, MAIN) && Features.enabled(Features.APP_BATCH)) run("batch app actions", () -> new BatchActions(hooks, loader).install());
+        if (in(here, MAIN) && Features.enabled(Features.BATTERY_LIVE)) run("live battery info", () -> new BatteryLive(hooks, loader).install());
+        if (in(here, MAIN) && Features.enabled(Features.CRASH_LOGS)) run("crash logs", () -> new CrashLogs(hooks, loader).install());
+        if (Features.enabled(Features.VIDEO_SLEEP_LOCK)) run("video sleep timer and touch lock", () -> new VideoTools(hooks, loader).install());
         if (in(here, MAIN) && Features.enabled(Features.APPLOCK_SCRAMBLE)) run("app lock scramble", () -> new SecurityExtraHooks(hooks, loader).appLockScramble());
         if (in(here, MAIN | REMOTE | POWER_PROC) && Features.enabled(Features.LOW_BATTERY_QUIET)) run("quiet low battery", () -> new SecurityExtraHooks(hooks, loader).quietLowBattery());
         if (in(here, REMOTE) && Features.enabled(Features.NET_QUOTA_KEEP)) run("keep mobile data", () -> new SecurityExtraHooks(hooks, loader).keepMobileData());
@@ -86,6 +90,25 @@ final class SecurityHooks {
         try (DexTargets targets = new DexTargets(loader, apkPath, dataDir)) {
             if (Features.enabled(Features.GAME_KEEP_ENABLED)) run("Game Turbo stays enabled", () -> new SecurityBehaviorHooks(hooks).keepGameEnabled(targets));
             if (in(here, MAIN | REMOTE) && Features.enabled(Features.CHARGE_PROTECT)) run("charge protection", () -> chargeProtect(targets));
+            KashiSecurityHooks kashi = new KashiSecurityHooks(hooks, loader);
+            if (in(here, MAIN | REMOTE | UI) && Features.enabled(Features.SIDEBAR_CLIPBOARD))
+                run("sidebar tools", () -> new SidebarHooks(hooks, loader).install(targets));
+            if (Features.enabled(Features.KASHI_GAME_ALL)) run("game features", () -> kashi.flags("GAME"));
+            if (Features.enabled(Features.KASHI_VIDEO_ALL)) run("video features", () -> kashi.flags("VIDEO"));
+            if (Features.enabled(Features.KASHI_CALL_ALL)) run("call features", () -> kashi.flags("CALL"));
+            if (Features.enabled(Features.KASHI_POWER_ALL)) run("power features", () -> kashi.flags("POWER"));
+            if (Features.enabled(Features.KASHI_SYSTEM_ALL)) run("system features", () -> kashi.flags("SYSTEM"));
+            if (Features.enabled(Features.KASHI_ADS_OFF)) run("suggestions and ads off", () -> kashi.flags("ADS"));
+            if (in(here, MAIN | REMOTE) && Features.enabled(Features.LOCK_SCORE)) run("security score kept at 100", () -> kashi.lockScore(targets));
+            if (in(here, MAIN | REMOTE) && Features.enabled(Features.CHARGE_LIMIT)) run("charge limit " + Features.chargeLimit() + "%", () -> kashi.chargeLimit(targets));
+            if (in(here, MAIN) && Features.enabled(Features.FORCE_CN_PERM)) run("China permission editor row", () -> kashi.forceCnPermissions(targets));
+            if (Features.enabled(Features.PANEL_GLASS_BLUR)) run("toolbox glass blur", () -> kashi.panelGlassBlur(targets));
+            if (in(here, MAIN | REMOTE) && Features.enabled(Features.DAILY_DATA_LIMIT)) run("daily mobile data limit", () -> DailyDataLimit.hookEnhancedDailyData(hooks, loader));
+            if (Features.enabled(Features.GAME_MEDIA)) run("game toolbox media controls", () -> kashi.gameMedia(targets));
+            if (Features.enabled(Features.GAME_SESSION_SUMMARY)) run("game session summary", () -> kashi.gameSession(targets));
+            if (Features.enabled(Features.GAME_SHADE_BUTTON)) run("game toolbox shade button", () -> kashi.gameShade(targets));
+            if (in(here, MAIN)) KashiSecurityHooks.restoreHeadsUp();
+            if (Features.enabled(Features.VIDEO_NO_HEADSUP)) run("no heads-up during videos", () -> kashi.videoHeadsUp(targets));
             if (in(here, MAIN | UI) && Features.enabled(Features.DOCK)) run("sidebar 50 apps (new)", () -> dockLimitNew(targets));
             if (Features.enabled(Features.GT_HDR)) run("game HDR", () -> alwaysTrue(targets, "gt_hdr", "support_displayfeature_gamemode_HDR"));
             if (Features.enabled(Features.GT_SUPER_RES)) run("super resolution", () -> superResolution(targets));

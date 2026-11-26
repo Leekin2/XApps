@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="settings_forward">手机通知同步到平板</string>
+    <string name="settings_forward_summary">在小米设备间转发所有应用的通知，并在平板上以悬浮通知显示。</string>
+    <string name="settings_reply">小米回复框</string>
+    <string name="settings_reply_summary">为 Telegram、WhatsApp 及所有其他通知提供小米回复框和按钮（原 XReply）。如仍安装 XReply 请卸载。</string>
+    <string name="settings_charge_island">灵动岛实时充电功率</string>
+    <string name="settings_charge_island_summary">充电岛每秒刷新当前实际输入电池的功率（例如 27 W），而不仅显示充电器最大功率。</string>
+    <string name="settings_music_spectrum">音乐岛随歌曲律动</string>
+    <string name="settings_music_spectrum_summary">音乐岛频谱条随播放的歌曲律动并匹配专辑封面配色。</string>
+    <string name="settings_clear_particles">粒子清除动画</string>
+    <string name="settings_clear_particles_summary">点击全部清除时，通知卡片化作粒子飘散而不是直接滑出。</string>
+    <string name="settings_restart">修改将在重启后生效（或重启系统界面与跨屏协作服务后）。</string>
+    <string name="settings_no_service">LSPosed 未连接：请在 LSPosed 中启用 XApps 后重新打开此页面。</string>
+    <string name="settings_section_shade">通知栏</string>
+    <string name="settings_section_island">超级岛</string>
+    <string name="settings_section_devices">其他小米设备</string>
+    <string name="settings_round_clear">圆形全部清除按钮</string>
+    <string name="settings_round_clear_summary">将全部清除按钮改为圆形轮廓。</string>
+    <string name="settings_custom_carrier">自定义运营商名称</string>
+    <string name="settings_custom_carrier_summary">在锁屏、通知栏和控制中心显示自定义运营商文字。</string>
+    <string name="settings_carrier_text">运营商文字</string>
 </resources>

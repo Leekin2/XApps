@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="module_description">XApps para HyperOS: XGoogle, XSecurity y XNotify en un solo módulo. Activa o desactiva cada parte en la app.</string>
+    <string name="module_description">XApps para HyperOS: XGoogle, XSecurity, XNotify y XAod en un solo módulo. Activa o desactiva cada parte en la app.</string>
     <string name="xapps_subtitle">XApps para HyperOS</string>
     <string name="connected">Activo en LSPosed</string>
     <string name="connected_summary">Las partes activadas funcionan en las apps marcadas en LSPosed.</string>
@@ -9,7 +9,7 @@
     <string name="group_parts">Partes</string>
     <string name="google_summary">Asistente de Google, Gemini, Rodea para buscar, Lens, Wallet y servicios de Google en HyperOS</string>
     <string name="security_summary">Desbloqueos de la app Seguridad, extras de Game Turbo, salud de la batería, iconos de VoLTE y ajustes del sistema</string>
-    <string name="notify_summary">Notificaciones del teléfono en la tablet Xiaomi y el cuadro de respuesta de Xiaomi para todas las apps</string>
+    <string name="notify_summary">Mensajes en la Super Isla, el cuadro de respuesta de Xiaomi para todas las apps y notificaciones del teléfono en la tablet Xiaomi</string>
     <string name="open_settings">Ajustes</string>
     <string name="xapps_restart_hint">Activar o desactivar una parte surte efecto tras reiniciar.</string>
     <string name="group_old">Módulos antiguos</string>
@@ -17,4 +17,14 @@
     <string name="xapps_version">Versión %1$s</string>
     <string name="xapps_hide_icon">Ocultar icono de inicio</string>
     <string name="xapps_hide_icon_summary">Una vez oculto, abra XApps desde los ajustes del módulo en LSPosed.</string>
+    <string name="aod_summary">Pantalla siempre activa: temporizadores, corte por batería, brillo de bordes, carga, música, kits y estilos ocultos</string>
+    <string name="group_backup">Copia de seguridad</string>
+    <string name="backup_export">Hacer copia de seguridad</string>
+    <string name="backup_export_summary">Guarda todos los ajustes de XGoogle, XSecurity, XNotify y XAod en un archivo JSON.</string>
+    <string name="backup_import">Restaurar ajustes</string>
+    <string name="backup_import_summary">Carga una copia de seguridad de XApps guardada y reinicia para aplicar.</string>
+    <string name="backup_exported">Copia guardada (%1$d ajustes)</string>
+    <string name="backup_restored">%1$d ajustes restaurados. Reinicia para aplicar.</string>
+    <string name="backup_failed">No se pudo guardar el archivo de copia.</string>
+    <string name="backup_invalid">No se pudo restaurar: archivo de copia no válido.</string>
 </resources>
